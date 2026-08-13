@@ -4,7 +4,9 @@ _Last updated: 13 Aug 2026_
 
 ## Where things stand
 
-**No code exists.** This repo is planning docs plus a git history that starts today.
+**The pipeline parser foundation now exists and is merged to main.** `pipeline/` is a `uv`-managed Python 3.12 project (`mlbb_pipeline`) with Pydantic models, hero/team alias normalization (halt-on-unknown), and a brace-matching parser for `{{Matchlist}}`/`{{Match}}`/`{{Map}}`, proven against a golden wikitext fixture — 28 tests passing. It has no I/O yet: no fetcher, no snapshotting, no SQLite, no metrics, no CI. Built via `docs/superpowers/plans/2026-08-13-pipeline-parser-foundation.md`, which also documents what's deliberately out of scope (fetcher/snapshot/SQLite/metrics/backfill/GH Actions — the next plan).
+
+Everything below this point was written before that work and describes the state prior to it.
 
 An earlier version of these docs claimed a working, validated Python parser and a loaded Season 17 dataset (64 series, 164 games, 328 draft rows). That was aspirational, not real. Corrected across CLAUDE.md, roadmap.md, and database.md on 13 Aug 2026. Treat any doc claim as unverified unless data-source.md says it was measured.
 
@@ -25,11 +27,11 @@ Season 18 is the reason to build now rather than keep analyzing S17 retrospectiv
 
 ## Immediate priority
 
-1. Write the v1 spec, then the implementation plan.
-2. Build the pipeline: fetch → snapshot → parse → normalize → validate → SQLite → JSON.
+1. ~~Write the v1 spec, then the implementation plan.~~ Done — parser foundation plan executed, merged 13 Aug 2026.
+2. Continue the pipeline: fetch → snapshot (parse/normalize/validate already exist) → SQLite → JSON. Next plan starts at "Fetcher + snapshot" in roadmap.md.
 3. Then the frontend mockup: all three screens shallow, SvelteKit + Tailwind, against a mock data module whose shape matches the pipeline's JSON output.
 
-No blocking unknowns remain. The only open items are cosmetic (RRQ Tora's short code).
+No blocking unknowns remain. The only open items are cosmetic (RRQ Tora's short code) plus filling out the remaining hero/team alias strings once the fetcher runs against the live wiki.
 
 ## Known constraints going in
 

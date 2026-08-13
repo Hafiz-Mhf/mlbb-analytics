@@ -8,14 +8,16 @@ Format: Now / Next / Later, anchored to MPL MY Season 18 (14 Aug – Oct 2026).
 
 **Step 0: DONE (13 Aug 2026)** — pick slots verified role-ordered over all 164 S17 games. Per-role features are cleared. See data-source.md.
 
+**Step 1: DONE (13 Aug 2026)** — pipeline parser foundation merged to main. `pipeline/` uv project, Pydantic models (`MatchRecord`/`DraftRecord`/`ParsedGame`), hero + team alias resolution with halt-on-unknown, brace-matching parser for `{{Matchlist}}`/`{{Match}}`/`{{Map}}`, golden-file fixture test. 28 tests passing. No fetcher, no SQLite, no metrics yet — plan and scope boundary at `docs/superpowers/plans/2026-08-13-pipeline-parser-foundation.md`.
+
 **Pipeline** (stack.md)
-- [ ] `uv` project scaffold, Pydantic models for the data shapes
+- [x] `uv` project scaffold, Pydantic models for the data shapes
 - [ ] Fetcher: MediaWiki action API, custom User-Agent, 2s throttle, gzip. Discovers season subpages rather than hardcoding them.
 - [ ] Snapshot raw wikitext to `data/raw/`, committed
-- [ ] Parser: `{{Matchlist}}` / `{{Match}}` / `{{Map}}`, brace-matching for nested `TeamOpponent`, filter `finished=skip`
-- [ ] Hero alias normalization table + the rule that an unknown hero string **halts** the run
-- [ ] Validation invariants (stack.md): 10 picks / 10 bans per game, team records match published standings, counts move plausibly between runs
-- [ ] Golden-file tests against a committed fixture, unit tests on every metric function
+- [x] Parser: `{{Matchlist}}` / `{{Match}}` / `{{Map}}`, brace-matching for nested `TeamOpponent`, filter `finished=skip`
+- [x] Hero alias normalization table + the rule that an unknown hero string **halts** the run (team alias table done too, same rule)
+- [x] Validation invariants (stack.md): 10 picks / 10 bans per game — enforced in `ParsedGame`. Team records vs. published standings, counts moving plausibly between runs — still open, need the DB/multi-run layer.
+- [x] Golden-file tests against a committed fixture. Unit tests on every metric function — still open, no metrics exist yet.
 - [ ] SQLite build from snapshots (database.md)
 - [ ] Metrics: presence, HHI, league baselines → typed JSON emit
 - [ ] Backfill Season 17 as historical baseline, then Season 18 to date
