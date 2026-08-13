@@ -152,7 +152,52 @@ Permanent constraints on the entire product, not just v1:
 - **No draft order.** Slots are positional, so first-pick / last-pick reasoning is unavailable.
 - **No per-player hero assignment** beyond whatever the slot convention implies (see Hazard 2).
 
+## Hazard 3: team aliases and cross-season renames
+
+Confirmed 13 Aug 2026 from `MPL/Malaysia/Season 18`. The same normalization problem as heroes, one level up.
+
+The eight Season 18 teams, as the wiki spells them in `{{TeamParticipants}}`:
+
+| Wiki name | Short | Note |
+|---|---|---|
+| AC Esports | AC | Commonly called "All Combo" |
+| Bigetron MY by VIT | BTRM | **Was `Bigetron MY` in S17** |
+| Invictus Gaming | IG | Also written `ig` |
+| RRQ Tora | *unconfirmed* | |
+| Selangor Red Giants | SRG | Also written `selangor red giants` |
+| Team Flash | *unconfirmed* | New to the dataset — no S17 games |
+| Team Rey | REY | Also written `team rey` |
+| Team Vamos | VMS | Also written `team vamos` |
+
+Three distinct problems, all needing a `team_aliases` table:
+
+- **Case is inconsistent.** `Selangor Red Giants` and `selangor red giants` both appear on the same page. Normalize case before matching.
+- **Short forms appear in match markup.** `{{TeamOpponent|ig}}` sits alongside `{{TeamOpponent|Invictus Gaming}}`.
+- **Sponsor suffixes change between seasons.** `Bigetron MY` (S17) became `Bigetron MY by VIT` (S18). This is the dangerous one: the Season 17 vs Season 18 trend views in roadmap.md would silently split one org into two teams and report both as having half a history. Team identity must be keyed on something stable, with display name varying by season.
+
+Two short codes are still unconfirmed. `Team Flash` has no S17 games, so it will have no historical baseline at the start of S18 — the UI needs to say "no data" rather than render an empty table as if it meant zero.
+
+## Player roles are recorded — and they unblock Hazard 2
+
+The participants table carries explicit per-player roles:
+
+```
+|{{Opponent|AC Esports
+  |players={{Persons
+    |{{Person|Momo|role=exp}}
+    |{{Person|Zahyed|role=jgl}}
+    |{{Person|Izanami|role=mid}}
+    |{{Person|Nets|role=gold}}
+    |{{Person|Reyzar|role=roam|flag=id}}
+```
+
+Roles used: `exp`, `jgl`, `mid`, `gold`, `roam` — the same five in the same order as the assumed slot convention. Substitutes are marked `status=sub`, staff carry text roles (`Head Coach`, `Analyst`).
+
+This does **not** prove Hazard 2 — `{{Map}}` never says which player used which hero, so there is no direct link from a pick slot to a person. But it gives the ground truth needed to test the convention, and it is what would make per-player analysis possible if the convention holds.
+
+**Verification method for Hazard 2:** for each team, collect every hero in slot `h2` across all games and check they are overwhelmingly jungle-class heroes; repeat per slot. Roster order in the participants table is itself listed exp → jgl → mid → gold → roam, which is corroborating evidence that the same ordering is the editors' intent in `{{Map}}`. Measure the hit rate before trusting it — corroboration is not proof.
+
 ## Open
 
-- The full 8-team Season 18 roster list. Names seen so far in S17 data: Selangor Red Giants, Team Vamos, Team Rey, RRQ Tora, Bigetron MY. Needs confirming from the S18 page.
-- Whether team names are stable across seasons, or whether the `teams` table needs alias handling too — the same hazard as heroes, one level up.
+- Short codes for RRQ Tora and Team Flash.
+- Whether the participants table's player ordering is guaranteed or merely conventional, same as the slot question.

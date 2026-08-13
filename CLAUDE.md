@@ -26,7 +26,9 @@ Everything below was measured against the live wiki on 13 Aug 2026. Detail and m
 - **No patch field exists** on any game. Patch-based filtering must derive from date, or be dropped.
 - Liquipedia has no gold, objectives, or kill timelines. This is a **draft** tool permanently — what a team drafts and how predictable they are, never how they play.
 - Core metrics: presence (picks+bans / games) for meta breadth, HHI (sum of squared pick shares) for predictability — always shown against league baseline, never in isolation.
-- MPL MY Season 18 runs Aug 14 – Oct 2026, 8 partnered teams (SRG, Team Vamos, Team Rey are the legacy MY orgs; RRQ and Bigetron each field a second MY team).
+- MPL MY Season 18 runs Aug 14 – Oct 2026. **The 8 teams, as the wiki spells them:** AC Esports (aka All Combo), Bigetron MY by VIT, Invictus Gaming, RRQ Tora, Selangor Red Giants, Team Flash, Team Rey, Team Vamos.
+- **Team names have the same alias problem heroes do**, plus a worse one: inconsistent case, short forms (`ig` for Invictus Gaming), and sponsor suffixes that change between seasons (`Bigetron MY` → `Bigetron MY by VIT`). Cross-season trend views split one org into two unless team identity is keyed on something stable. Team Flash is new and has no S17 history at all.
+- **Player roles are recorded** on the participants table (`exp`/`jgl`/`mid`/`gold`/`roam`), which gives the ground truth for testing the slot-ordering question below.
 
 ## Explicitly UNVERIFIED — do not build on it yet
 Liquipedia pick slots being **role-ordered** (EXP, Jungle, Mid, Gold, Roam) rather than draft-ordered. This was previously asserted as fact; it appears to be an editor convention that mostly holds. Every per-role feature depends on it. Measure how often it holds before speccing role breakdowns.

@@ -25,9 +25,19 @@ SQLite. Zero infra, single file, read-mostly, one writer, weekly. Postgres would
 ## Core tables
 
 **teams**
-- `id`, `name`, `short_code`, `season`
+- `id`, `canonical_name`, `short_code`
 
-A team's identity can span seasons; keep `season` as a column, not a separate join table, until there is a real reason otherwise. Note the open question in data-source.md: team names may need the same alias handling heroes do.
+**team_names**
+- `team_id`, `season`, `display_name`
+
+**team_aliases**
+- `alias`, `team_id`
+
+The original schema put `name` and `season` directly on `teams`. That breaks, and the source proves it: `Bigetron MY` in Season 17 became `Bigetron MY by VIT` in Season 18 when the sponsor changed. Keyed on name, that is two teams with half a history each — and the Season 17 vs Season 18 trend views in roadmap.md are exactly where it would show up as a silent wrong answer.
+
+So team identity is stable (`teams`), display name varies by season (`team_names`), and every string the wiki uses resolves through `team_aliases`. The wiki writes `Invictus Gaming`, `ig`, and `selangor red giants` in lowercase on the same page. Same halt-on-unknown rule as heroes: an unrecognized team string fails the run.
+
+Season 18 has 8 teams; see data-source.md for the confirmed list. Team Flash is new and has no Season 17 games, so it will have no historical baseline at season start — the UI must render "no data", not an empty table that reads as zero.
 
 **heroes**
 - `id`, `canonical_name`, `role`
