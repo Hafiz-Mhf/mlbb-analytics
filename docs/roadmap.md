@@ -47,8 +47,8 @@ Format: Now / Next / Later, anchored to MPL MY Season 18 (14 Aug – Oct 2026).
 ## Risks to watch
 
 - **Hero aliases.** The live one. 94 strings for 80 heroes; unnormalized it invents phantom heroes and understates HHI, the metric the tool exists to provide. Mitigated by the halt-on-unknown-hero rule — that rule is not negotiable.
-- **Team aliases and cross-season renames.** Same problem one level up, and confirmed: inconsistent case, short forms (`ig`), and sponsor suffixes that change between seasons (`Bigetron MY` → `Bigetron MY by VIT`). Left alone, the Season 17 vs Season 18 trend views under Next would report one org as two teams with half a history each. Mitigated by keying identity separately from display name (database.md).
-- **Team Flash has no history.** New to the league, zero S17 games. Every baseline comparison involving them is empty at season start. The UI must say "no data" rather than render zeros.
+- **Team name variants.** Same problem one level up, and measured: 16 distinct strings for 8 teams, from inconsistent casing and short forms. Bigetron alone appears four ways. Left alone, its history splits and the league baseline is computed over a wrong denominator. Mitigated by `team_aliases` and the same halt-on-unknown rule (database.md).
+- **Doc claims outrunning evidence.** This section previously asserted a Bigetron cross-season rename and that Team Flash was new with no history. Both were wrong, inferred from partial scans rather than measured — the same failure mode as the original "validated parser" claim, caught twice in one day. Anything asserted here should be traceable to data-source.md.
 - **Liquipedia format dependency.** Any template change on their end breaks the parser. Mitigated by committed raw snapshots (reparse history without refetching) and by validation running every refresh, not just once.
 - **Unverified role ordering.** Per-role features are speculative until Step 0 is done. Don't build them on faith.
 - **Data freshness.** v1 is only as useful as its last refresh; the weekly job is not optional once S18 is running.

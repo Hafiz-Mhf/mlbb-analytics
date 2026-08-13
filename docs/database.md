@@ -33,11 +33,11 @@ SQLite. Zero infra, single file, read-mostly, one writer, weekly. Postgres would
 **team_aliases**
 - `alias`, `team_id`
 
-The original schema put `name` and `season` directly on `teams`. That breaks, and the source proves it: `Bigetron MY` in Season 17 became `Bigetron MY by VIT` in Season 18 when the sponsor changed. Keyed on name, that is two teams with half a history each — and the Season 17 vs Season 18 trend views in roadmap.md are exactly where it would show up as a silent wrong answer.
+`team_aliases` is required and measured: **16 distinct strings for 8 teams** across the pages checked, from inconsistent casing (`Bigetron MY by VIT` / `Bigetron MY by Vit` / `bigetron my by vit`) and short forms (`ig`). Unnormalized, Bigetron's history splits four ways and the league baseline is computed over a wrong denominator. Same halt-on-unknown rule as heroes: an unrecognized team string fails the run. See data-source.md, Hazard 3.
 
-So team identity is stable (`teams`), display name varies by season (`team_names`), and every string the wiki uses resolves through `team_aliases`. The wiki writes `Invictus Gaming`, `ig`, and `selangor red giants` in lowercase on the same page. Same halt-on-unknown rule as heroes: an unrecognized team string fails the run.
+`team_names` separates stable identity from per-season display name. This is a **precaution, not a response to observed data** — no cross-season rename exists in this dataset. Sponsor-suffix changes are common enough in esports to be worth the one extra table, and it costs nothing, but do not cite it as evidence-backed.
 
-Season 18 has 8 teams; see data-source.md for the confirmed list. Team Flash is new and has no Season 17 games, so it will have no historical baseline at season start — the UI must render "no data", not an empty table that reads as zero.
+Season 17 and Season 18 have the same eight teams, so every team has a full historical baseline from day one. See data-source.md for the list.
 
 **heroes**
 - `id`, `canonical_name`, `role`

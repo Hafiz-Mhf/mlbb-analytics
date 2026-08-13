@@ -152,30 +152,50 @@ Permanent constraints on the entire product, not just v1:
 - **No draft order.** Slots are positional, so first-pick / last-pick reasoning is unavailable.
 - **No per-player hero assignment** beyond whatever the slot convention implies (see Hazard 2).
 
-## Hazard 3: team aliases and cross-season renames
+## The teams
 
-Confirmed 13 Aug 2026 from `MPL/Malaysia/Season 18`. The same normalization problem as heroes, one level up.
-
-The eight Season 18 teams, as the wiki spells them in `{{TeamParticipants}}`:
+Both seasons' `{{TeamParticipants}}` blocks confirm the **same eight teams in Season 17 and Season 18**:
 
 | Wiki name | Short | Note |
 |---|---|---|
 | AC Esports | AC | Commonly called "All Combo" |
-| Bigetron MY by VIT | BTRM | **Was `Bigetron MY` in S17** |
-| Invictus Gaming | IG | Also written `ig` |
+| Bigetron MY by VIT | BTRM | Name unchanged since S17 |
+| Invictus Gaming | IG | |
 | RRQ Tora | *unconfirmed* | |
-| Selangor Red Giants | SRG | Also written `selangor red giants` |
-| Team Flash | *unconfirmed* | New to the dataset — no S17 games |
-| Team Rey | REY | Also written `team rey` |
-| Team Vamos | VMS | Also written `team vamos` |
+| Selangor Red Giants | SRG | |
+| Team Flash | FL | |
+| Team Rey | REY | |
+| Team Vamos | VMS | |
 
-Three distinct problems, all needing a `team_aliases` table:
+An identical roster across both seasons is a real advantage: every Season 18 team has a complete Season 17 baseline from day one. No team starts the season with an empty comparison.
 
-- **Case is inconsistent.** `Selangor Red Giants` and `selangor red giants` both appear on the same page. Normalize case before matching.
-- **Short forms appear in match markup.** `{{TeamOpponent|ig}}` sits alongside `{{TeamOpponent|Invictus Gaming}}`.
-- **Sponsor suffixes change between seasons.** `Bigetron MY` (S17) became `Bigetron MY by VIT` (S18). This is the dangerous one: the Season 17 vs Season 18 trend views in roadmap.md would silently split one org into two teams and report both as having half a history. Team identity must be keyed on something stable, with display name varying by season.
+## Hazard 3: team name variants
 
-Two short codes are still unconfirmed. `Team Flash` has no S17 games, so it will have no historical baseline at the start of S18 — the UI needs to say "no data" rather than render an empty table as if it meant zero.
+The same normalization problem as heroes, one level up. **16 distinct strings for 8 teams**, measured across the S17 Regular Season, S17 Playoffs, and S18 pages.
+
+The cause is casing, not renaming:
+
+| Team | Strings the wiki uses |
+|---|---|
+| Bigetron | `Bigetron MY by VIT` 12, `Bigetron MY by Vit` 3, `Bigetron My by Vit` 1, `bigetron my by vit` 1 |
+| Invictus Gaming | `Invictus Gaming` 17, `invictus gaming` 1, `ig` 1 |
+| Selangor Red Giants | `Selangor Red Giants` 18, `selangor red giants` 2 |
+| Team Vamos | `Team Vamos` 17, `team vamos` 4 |
+| RRQ Tora | `RRQ Tora` 15, `rrq tora` 1 |
+
+Bigetron alone appears four ways, including two casings of the sponsor suffix within the same page. The S17 Playoffs page is written almost entirely in lowercase.
+
+**Required:** a `team_aliases` table, case-insensitive matching, and the same halt-on-unknown rule as heroes. Unnormalized, Bigetron's history splits four ways and the league baseline — the number this entire tool exists to provide — is computed over a denominator that is silently wrong.
+
+### On cross-season renames
+
+An earlier draft of this file claimed Bigetron was renamed between seasons and cited it as evidence. **That was wrong** — the S17 wikitext already reads `Bigetron MY by VIT`. No rename has been observed in this dataset.
+
+Keying team identity separately from per-season display name (database.md) is still worth doing, but as a cheap precaution against a thing that happens in esports generally, not as a response to something measured here. Labelled honestly so it doesn't get cited as evidence again.
+
+### Brace matching is required, not optional
+
+A flat regex over `{{TeamOpponent|...}}` recovered only 56 of the 64 known Regular Season series. The misses are the nested forms — `{{TeamOpponent|Selangor Red Giants |substitutes={{PlayerSubstitutions|...}}}}` spans lines and contains braces. Confirms the field-map note above: the parser must match braces properly.
 
 ## Player roles are recorded — and they unblock Hazard 2
 

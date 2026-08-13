@@ -26,8 +26,9 @@ Everything below was measured against the live wiki on 13 Aug 2026. Detail and m
 - **No patch field exists** on any game. Patch-based filtering must derive from date, or be dropped.
 - Liquipedia has no gold, objectives, or kill timelines. This is a **draft** tool permanently — what a team drafts and how predictable they are, never how they play.
 - Core metrics: presence (picks+bans / games) for meta breadth, HHI (sum of squared pick shares) for predictability — always shown against league baseline, never in isolation.
-- MPL MY Season 18 runs Aug 14 – Oct 2026. **The 8 teams, as the wiki spells them:** AC Esports (aka All Combo), Bigetron MY by VIT, Invictus Gaming, RRQ Tora, Selangor Red Giants, Team Flash, Team Rey, Team Vamos.
-- **Team names have the same alias problem heroes do**, plus a worse one: inconsistent case, short forms (`ig` for Invictus Gaming), and sponsor suffixes that change between seasons (`Bigetron MY` → `Bigetron MY by VIT`). Cross-season trend views split one org into two unless team identity is keyed on something stable. Team Flash is new and has no S17 history at all.
+- MPL MY Season 18 runs Aug 14 – Oct 2026. **The 8 teams, as the wiki spells them:** AC Esports (aka All Combo, AC), Bigetron MY by VIT (BTRM), Invictus Gaming (IG), RRQ Tora, Selangor Red Giants (SRG), Team Flash (FL), Team Rey (REY), Team Vamos (VMS).
+- **Season 17 and Season 18 have the same eight teams.** Every S18 team therefore has a full S17 baseline from day one — no team starts with an empty comparison.
+- **Team names have the same alias problem heroes do**: 16 distinct strings for 8 teams, caused by inconsistent casing (`Bigetron MY by VIT` / `Bigetron MY by Vit` / `bigetron my by vit`) and short forms (`ig`). Needs a `team_aliases` table with the same halt-on-unknown rule. No cross-season *rename* has been observed — an earlier draft of these docs claimed one and was wrong.
 - **Player roles are recorded** on the participants table (`exp`/`jgl`/`mid`/`gold`/`roam`), which gives the ground truth for testing the slot-ordering question below.
 
 ## Explicitly UNVERIFIED — do not build on it yet
