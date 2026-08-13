@@ -4,9 +4,13 @@
 A team analyst, before a draft, needs an opponent's tendencies fast. Every screen should answer "what do I need to know about Team X before we draft against them" in under a few seconds of scanning — this is the design constraint everything else serves.
 
 ## v1 navigation (three views)
-1. **Team Scouting** (default landing) — pick a team, see: presence by hero/role, HHI by role, ban-rate with league baseline annotated, last N games log
-2. **League Overview** — cross-team comparison (the step-8 pattern): HHI ranked across all 8 teams, meta-wide presence, so a number never has to be read without knowing where it sits league-wide
-3. **Match Log** — raw draft-by-draft record, filterable by team/patch, styled as a log stream (see design-direction-v1.md)
+1. **Team Scouting** (default landing) — pick a team, see: presence by hero, team HHI, ban-rate with league baseline annotated, last N games log
+2. **League Overview** — cross-team comparison: HHI ranked across all 8 teams, meta-wide presence, so a number never has to be read without knowing where it sits league-wide
+3. **Match Log** — raw draft-by-draft record, filterable by team and stage, styled as a log stream (see design-direction-v1.md)
+
+**Two corrections from the 13 Aug 2026 source check (data-source.md):**
+- *Filter by patch* was previously listed on Match Log. Liquipedia records no patch field on any game, so it is removed. Stage (Regular Season / Playoffs) replaces it as the second filter axis.
+- *By role* breakdowns are provisional. They depend on pick slots being role-ordered, which is an unverified editor convention (data-source.md, Hazard 2). Measure it before designing screens around it; if it does not hold, per-role views are dropped and Team Scouting shows team-level concentration only.
 
 ## Interaction patterns
 - **Team selector** persists across views (pick once, it follows you) — this is the single control that makes the dashboard team-agnostic instead of SRG-only
