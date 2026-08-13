@@ -1,6 +1,6 @@
 import pytest
 
-from mlbb_pipeline.aliases import UnknownHeroError, resolve_hero
+from mlbb_pipeline.aliases import UnknownHeroError, UnknownTeamError, resolve_hero, resolve_team
 
 
 def test_resolve_hero_normalizes_full_name_casing():
@@ -21,3 +21,19 @@ def test_resolve_hero_strips_whitespace():
 def test_resolve_hero_unknown_string_halts():
     with pytest.raises(UnknownHeroError):
         resolve_hero("totally-not-a-hero")
+
+
+def test_resolve_team_normalizes_case_variants():
+    assert resolve_team("Bigetron MY by VIT") == "Bigetron MY by VIT"
+    assert resolve_team("bigetron my by vit") == "Bigetron MY by VIT"
+    assert resolve_team("Bigetron MY by Vit") == "Bigetron MY by VIT"
+
+
+def test_resolve_team_normalizes_short_forms():
+    assert resolve_team("ig") == "Invictus Gaming"
+    assert resolve_team("All Combo") == "AC Esports"
+
+
+def test_resolve_team_unknown_string_halts():
+    with pytest.raises(UnknownTeamError):
+        resolve_team("Definitely Not A Team")
