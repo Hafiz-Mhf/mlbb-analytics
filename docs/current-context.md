@@ -4,7 +4,7 @@ _Last updated: 13 Aug 2026_
 
 ## Where things stand
 
-**The pipeline parser foundation now exists and is merged to main.** `pipeline/` is a `uv`-managed Python 3.12 project (`mlbb_pipeline`) with Pydantic models, hero/team alias normalization (halt-on-unknown), and a brace-matching parser for `{{Matchlist}}`/`{{Match}}`/`{{Map}}`, proven against a golden wikitext fixture — 28 tests passing. It has no I/O yet: no fetcher, no snapshotting, no SQLite, no metrics, no CI. Built via `docs/superpowers/plans/2026-08-13-pipeline-parser-foundation.md`, which also documents what's deliberately out of scope (fetcher/snapshot/SQLite/metrics/backfill/GH Actions — the next plan).
+**The pipeline parser foundation and the fetcher/snapshot layer both exist and are merged to main.** `pipeline/` is a `uv`-managed Python 3.12 project (`mlbb_pipeline`) with Pydantic models, hero/team alias normalization (halt-on-unknown), a brace-matching parser for `{{Matchlist}}`/`{{Match}}`/`{{Map}}` proven against a golden wikitext fixture, a throttled `MediaWikiClient` (custom User-Agent, 2s interval, gzip), subpage discovery, and a snapshot writer — 40 tests passing. Every HTTP test runs against `httpx.MockTransport`; nothing has yet been fetched from the live wiki. Still missing: SQLite build, metrics, JSON emit, backfill, CI. Built via `docs/superpowers/plans/2026-08-13-pipeline-parser-foundation.md` and `docs/superpowers/plans/2026-08-13-fetcher-snapshot.md`, which document what each deliberately left out.
 
 Everything below this point was written before that work and describes the state prior to it.
 
@@ -28,8 +28,9 @@ Season 18 is the reason to build now rather than keep analyzing S17 retrospectiv
 ## Immediate priority
 
 1. ~~Write the v1 spec, then the implementation plan.~~ Done — parser foundation plan executed, merged 13 Aug 2026.
-2. Continue the pipeline: fetch → snapshot (parse/normalize/validate already exist) → SQLite → JSON. Next plan starts at "Fetcher + snapshot" in roadmap.md.
-3. Then the frontend mockup: all three screens shallow, SvelteKit + Tailwind, against a mock data module whose shape matches the pipeline's JSON output.
+2. ~~Fetcher + snapshot.~~ Done — merged 13 Aug 2026. The mechanism exists but has never been pointed at the live wiki.
+3. Backfill: run the fetcher against S17 and S18-to-date, commit the snapshots, and fix the `UnknownHeroError`/`UnknownTeamError` halts that surface — that's how the remaining alias strings (94 hero / 16 team) get filled in. Then SQLite build → metrics → JSON emit.
+4. Then the frontend mockup: all three screens shallow, SvelteKit + Tailwind, against a mock data module whose shape matches the pipeline's JSON output.
 
 No blocking unknowns remain. The only open items are cosmetic (RRQ Tora's short code) plus filling out the remaining hero/team alias strings once the fetcher runs against the live wiki.
 

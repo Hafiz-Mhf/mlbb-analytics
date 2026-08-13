@@ -10,9 +10,9 @@ Target users are analysts for the 8 MPL Malaysia teams. Nobody has asked for thi
 Solo project by Fiz (final-year IT/BI & Analytics student, QA background). Originated as a public Threads tutorial thread on the data pipeline for Selangor Red Giants (SRG); now scoping into a league-wide tool.
 
 ## Project state — read this before assuming anything exists
-**As of 13 Aug 2026: no code exists.** This repo contains planning docs only.
+**As of 13 Aug 2026:** `pipeline/` exists — parser, alias normalization, throttled Liquipedia fetcher, snapshot writer, 40 tests passing. **No data has been fetched yet**; `data/raw/` is empty and there is no database, no metrics, and no dashboard. See docs/current-context.md for the live state.
 
-An earlier version of this file claimed a working, validated parser and a loaded S17 dataset. That was aspirational and is now corrected. There is no parser, no database, no dashboard.
+An earlier version of this file claimed a working, validated parser and a loaded S17 dataset while no code existed at all. Treat any claim here as unverified unless docs/data-source.md says it was measured.
 
 ## What's actually verified, don't re-derive it
 Everything below was measured against the live wiki on 13 Aug 2026. Detail and method: docs/data-source.md.
