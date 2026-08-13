@@ -1,0 +1,26 @@
+{{Matchlist|width=350px|id=MPLMYS17W1|title=Week 1
+|M1header=Day 1|M3header=Day 2|M6header=Day 3
+|M1={{Match
+    |bestof=3
+    |caster1=Mars (Malaysian Caster)
+    |mvp=Yums
+    |opponent1={{TeamOpponent|Selangor Red Giants
+        |substitutes={{PlayerSubstitutions
+            |{{Substitution|in=Unii|out=Sekys}}
+        }}
+    }}
+    |opponent2={{TeamOpponent|Team Vamos}}
+    |date=April 3, 2026 - 17:00 {{Abbr/MYT}}
+    |map1={{Map|vod=https://example.com/vod1
+        |team1side=blue |team2side=red |length=21:59 |winner=1
+        <!-- Hero picks -->
+        |t1h1=sora |t1h2=guin |t1h3=zhuxin |t1h4=granger |t1h5=chou
+        |t2h1=phoveus |t2h2=leomord |t2h3=yve |t2h4=harith |t2h5=khaleed
+        <!-- Hero bans -->
+        |t1b1=baxia |t1b2=valen |t1b3=kalea |t1b4=suyou |t1b5=harley
+        |t2b1=freya |t2b2=marcel |t2b3=fanny |t2b4=gloo |t2b5=claude
+    }}
+    |map2={{Map|finished=skip}}
+    |map3={{Map|finished=skip}}
+}}
+}}
