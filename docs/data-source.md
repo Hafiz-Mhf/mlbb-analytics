@@ -135,13 +135,49 @@ The Regular Season contains **94 distinct hero strings for 80 actual heroes.** E
 
 **Required parser behaviour:** an unrecognized hero string is a **hard failure that halts the pipeline**, never a silently-created new hero. A new hero release or a new editor shortcut must break the build loudly. This is the single most important correctness rule in the project.
 
-## Hazard 2: pick slot ordering — UNVERIFIED
+## Pick slot ordering — RESOLVED, role-ordered
 
-CLAUDE.md previously asserted that pick slots are role-ordered (`h1`=EXP, `h2`=Jungle, `h3`=Mid, `h4`=Gold, `h5`=Roam) rather than draft-ordered.
+_Tested 13 Aug 2026 over all 164 Season 17 games._
 
-**This has not been verified.** Spot-checking suggests it is an editor convention that mostly holds and sometimes does not. It is not an enforced field, and Liquipedia's templates do not appear to validate it.
+Pick slots are **role-ordered**, not draft-ordered:
 
-Every per-role feature depends entirely on this being true — HHI by role, role breakdowns, per-role presence. Verify it before speccing any of them: cross-check a sample of games against known player roles for that roster, and measure how often the convention holds. If it holds at, say, 95%, decide explicitly whether 5% wrong role attribution is acceptable or whether role features get dropped.
+| Slot | Role |
+|---|---|
+| `h1` | EXP |
+| `h2` | Jungle |
+| `h3` | Mid |
+| `h4` | Gold |
+| `h5` | Roam |
+
+### How it was tested
+
+If slots were role-ordered, a jungle hero should appear almost exclusively in slot 2. If draft-ordered, she would scatter across all five. **Bans are a built-in control group** — nobody claims ban slots carry role meaning, so they show what the same measurement looks like when the hypothesis is false.
+
+For every hero with ≥10 appearances, the share of appearances landing in its single most common slot:
+
+| | Picks | Bans (control) |
+|---|---|---|
+| Mean modal-slot share | **95.7%** | 44.8% |
+| Median | **100.0%** | 40.9% |
+| Heroes >90% in one slot | **34 / 42** | 0 / 35 |
+| Heroes <40% in one slot | **0 / 42** | 15 / 35 |
+
+Hero identity confirms the mapping independently: slot 1 holds sora, phoveus, paquito, benedetta (EXP laners); slot 2 suyou, baxia (junglers); slot 3 zhuxin, yve, pharsa (mages); slot 4 granger, harith, karrie (marksmen); slot 5 chou, khaleed, hylos (roamers).
+
+Bans sitting at 44.8% rather than near-random is itself informative — ban *order* has structure (teams open with meta bans consistently), just not role structure.
+
+### The 4.5% that deviates is real flex, not noise
+
+League-wide, 74 of 1,640 picks (4.5%) land outside their hero's modal slot. Two checks distinguish sloppy editing from genuine role flexibility:
+
+- **Spread evenly across teams** — 2.3% to 7.6% for all eight. Editor sloppiness would cluster on one team's pages. It does not.
+- **Concentrated in 17 heroes that are genuinely dual-role** — Yi Sun-shin jungle 28 / gold 13, Gloo roam 48 / exp 12, Guinevere jungle 38 / roam 9, Freya exp 20 / gold 9, Hilda roam 21 / exp 7.
+
+So the deviations are the source recording something true. **Flex rate is therefore a metric, not an error rate** — a hero's slot distribution measures how many roles the meta plays it in, and a team using a hero off its usual slot is doing something notable enough to surface.
+
+### Design consequence: role is a property of the pick, not the hero
+
+Do not store a `role` column on heroes. A hero's role is whatever slot it occupied *in that game*, which is exactly what `drafts.slot` already records. Deriving role per pick is both more correct and simpler than maintaining a hero→role table that would be wrong 4.5% of the time by construction.
 
 ## What Liquipedia does not have
 

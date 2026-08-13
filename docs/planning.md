@@ -31,7 +31,7 @@ MLBB pro teams rely on manual scouting — rewatching VODs, gut feel — for dra
 
 **Must have**
 - Team-agnostic draft-prep dashboard covering all 8 MPL MY Season 18 teams
-- Presence rate and per-team hero concentration (HHI), with per-team opponent scouting view
+- Presence rate and per-team hero concentration (HHI), both overall and **per role** — slot ordering is verified, so EXP/Jungle/Mid/Gold/Roam breakdowns are in scope (data-source.md)
 - Baseline-adjusted comparison on every stat — the thing that separates this from a raw stats dump
 - Weekly data refresh once Season 18 starts, with build-halting validation re-run every time (stack.md)
 - Season 17 loaded as historical baseline, since Season 18 has no meaningful sample in its first weeks
@@ -39,9 +39,9 @@ MLBB pro teams rely on manual scouting — rewatching VODs, gut feel — for dra
 **Should have**
 - Simple ban-suggestion logic: flag heroes with high presence-against-baseline that an opponent hasn't banned recently
 - Season 17 vs Season 18 trend context
+- **Flex rate** — a hero's distribution across role slots, and how often a team uses a hero off its usual role. Falls out of the slot-ordering work for free (data-source.md), and is genuinely novel: it measures draft unpredictability in a way raw pick counts cannot.
 
 **Won't have (v1)**
-- Per-role breakdowns *until the slot-ordering convention is measured* — see data-source.md, Hazard 2. If the convention holds reliably, these move to Must have; if not, they are dropped.
 - Patch filtering — no patch field exists in the source
 - User accounts or private per-team data (everything is public-derived, nothing to gate)
 - Post-game review or live draft assistant (Next / Later — see roadmap.md)

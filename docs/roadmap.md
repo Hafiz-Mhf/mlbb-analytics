@@ -6,8 +6,7 @@ Format: Now / Next / Later, anchored to MPL MY Season 18 (14 Aug – Oct 2026).
 
 ## Now — build the thing
 
-**Step 0: settle the open question**
-- [ ] Measure whether pick slots are role-ordered (data-source.md, Hazard 2). Cross-check a sample against known rosters and report how often the convention holds. This gates every per-role feature, so it comes before speccing them.
+**Step 0: DONE (13 Aug 2026)** — pick slots verified role-ordered over all 164 S17 games. Per-role features are cleared. See data-source.md.
 
 **Pipeline** (stack.md)
 - [ ] `uv` project scaffold, Pydantic models for the data shapes
@@ -50,7 +49,7 @@ Format: Now / Next / Later, anchored to MPL MY Season 18 (14 Aug – Oct 2026).
 - **Team name variants.** Same problem one level up, and measured: 16 distinct strings for 8 teams, from inconsistent casing and short forms. Bigetron alone appears four ways. Left alone, its history splits and the league baseline is computed over a wrong denominator. Mitigated by `team_aliases` and the same halt-on-unknown rule (database.md).
 - **Doc claims outrunning evidence.** This section previously asserted a Bigetron cross-season rename and that Team Flash was new with no history. Both were wrong, inferred from partial scans rather than measured — the same failure mode as the original "validated parser" claim, caught twice in one day. Anything asserted here should be traceable to data-source.md.
 - **Liquipedia format dependency.** Any template change on their end breaks the parser. Mitigated by committed raw snapshots (reparse history without refetching) and by validation running every refresh, not just once.
-- **Unverified role ordering.** Per-role features are speculative until Step 0 is done. Don't build them on faith.
+- **Flex picks vs. role tables.** Role ordering is verified, but 4.5% of picks are heroes used in a second role. Any code that treats a hero as having one fixed role will be wrong for those. Derive role from `drafts.slot` per pick, never from a hero attribute.
 - **Data freshness.** v1 is only as useful as its last refresh; the weekly job is not optional once S18 is running.
 - **Scope creep.** Solo builder, three-phase ambition. Resist polishing Now past "correct and current" before starting Next.
 - **Docs drifting from reality.** This roadmap previously described migrating parser output that never existed. Update current-context.md whenever something material changes.

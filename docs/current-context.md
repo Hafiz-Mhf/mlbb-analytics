@@ -20,11 +20,16 @@ MPL Malaysia Season 18 starts **14 Aug 2026** (tomorrow) and runs through Octobe
 
 Season 18 is the reason to build now rather than keep analyzing S17 retrospectively. But with zero code written the day before kickoff, "live before the season is underway" is no longer realistic — and chasing it is how the correctness layer gets skipped, which would defeat the point. The pipeline should be built properly and backfilled; S18 data is not going anywhere.
 
+- **Pick-slot ordering verified.** Slots are role-ordered (EXP/Jungle/Mid/Gold/Roam), measured across all 164 S17 games with bans as a control group. Per-role features are cleared to build, and flex rate emerged as a new metric worth shipping.
+- **Repo is public** at github.com/Hafiz-Mhf/mlbb-analytics, full correction history intact.
+
 ## Immediate priority
 
-1. Verify the pick-slot role-ordering convention (data-source.md, Hazard 2) — it gates whether per-role features exist at all.
+1. Write the v1 spec, then the implementation plan.
 2. Build the pipeline: fetch → snapshot → parse → normalize → validate → SQLite → JSON.
 3. Then the frontend mockup: all three screens shallow, SvelteKit + Tailwind, against a mock data module whose shape matches the pipeline's JSON output.
+
+No blocking unknowns remain. The only open items are cosmetic (RRQ Tora's short code).
 
 ## Known constraints going in
 

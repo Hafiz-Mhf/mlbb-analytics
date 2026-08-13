@@ -40,7 +40,9 @@ SQLite. Zero infra, single file, read-mostly, one writer, weekly. Postgres would
 Season 17 and Season 18 have the same eight teams, so every team has a full historical baseline from day one. See data-source.md for the list.
 
 **heroes**
-- `id`, `canonical_name`, `role`
+- `id`, `canonical_name`
+
+No `role` column. Role is a property of the *pick*, not the hero — verified 13 Aug 2026, and 4.5% of picks are genuine dual-role uses (Yi Sun-shin jungle/gold, Gloo roam/exp). A hero→role table would be wrong for those by construction. Role derives from `drafts.slot`; see data-source.md.
 
 **hero_aliases**
 - `alias`, `hero_id`
@@ -66,7 +68,9 @@ Only played games are stored. Maps carrying `finished=skip` are unplayed placeho
 
 **One row per pick or ban.** Season 17 at this granularity is 164 games × 20 = **3,280 rows**. The old docs said "328 draft rows", which is 164 × 2 — that counted *team-game* rows, a different and coarser thing. Everything downstream (presence, HHI, baselines) is computed from this table, so the fine granularity is the correct one.
 
-`slot` is positional, not draft order — Liquipedia does not record pick order. Whether the position maps to a role is the open question above.
+`slot` maps directly to role for picks — 1=EXP, 2=Jungle, 3=Mid, 4=Gold, 5=Roam, verified over all 164 S17 games (data-source.md). It is *not* draft order; Liquipedia does not record pick order at all.
+
+For bans, `slot` is ban order rather than role. Same column, different meaning depending on `is_ban` — worth a comment in the schema so nobody aggregates bans by "role".
 
 ## Build strategy
 

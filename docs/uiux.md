@@ -8,9 +8,10 @@ A team analyst, before a draft, needs an opponent's tendencies fast. Every scree
 2. **League Overview** — cross-team comparison: HHI ranked across all 8 teams, meta-wide presence, so a number never has to be read without knowing where it sits league-wide
 3. **Match Log** — raw draft-by-draft record, filterable by team and stage, styled as a log stream (see design-direction-v1.md)
 
-**Two corrections from the 13 Aug 2026 source check (data-source.md):**
+**From the 13 Aug 2026 source check (data-source.md):**
 - *Filter by patch* was previously listed on Match Log. Liquipedia records no patch field on any game, so it is removed. Stage (Regular Season / Playoffs) replaces it as the second filter axis.
-- *By role* breakdowns are provisional. They depend on pick slots being role-ordered, which is an unverified editor convention (data-source.md, Hazard 2). Measure it before designing screens around it; if it does not hold, per-role views are dropped and Team Scouting shows team-level concentration only.
+- *By role* breakdowns are **cleared to build.** Pick slots are verified role-ordered (EXP/Jungle/Mid/Gold/Roam), so Team Scouting can show presence and HHI per role.
+- *Flex* is a new pattern worth designing for. 4.5% of picks are heroes used in a second role, and that is real signal rather than error. A hero shown in a role table should indicate when a team also plays it elsewhere — this is the kind of thing an opposing coach most wants to know and cannot get from a pick count.
 
 ## Interaction patterns
 - **Team selector** persists across views (pick once, it follows you) — this is the single control that makes the dashboard team-agnostic instead of SRG-only

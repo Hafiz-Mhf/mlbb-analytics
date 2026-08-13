@@ -31,8 +31,8 @@ Everything below was measured against the live wiki on 13 Aug 2026. Detail and m
 - **Team names have the same alias problem heroes do**: 16 distinct strings for 8 teams, caused by inconsistent casing (`Bigetron MY by VIT` / `Bigetron MY by Vit` / `bigetron my by vit`) and short forms (`ig`). Needs a `team_aliases` table with the same halt-on-unknown rule. No cross-season *rename* has been observed — an earlier draft of these docs claimed one and was wrong.
 - **Player roles are recorded** on the participants table (`exp`/`jgl`/`mid`/`gold`/`roam`), which gives the ground truth for testing the slot-ordering question below.
 
-## Explicitly UNVERIFIED — do not build on it yet
-Liquipedia pick slots being **role-ordered** (EXP, Jungle, Mid, Gold, Roam) rather than draft-ordered. This was previously asserted as fact; it appears to be an editor convention that mostly holds. Every per-role feature depends on it. Measure how often it holds before speccing role breakdowns.
+- **Pick slots ARE role-ordered** — verified 13 Aug 2026 over all 164 S17 games. `h1`=EXP, `h2`=Jungle, `h3`=Mid, `h4`=Gold, `h5`=Roam. Heroes land in their modal slot 95.7% of the time (median 100%); bans, used as a control, sit at 44.8%. Per-role features are cleared to build.
+- **Role is a property of the pick, not the hero.** The 4.5% off-modal picks are genuine dual-role heroes (Yi Sun-shin jungle/gold, Gloo roam/exp), spread evenly across all 8 teams rather than clustered — so they are real, not editor error. Never store a `role` column on heroes; derive role from `drafts.slot`. Flex rate is a metric, not an error rate.
 
 ## Stack
 Detail: stack.md. Summary:
