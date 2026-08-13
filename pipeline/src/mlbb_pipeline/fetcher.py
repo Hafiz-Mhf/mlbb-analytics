@@ -87,3 +87,20 @@ class MediaWikiClient:
         if "missing" in page:
             raise PageNotFoundError(f"page not found: {title!r}")
         return page["revisions"][0]["slots"]["main"]["*"]
+
+    def discover_season_subpages(self, season_title: str) -> list[str]:
+        """List subpages of `season_title` (e.g. 'MPL/Malaysia/Season 17')
+        by prefix — e.g. '.../Regular Season', '.../Playoffs'. Discovered
+        rather than hardcoded, since bracket stage names vary between
+        seasons (data-source.md, Page layout)."""
+        prefix = f"{season_title}/"
+        data = self._get(
+            {
+                "action": "query",
+                "list": "allpages",
+                "apprefix": prefix,
+                "aplimit": "max",
+                "format": "json",
+            }
+        )
+        return [page["title"] for page in data["query"]["allpages"]]

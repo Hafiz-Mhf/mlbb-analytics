@@ -106,3 +106,42 @@ def test_fetch_wikitext_raises_on_missing_page():
 
     with pytest.raises(PageNotFoundError):
         client.fetch_wikitext("Not A Real Page")
+
+
+ALLPAGES_RESPONSE = {
+    "query": {
+        "allpages": [
+            {"pageid": 1, "ns": 0, "title": "MPL/Malaysia/Season 17/Regular Season"},
+            {"pageid": 2, "ns": 0, "title": "MPL/Malaysia/Season 17/Playoffs"},
+        ]
+    }
+}
+
+
+def test_discover_season_subpages_returns_titles_in_order():
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json=ALLPAGES_RESPONSE)
+
+    client = MediaWikiClient(transport=httpx.MockTransport(handler), sleep_fn=lambda s: None)
+    titles = client.discover_season_subpages("MPL/Malaysia/Season 17")
+
+    assert titles == [
+        "MPL/Malaysia/Season 17/Regular Season",
+        "MPL/Malaysia/Season 17/Playoffs",
+    ]
+
+
+def test_discover_season_subpages_sends_prefix_query():
+    captured: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured.append(request)
+        return httpx.Response(200, json=ALLPAGES_RESPONSE)
+
+    client = MediaWikiClient(transport=httpx.MockTransport(handler), sleep_fn=lambda s: None)
+    client.discover_season_subpages("MPL/Malaysia/Season 17")
+
+    params = captured[0].url.params
+    assert params["action"] == "query"
+    assert params["list"] == "allpages"
+    assert params["apprefix"] == "MPL/Malaysia/Season 17/"
