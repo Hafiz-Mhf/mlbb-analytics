@@ -161,3 +161,95 @@ def parse_map(
                 )
 
     return ParsedGame(match=match, drafts=drafts)
+
+
+DATE_TEMPLATE_SUFFIX = re.compile(r"\s*\{\{[^{}]*\}\}\s*$")
+
+
+def strip_date_template_suffix(raw_date: str) -> str:
+    """'April 3, 2026 - 17:00 {{Abbr/MYT}}' -> 'April 3, 2026 - 17:00'
+    (data-source.md: 'template suffix must be stripped')."""
+    previous = None
+    current = raw_date
+    while previous != current:
+        previous = current
+        current = DATE_TEMPLATE_SUFFIX.sub("", current)
+    return current.strip()
+
+
+def parse_team_opponent(raw_value: str) -> str:
+    """raw_value looks like '{{TeamOpponent|Selangor Red Giants|substitutes=...}}'.
+    Returns the raw (unresolved) team name string — call resolve_team() on it."""
+    bodies = find_template_calls(raw_value, "TeamOpponent")
+    if not bodies:
+        raise ValueError(f"no TeamOpponent template found in {raw_value!r}")
+    parts = split_top_level(bodies[0])
+    if not parts or "=" in parts[0]:
+        raise ValueError(f"TeamOpponent has no positional team name: {raw_value!r}")
+    return parts[0].strip()
+
+
+def parse_match(
+    raw_value: str,
+    *,
+    series_id: str,
+    season: str,
+    stage: Literal["regular_season", "playoffs"],
+) -> list[ParsedGame]:
+    """Parse one '{{Match|...}}' template into its played games (finished=skip
+    maps are dropped by parse_map)."""
+    bodies = find_template_calls(raw_value, "Match")
+    if not bodies:
+        raise ValueError(f"no Match template found in {raw_value!r}")
+    params = params_dict(split_top_level(bodies[0]))
+
+    team1_raw = parse_team_opponent(params["opponent1"])
+    team2_raw = parse_team_opponent(params["opponent2"])
+    played_at = strip_date_template_suffix(params["date"]) if "date" in params else None
+
+    map_keys = sorted(
+        (k for k in params if re.fullmatch(r"map\d+", k)),
+        key=lambda k: int(k[3:]),
+    )
+
+    games: list[ParsedGame] = []
+    for key in map_keys:
+        game_number = int(key[3:])
+        game = parse_map(
+            params[key],
+            series_id=series_id,
+            season=season,
+            stage=stage,
+            team1_raw=team1_raw,
+            team2_raw=team2_raw,
+            played_at=played_at,
+            game_number_in_series=game_number,
+        )
+        if game is not None:
+            games.append(game)
+    return games
+
+
+def parse_matchlist(
+    text: str,
+    *,
+    season: str,
+    stage: Literal["regular_season", "playoffs"],
+) -> list[ParsedGame]:
+    """Parse every '{{Matchlist|...}}' template in a page's wikitext into
+    played games across all its series. Public entry point for a whole page."""
+    text = strip_comments(text)
+    games: list[ParsedGame] = []
+    for body in find_template_calls(text, "Matchlist"):
+        params = params_dict(split_top_level(body))
+        matchlist_id = params.get("id", "unknown")
+        series_keys = sorted(
+            (k for k in params if re.fullmatch(r"M\d+", k)),
+            key=lambda k: int(k[1:]),
+        )
+        for key in series_keys:
+            series_id = f"{matchlist_id}_{key}"
+            games.extend(
+                parse_match(params[key], series_id=series_id, season=season, stage=stage)
+            )
+    return games
