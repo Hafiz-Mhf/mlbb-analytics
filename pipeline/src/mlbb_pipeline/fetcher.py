@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import time
+from pathlib import Path
 from typing import Callable
 
 import httpx
+
+from .snapshot import write_snapshot
 
 DEFAULT_BASE_URL = "https://liquipedia.net"
 API_PATH = "/mobilelegends/api.php"
@@ -104,3 +107,17 @@ class MediaWikiClient:
             }
         )
         return [page["title"] for page in data["query"]["allpages"]]
+
+
+def fetch_and_snapshot_season(
+    client: MediaWikiClient, season_title: str, root: Path
+) -> list[Path]:
+    """Discover `season_title`'s subpages, fetch each one's wikitext, and
+    write it to a snapshot under `root`. Returns the written paths, in
+    discovery order — the whole fetch+snapshot chain end-to-end."""
+    subpage_titles = client.discover_season_subpages(season_title)
+    paths: list[Path] = []
+    for title in subpage_titles:
+        wikitext = client.fetch_wikitext(title)
+        paths.append(write_snapshot(root, title, wikitext))
+    return paths

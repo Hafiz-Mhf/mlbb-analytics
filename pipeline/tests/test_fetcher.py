@@ -1,7 +1,14 @@
+from pathlib import Path
+
 import httpx
 import pytest
 
-from mlbb_pipeline.fetcher import USER_AGENT, MediaWikiClient, PageNotFoundError
+from mlbb_pipeline.fetcher import (
+    USER_AGENT,
+    MediaWikiClient,
+    PageNotFoundError,
+    fetch_and_snapshot_season,
+)
 
 
 def test_client_sends_custom_user_agent_and_gzip_accept_encoding():
@@ -145,3 +152,44 @@ def test_discover_season_subpages_sends_prefix_query():
     assert params["action"] == "query"
     assert params["list"] == "allpages"
     assert params["apprefix"] == "MPL/Malaysia/Season 17/"
+
+
+def test_fetch_and_snapshot_season_writes_every_discovered_subpage(tmp_path: Path):
+    wikitext_by_title = {
+        "MPL/Malaysia/Season 17/Regular Season": "{{Matchlist|id=REG}}",
+        "MPL/Malaysia/Season 17/Playoffs": "{{Matchlist|id=PO}}",
+    }
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        params = request.url.params
+        if params.get("list") == "allpages":
+            return httpx.Response(200, json=ALLPAGES_RESPONSE)
+        title = params["titles"]
+        return httpx.Response(
+            200,
+            json={
+                "query": {
+                    "pages": {
+                        "1": {
+                            "title": title,
+                            "revisions": [
+                                {"slots": {"main": {"*": wikitext_by_title[title]}}}
+                            ],
+                        }
+                    }
+                }
+            },
+        )
+
+    sleeps: list[float] = []
+    client = MediaWikiClient(
+        transport=httpx.MockTransport(handler), sleep_fn=sleeps.append, clock=lambda: 0.0
+    )
+
+    paths = fetch_and_snapshot_season(client, "MPL/Malaysia/Season 17", tmp_path)
+
+    assert len(paths) == 2
+    assert paths[0].read_text(encoding="utf-8") == "{{Matchlist|id=REG}}"
+    assert paths[1].read_text(encoding="utf-8") == "{{Matchlist|id=PO}}"
+    # 3 requests total (1 discover + 2 fetch); throttled before requests 2 and 3.
+    assert sleeps == [2.0, 2.0]
