@@ -17,6 +17,10 @@ USER_AGENT = (
 MIN_REQUEST_INTERVAL = 2.0  # seconds; data-source.md terms compliance
 
 
+class PageNotFoundError(ValueError):
+    """Raised when a requested wiki page title does not exist."""
+
+
 class MediaWikiClient:
     """Throttled client for Liquipedia's MediaWiki action API
     (https://liquipedia.net/mobilelegends/api.php). httpx.Client sends
@@ -63,3 +67,23 @@ class MediaWikiClient:
         response = self._client.get(API_PATH, params=params)
         response.raise_for_status()
         return response.json()
+
+    def fetch_wikitext(self, title: str) -> str:
+        """Fetch the raw wikitext of the current revision of `title`.
+        Uses action=query&prop=revisions (2s limit), never action=parse
+        (30s limit) — data-source.md."""
+        data = self._get(
+            {
+                "action": "query",
+                "prop": "revisions",
+                "rvprop": "content",
+                "rvslots": "main",
+                "format": "json",
+                "titles": title,
+            }
+        )
+        pages = data["query"]["pages"]
+        page = next(iter(pages.values()))
+        if "missing" in page:
+            raise PageNotFoundError(f"page not found: {title!r}")
+        return page["revisions"][0]["slots"]["main"]["*"]
