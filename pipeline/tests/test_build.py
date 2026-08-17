@@ -172,3 +172,41 @@ def test_build_database_parses_regular_season_and_playoffs(tmp_path: Path):
         for row in conn.execute("SELECT DISTINCT stage FROM matches").fetchall()
     }
     assert stages == {"regular_season", "playoffs"}
+
+
+import pytest
+
+from mlbb_pipeline.build import RegressionError, check_no_regression
+
+
+def test_check_no_regression_passes_when_no_previous_db(tmp_path: Path):
+    check_no_regression(tmp_path / "does-not-exist.db", {"games": 0, "series": 0})
+
+
+def test_check_no_regression_passes_when_counts_hold_or_grow(tmp_path: Path):
+    root = tmp_path / "raw"
+    s17 = root / "mpl" / "malaysia" / "season-17"
+    s17.mkdir(parents=True)
+    (s17 / "regular-season.wiki").write_text(
+        "{{Matchlist|id=MPLMYS17W1|title=Week 1|M1=" + RAW_MATCH + "}}",
+        encoding="utf-8",
+    )
+    db_path = tmp_path / "mlbb.db"
+    counts = build_database(root, db_path)
+
+    check_no_regression(db_path, counts)  # same counts against itself
+
+
+def test_check_no_regression_halts_on_fewer_games(tmp_path: Path):
+    root = tmp_path / "raw"
+    s17 = root / "mpl" / "malaysia" / "season-17"
+    s17.mkdir(parents=True)
+    (s17 / "regular-season.wiki").write_text(
+        "{{Matchlist|id=MPLMYS17W1|title=Week 1|M1=" + RAW_MATCH + "}}",
+        encoding="utf-8",
+    )
+    db_path = tmp_path / "mlbb.db"
+    build_database(root, db_path)
+
+    with pytest.raises(RegressionError):
+        check_no_regression(db_path, {"games": 0, "series": 0})

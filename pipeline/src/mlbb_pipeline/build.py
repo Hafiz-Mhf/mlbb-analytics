@@ -162,3 +162,35 @@ def build_database(root: Path, db_path: Path) -> dict[str, int]:
         conn.close()
 
     return {"games": game_count, "series": len(series_ids)}
+
+
+class RegressionError(RuntimeError):
+    """Raised when a rebuild would produce fewer games or series than the
+    previously committed database. stack.md's build-halting invariant
+    against a partial fetch or Liquipedia data silently disappearing —
+    a failed check here must mean nothing gets published."""
+
+
+def check_no_regression(previous_db_path: Path, new_counts: dict[str, int]) -> None:
+    """No-op if there is no previously committed db (first-ever build).
+    Otherwise compares matches/series counts and raises RegressionError
+    if the new build has fewer of either."""
+    if not previous_db_path.exists():
+        return
+
+    conn = sqlite3.connect(previous_db_path)
+    try:
+        old_games = conn.execute("SELECT COUNT(*) FROM matches").fetchone()[0]
+        old_series = conn.execute(
+            "SELECT COUNT(DISTINCT series_id) FROM matches"
+        ).fetchone()[0]
+    finally:
+        conn.close()
+
+    if new_counts["games"] < old_games or new_counts["series"] < old_series:
+        raise RegressionError(
+            f"rebuild produced fewer games/series than the committed db "
+            f"(games {old_games}->{new_counts['games']}, "
+            f"series {old_series}->{new_counts['series']}) "
+            "-- halting, nothing published"
+        )
