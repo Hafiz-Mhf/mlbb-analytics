@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import re
 import sqlite3
 from pathlib import Path
@@ -194,3 +195,35 @@ def check_no_regression(previous_db_path: Path, new_counts: dict[str, int]) -> N
             f"series {old_series}->{new_counts['series']}) "
             "-- halting, nothing published"
         )
+
+
+# data/ lives at the repo root, sibling to pipeline/ (stack.md), same
+# convention as aliases.py's DATA_DIR and backfill.py's DEFAULT_DATA_ROOT:
+# parents[3] from this file is the repo root.
+DEFAULT_DATA_ROOT = Path(__file__).resolve().parents[3] / "data" / "raw"
+DEFAULT_DB_PATH = Path(__file__).resolve().parents[3] / "data" / "mlbb.db"
+
+
+def main(argv: list[str] | None = None) -> None:
+    """CLI entry point: rebuild the SQLite archive from every committed
+    snapshot. Builds to a temp path first and only replaces the committed
+    db if check_no_regression passes — a failed check leaves the
+    previously committed db untouched and exits via the raised exception
+    (stack.md: 'a failed validation never publishes')."""
+    parser = argparse.ArgumentParser(
+        description="Build the SQLite archive from data/raw/ snapshots."
+    )
+    parser.add_argument("--root", type=Path, default=DEFAULT_DATA_ROOT)
+    parser.add_argument("--db", type=Path, default=DEFAULT_DB_PATH)
+    args = parser.parse_args(argv)
+
+    tmp_path = args.db.with_suffix(".tmp")
+    counts = build_database(args.root, tmp_path)
+    check_no_regression(args.db, counts)
+    tmp_path.replace(args.db)
+
+    print(f"games={counts['games']} series={counts['series']}")
+
+
+if __name__ == "__main__":
+    main()

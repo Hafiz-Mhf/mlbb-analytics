@@ -210,3 +210,45 @@ def test_check_no_regression_halts_on_fewer_games(tmp_path: Path):
 
     with pytest.raises(RegressionError):
         check_no_regression(db_path, {"games": 0, "series": 0})
+
+
+from mlbb_pipeline.build import main
+
+
+def test_main_builds_db_and_prints_summary(tmp_path: Path, capsys):
+    root = tmp_path / "raw"
+    s17 = root / "mpl" / "malaysia" / "season-17"
+    s17.mkdir(parents=True)
+    (s17 / "regular-season.wiki").write_text(
+        "{{Matchlist|id=MPLMYS17W1|title=Week 1|M1=" + RAW_MATCH + "}}",
+        encoding="utf-8",
+    )
+    db_path = tmp_path / "mlbb.db"
+
+    main(["--root", str(root), "--db", str(db_path)])
+
+    assert db_path.exists()
+    captured = capsys.readouterr()
+    assert "games=1" in captured.out
+    assert "series=1" in captured.out
+
+
+def test_main_halts_and_leaves_committed_db_untouched_on_regression(
+    tmp_path: Path, capsys
+):
+    root = tmp_path / "raw"
+    s17 = root / "mpl" / "malaysia" / "season-17"
+    s17.mkdir(parents=True)
+    (s17 / "regular-season.wiki").write_text(
+        "{{Matchlist|id=MPLMYS17W1|title=Week 1|M1=" + RAW_MATCH + "}}",
+        encoding="utf-8",
+    )
+    db_path = tmp_path / "mlbb.db"
+    main(["--root", str(root), "--db", str(db_path)])
+    before = db_path.read_bytes()
+
+    (s17 / "regular-season.wiki").write_text("{{Matchlist|id=MPLMYS17W1}}", encoding="utf-8")
+    with pytest.raises(RegressionError):
+        main(["--root", str(root), "--db", str(db_path)])
+
+    assert db_path.read_bytes() == before
