@@ -108,3 +108,31 @@ def test_insert_game_writes_twenty_draft_rows():
         (match_id,),
     ).fetchone()[0]
     assert guin_pick == "guinevere"
+
+
+from pathlib import Path
+
+from mlbb_pipeline.build import discover_snapshots
+
+
+def test_discover_snapshots_finds_regular_season_and_playoffs_only(tmp_path: Path):
+    s17 = tmp_path / "mpl" / "malaysia" / "season-17"
+    s17.mkdir(parents=True)
+    (s17 / "regular-season.wiki").write_text("a", encoding="utf-8")
+    (s17 / "playoffs.wiki").write_text("b", encoding="utf-8")
+    (s17 / "statistics.wiki").write_text("c", encoding="utf-8")
+    stats = s17 / "statistics"
+    stats.mkdir()
+    (stats / "regular-season.wiki").write_text("d", encoding="utf-8")
+
+    s18 = tmp_path / "mpl" / "malaysia" / "season-18"
+    s18.mkdir(parents=True)
+    (s18 / "regular-season.wiki").write_text("e", encoding="utf-8")
+
+    found = discover_snapshots(tmp_path)
+
+    assert sorted((season, stage) for _, season, stage in found) == [
+        ("17", "playoffs"),
+        ("17", "regular_season"),
+        ("18", "regular_season"),
+    ]

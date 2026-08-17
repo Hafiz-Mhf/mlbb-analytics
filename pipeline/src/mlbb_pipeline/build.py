@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import re
 import sqlite3
+from pathlib import Path
 
 from .aliases import known_hero_aliases, known_team_aliases
 from .models import ParsedGame
@@ -105,3 +107,23 @@ def insert_game(conn: sqlite3.Connection, game: ParsedGame) -> int:
         )
 
     return match_id
+
+
+_SEASON_DIR_RE = re.compile(r"season-(\d+)$")
+_STAGE_BY_STEM = {"regular-season": "regular_season", "playoffs": "playoffs"}
+
+
+def discover_snapshots(root: Path) -> list[tuple[Path, str, str]]:
+    """Every 'season-{N}/regular-season.wiki' or 'season-{N}/playoffs.wiki'
+    under root, as (path, season, stage). Skips 'statistics.wiki' and
+    anything under a 'statistics/' subdirectory — those aren't
+    Matchlist/Bracket pages, matched here by the parent directory not
+    being named 'season-{N}'."""
+    found: list[tuple[Path, str, str]] = []
+    for path in sorted(root.rglob("*.wiki")):
+        stage = _STAGE_BY_STEM.get(path.stem)
+        season_match = _SEASON_DIR_RE.search(path.parent.name)
+        if stage is None or season_match is None:
+            continue
+        found.append((path, season_match.group(1), stage))
+    return found
