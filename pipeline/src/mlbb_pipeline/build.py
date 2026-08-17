@@ -6,6 +6,7 @@ import sqlite3
 from pathlib import Path
 
 from .aliases import known_hero_aliases, known_team_aliases
+from .emit import dataset_from_db, write_dataset
 from .models import ParsedGame
 from .parser import parse_bracket, parse_matchlist
 from .schema import create_schema
@@ -202,25 +203,38 @@ def check_no_regression(previous_db_path: Path, new_counts: dict[str, int]) -> N
 # parents[3] from this file is the repo root.
 DEFAULT_DATA_ROOT = Path(__file__).resolve().parents[3] / "data" / "raw"
 DEFAULT_DB_PATH = Path(__file__).resolve().parents[3] / "data" / "mlbb.db"
+# frontend/ lives at the repo root, sibling to pipeline/ (stack.md) —
+# same parents[3] convention as DEFAULT_DATA_ROOT.
+DEFAULT_JSON_PATH = (
+    Path(__file__).resolve().parents[3] / "frontend" / "src" / "lib" / "data" / "dataset.json"
+)
 
 
 def main(argv: list[str] | None = None) -> None:
     """CLI entry point: rebuild the SQLite archive from every committed
-    snapshot. Builds to a temp path first and only replaces the committed
-    db if check_no_regression passes — a failed check leaves the
-    previously committed db untouched and exits via the raised exception
-    (stack.md: 'a failed validation never publishes')."""
+    snapshot, then emit frontend/src/lib/data/dataset.json from the same
+    rebuilt db. Builds the db to a temp path first and only replaces the
+    committed db if check_no_regression passes — a failed check leaves
+    the previously committed db (and JSON) untouched and exits via the
+    raised exception (stack.md: 'a failed validation never publishes')."""
     parser = argparse.ArgumentParser(
         description="Build the SQLite archive from data/raw/ snapshots."
     )
     parser.add_argument("--root", type=Path, default=DEFAULT_DATA_ROOT)
     parser.add_argument("--db", type=Path, default=DEFAULT_DB_PATH)
+    parser.add_argument("--json", type=Path, default=DEFAULT_JSON_PATH)
     args = parser.parse_args(argv)
 
     tmp_path = args.db.with_suffix(".tmp")
     counts = build_database(args.root, tmp_path)
     check_no_regression(args.db, counts)
     tmp_path.replace(args.db)
+
+    conn = sqlite3.connect(args.db)
+    try:
+        write_dataset(dataset_from_db(conn), args.json)
+    finally:
+        conn.close()
 
     print(f"games={counts['games']} series={counts['series']}")
 

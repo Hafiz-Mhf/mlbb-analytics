@@ -224,8 +224,9 @@ def test_main_builds_db_and_prints_summary(tmp_path: Path, capsys):
         encoding="utf-8",
     )
     db_path = tmp_path / "mlbb.db"
+    json_path = tmp_path / "dataset.json"
 
-    main(["--root", str(root), "--db", str(db_path)])
+    main(["--root", str(root), "--db", str(db_path), "--json", str(json_path)])
 
     assert db_path.exists()
     captured = capsys.readouterr()
@@ -244,11 +245,33 @@ def test_main_halts_and_leaves_committed_db_untouched_on_regression(
         encoding="utf-8",
     )
     db_path = tmp_path / "mlbb.db"
-    main(["--root", str(root), "--db", str(db_path)])
+    json_path = tmp_path / "dataset.json"
+    main(["--root", str(root), "--db", str(db_path), "--json", str(json_path)])
     before = db_path.read_bytes()
 
     (s17 / "regular-season.wiki").write_text("{{Matchlist|id=MPLMYS17W1}}", encoding="utf-8")
     with pytest.raises(RegressionError):
-        main(["--root", str(root), "--db", str(db_path)])
+        main(["--root", str(root), "--db", str(db_path), "--json", str(json_path)])
 
     assert db_path.read_bytes() == before
+
+
+import json
+
+
+def test_main_also_emits_json(tmp_path: Path, capsys):
+    root = tmp_path / "raw"
+    s17 = root / "mpl" / "malaysia" / "season-17"
+    s17.mkdir(parents=True)
+    (s17 / "regular-season.wiki").write_text(
+        "{{Matchlist|id=MPLMYS17W1|title=Week 1|M1=" + RAW_MATCH + "}}",
+        encoding="utf-8",
+    )
+    db_path = tmp_path / "mlbb.db"
+    json_path = tmp_path / "dataset.json"
+
+    main(["--root", str(root), "--db", str(db_path), "--json", str(json_path)])
+
+    dataset = json.loads(json_path.read_text(encoding="utf-8"))
+    assert len(dataset["matches"]) == 1
+    assert len(dataset["drafts"]) == 20
