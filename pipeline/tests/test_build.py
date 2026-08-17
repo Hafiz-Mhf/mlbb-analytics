@@ -136,3 +136,39 @@ def test_discover_snapshots_finds_regular_season_and_playoffs_only(tmp_path: Pat
         ("17", "regular_season"),
         ("18", "regular_season"),
     ]
+
+
+from mlbb_pipeline.build import build_database
+
+RAW_MATCH = (
+    "{{Match|bestof=3"
+    "|opponent1={{TeamOpponent|Selangor Red Giants}}"
+    "|opponent2={{TeamOpponent|Team Vamos}}"
+    "|date=April 3, 2026 - 17:00 {{Abbr/MYT}}"
+    "|map1=" + RAW_MAP + "}}"
+)
+
+
+def test_build_database_parses_regular_season_and_playoffs(tmp_path: Path):
+    root = tmp_path / "raw"
+    s17 = root / "mpl" / "malaysia" / "season-17"
+    s17.mkdir(parents=True)
+    (s17 / "regular-season.wiki").write_text(
+        "{{Matchlist|id=MPLMYS17W1|title=Week 1|M1=" + RAW_MATCH + "}}",
+        encoding="utf-8",
+    )
+    (s17 / "playoffs.wiki").write_text(
+        "{{Bracket|Bracket/4L2DSU2L1D|id=MPLMYS17PL|R1M1=" + RAW_MATCH + "}}",
+        encoding="utf-8",
+    )
+    db_path = tmp_path / "mlbb.db"
+
+    counts = build_database(root, db_path)
+
+    assert counts == {"games": 2, "series": 2}
+    conn = sqlite3.connect(db_path)
+    stages = {
+        row[0]
+        for row in conn.execute("SELECT DISTINCT stage FROM matches").fetchall()
+    }
+    assert stages == {"regular_season", "playoffs"}

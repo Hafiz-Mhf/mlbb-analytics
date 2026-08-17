@@ -6,6 +6,8 @@ from pathlib import Path
 
 from .aliases import known_hero_aliases, known_team_aliases
 from .models import ParsedGame
+from .parser import parse_bracket, parse_matchlist
+from .schema import create_schema
 
 # Short forms documented in CLAUDE.md's team list. RRQ Tora's is not yet
 # determined on the live wiki — a known cosmetic gap, not a blocker.
@@ -127,3 +129,36 @@ def discover_snapshots(root: Path) -> list[tuple[Path, str, str]]:
             continue
         found.append((path, season_match.group(1), stage))
     return found
+
+
+_PARSER_BY_STAGE = {"regular_season": parse_matchlist, "playoffs": parse_bracket}
+
+
+def build_database(root: Path, db_path: Path) -> dict[str, int]:
+    """Full rebuild: fresh schema, seeded reference tables, every game in
+    every snapshot under root inserted. Always starts from an empty
+    database — a full rebuild from all snapshots, not an incremental one
+    (stack.md), so a parser fix retroactively corrects history. Returns
+    played-game and distinct-series counts for check_no_regression."""
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    db_path.unlink(missing_ok=True)
+
+    conn = sqlite3.connect(db_path)
+    try:
+        create_schema(conn)
+        seed_reference_tables(conn)
+
+        game_count = 0
+        series_ids: set[str] = set()
+        for path, season, stage in discover_snapshots(root):
+            text = path.read_text(encoding="utf-8")
+            parse = _PARSER_BY_STAGE[stage]
+            for game in parse(text, season=season, stage=stage):
+                insert_game(conn, game)
+                series_ids.add(game.match.series_id)
+                game_count += 1
+        conn.commit()
+    finally:
+        conn.close()
+
+    return {"games": game_count, "series": len(series_ids)}
