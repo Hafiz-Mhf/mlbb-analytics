@@ -54,3 +54,18 @@ def test_parse_map_halts_on_unknown_hero():
     bad_map = RAW_MAP.replace("t1h1=sora", "t1h1=not-a-real-hero")
     with pytest.raises(UnknownHeroError):
         parse_map(bad_map, **_kwargs())
+
+
+def test_parse_map_returns_none_for_unplayed_future_match():
+    # Liquipedia leaves upcoming Matchlist entries as an empty Map
+    # template (no `finished` param at all) rather than finished=skip.
+    unplayed_map = (
+        "{{Map|vod="
+        "|team1side= |team2side= |length= |winner="
+        "|t1h1= |t1h2= |t1h3= |t1h4= |t1h5="
+        "|t2h1= |t2h2= |t2h3= |t2h4= |t2h5="
+        "|t1b1= |t1b2= |t1b3= |t1b4= |t1b5="
+        "|t2b1= |t2b2= |t2b3= |t2b4= |t2b5=}}"
+    )
+    game = parse_map(unplayed_map, **_kwargs())
+    assert game is None

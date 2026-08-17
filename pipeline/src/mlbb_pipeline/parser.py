@@ -112,14 +112,15 @@ def parse_map(
     game_number_in_series: int,
 ) -> ParsedGame | None:
     """Parse one '{{Map|...}}' template. Returns None if the game is
-    finished=skip — an unplayed placeholder in an unfinished series
-    (data-source.md field map) that must never be stored."""
+    unplayed: either finished=skip (unfinished series' placeholder) or a
+    scheduled future match, which Liquipedia leaves as an empty template
+    with no `finished` param and a blank `winner` instead."""
     bodies = find_template_calls(raw_value, "Map")
     if not bodies:
         raise ValueError(f"no Map template found in {raw_value!r}")
     params = params_dict(split_top_level(bodies[0]))
 
-    if params.get("finished") == "skip":
+    if params.get("finished") == "skip" or not params.get("winner"):
         return None
 
     match = MatchRecord(
