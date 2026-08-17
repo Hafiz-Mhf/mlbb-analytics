@@ -71,3 +71,67 @@ def _pick_counts(
         (team_id, team_id, season, season, role, role),
     ).fetchall()
     return dict(rows)
+
+
+def presence(
+    conn: sqlite3.Connection,
+    *,
+    team_id: int | None = None,
+    season: str | None = None,
+) -> dict[str, float]:
+    """(picks+bans) / games — CLAUDE.md's exact formula. team_id=None is
+    the league baseline: every team's own picks/bans in their own games,
+    pooled (planning.md's "every number next to its league baseline")."""
+    denominator = _instance_count(conn, team_id=team_id, season=season)
+    if denominator == 0:
+        return {}
+    counts = _draft_counts(conn, team_id=team_id, season=season)
+    return {hero: count / denominator for hero, count in counts.items()}
+
+
+def pick_rate_by_role(
+    conn: sqlite3.Connection,
+    *,
+    role: int,
+    team_id: int | None = None,
+    season: str | None = None,
+) -> dict[str, float]:
+    """How often a hero is picked specifically in `role` (1=EXP..5=Roam),
+    per game in scope. The per-role cut of presence — picks only, since
+    a ban's slot is ban-order, not role (database.md)."""
+    denominator = _instance_count(conn, team_id=team_id, season=season)
+    if denominator == 0:
+        return {}
+    counts = _pick_counts(conn, team_id=team_id, season=season, role=role)
+    return {hero: count / denominator for hero, count in counts.items()}
+
+
+def hhi(
+    conn: sqlite3.Connection,
+    *,
+    team_id: int | None = None,
+    season: str | None = None,
+) -> float:
+    """Sum of squared pick shares — CLAUDE.md's exact formula. Picks
+    only, never bans. 0.0 when there are no picks in scope."""
+    counts = _pick_counts(conn, team_id=team_id, season=season)
+    total = sum(counts.values())
+    if total == 0:
+        return 0.0
+    return sum((count / total) ** 2 for count in counts.values())
+
+
+def hhi_by_role(
+    conn: sqlite3.Connection,
+    *,
+    role: int,
+    team_id: int | None = None,
+    season: str | None = None,
+) -> float:
+    """Same formula as hhi(), restricted to picks in one role slot —
+    concentration within just that role's hero pool."""
+    counts = _pick_counts(conn, team_id=team_id, season=season, role=role)
+    total = sum(counts.values())
+    if total == 0:
+        return 0.0
+    return sum((count / total) ** 2 for count in counts.values())

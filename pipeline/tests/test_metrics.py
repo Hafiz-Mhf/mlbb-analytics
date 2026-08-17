@@ -91,3 +91,62 @@ def test_pick_counts_role_filter_matches_only_that_slot():
     slot_1 = _pick_counts(conn, team_id=_srg_id(conn), role=1)
     assert slot_2["guinevere"] == 1
     assert slot_1["guinevere"] == 1
+
+
+from mlbb_pipeline.metrics import hhi, hhi_by_role, pick_rate_by_role, presence
+
+
+def test_presence_is_picks_plus_bans_over_games_played():
+    conn = _conn_with_two_games()
+    srg_id = _srg_id(conn)
+    rates = presence(conn, team_id=srg_id)
+    # guinevere: picked twice, 2 games played -> 2/2 = 1.0
+    assert rates["guinevere"] == 1.0
+    # baxia: banned twice, 2 games played -> 2/2 = 1.0
+    assert rates["baxia"] == 1.0
+    # zhuxin: picked once (game 1 only) -> 1/2 = 0.5
+    assert rates["zhuxin"] == 0.5
+
+
+def test_presence_league_scope_pools_both_teams():
+    conn = _conn_with_two_games()
+    rates = presence(conn)  # team_id=None
+    # baxia banned by SRG twice; never touched by Vamos -> 2 / (2 games x 2) = 0.5
+    assert rates["baxia"] == 0.5
+
+
+def test_presence_returns_empty_for_a_season_with_no_games():
+    conn = _conn_with_two_games()
+    assert presence(conn, season="18") == {}
+
+
+def test_pick_rate_by_role_matches_slot_only():
+    conn = _conn_with_two_games()
+    srg_id = _srg_id(conn)
+    slot_1_rates = pick_rate_by_role(conn, role=1, team_id=srg_id)
+    # sora: SRG's slot-1 pick in game 1 only -> 1/2 = 0.5
+    assert slot_1_rates["sora"] == 0.5
+    # guinevere: SRG's slot-1 pick in game 2 only -> 1/2 = 0.5
+    assert slot_1_rates["guinevere"] == 0.5
+
+
+def test_hhi_is_sum_of_squared_pick_shares_picks_only():
+    conn = _conn_with_two_games()
+    srg_id = _srg_id(conn)
+    # SRG's 10 picks across 2 games: guinevere x2 (picked both games),
+    # the other 8 heroes x1 each (game 1: sora/zhuxin/granger/chou,
+    # game 2: lylia/selena/karrie/atlas)
+    expected = (2 / 10) ** 2 + 8 * (1 / 10) ** 2
+    assert hhi(conn, team_id=srg_id) == expected
+
+
+def test_hhi_by_role_is_scoped_to_that_slot_only():
+    conn = _conn_with_two_games()
+    srg_id = _srg_id(conn)
+    # slot 2 across SRG's 2 games: guinevere (game1), lylia (game2) -> 1/2 each
+    assert hhi_by_role(conn, role=2, team_id=srg_id) == 0.5
+
+
+def test_hhi_returns_zero_when_no_picks_in_scope():
+    conn = _conn_with_two_games()
+    assert hhi(conn, season="18") == 0.0
