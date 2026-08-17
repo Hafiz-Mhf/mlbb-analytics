@@ -1,4 +1,5 @@
 from mlbb_pipeline.parser import (
+    parse_bracket,
     parse_match,
     parse_matchlist,
     parse_team_opponent,
@@ -48,3 +49,13 @@ def test_parse_matchlist_builds_series_id_from_matchlist_id_and_key():
     games = parse_matchlist(text, season="17", stage="regular_season")
     assert len(games) == 1
     assert games[0].match.series_id == "MPLMYS17W1_M1"
+
+
+def test_parse_bracket_builds_series_id_from_round_and_match_keys():
+    # Playoffs pages use {{Bracket|...}} with R{round}M{match} keys instead
+    # of {{Matchlist|...}}'s M{n} keys — same {{Match}} bodies inside.
+    text = "{{Bracket|Bracket/4L2DSU2L1D|id=MPLMYS17PL|R1M1=" + RAW_MATCH + "}}"
+    games = parse_bracket(text, season="17", stage="playoffs")
+    assert len(games) == 1
+    assert games[0].match.series_id == "MPLMYS17PL_R1M1"
+    assert games[0].match.stage == "playoffs"

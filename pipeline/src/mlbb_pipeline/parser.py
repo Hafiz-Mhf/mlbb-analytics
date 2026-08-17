@@ -231,6 +231,35 @@ def parse_match(
     return games
 
 
+def _parse_series_container(
+    text: str,
+    *,
+    template_name: str,
+    series_key_pattern: str,
+    sort_key,
+    season: str,
+    stage: Literal["regular_season", "playoffs"],
+) -> list[ParsedGame]:
+    """Shared logic for both series-container templates: find every
+    top-level `template_name` call, pull out its series keys (matching
+    series_key_pattern), and parse each series' {{Match}} body."""
+    text = strip_comments(text)
+    games: list[ParsedGame] = []
+    for body in find_template_calls(text, template_name):
+        params = params_dict(split_top_level(body))
+        container_id = params.get("id", "unknown")
+        series_keys = sorted(
+            (k for k in params if re.fullmatch(series_key_pattern, k)),
+            key=sort_key,
+        )
+        for key in series_keys:
+            series_id = f"{container_id}_{key}"
+            games.extend(
+                parse_match(params[key], series_id=series_id, season=season, stage=stage)
+            )
+    return games
+
+
 def parse_matchlist(
     text: str,
     *,
@@ -238,19 +267,33 @@ def parse_matchlist(
     stage: Literal["regular_season", "playoffs"],
 ) -> list[ParsedGame]:
     """Parse every '{{Matchlist|...}}' template in a page's wikitext into
-    played games across all its series. Public entry point for a whole page."""
-    text = strip_comments(text)
-    games: list[ParsedGame] = []
-    for body in find_template_calls(text, "Matchlist"):
-        params = params_dict(split_top_level(body))
-        matchlist_id = params.get("id", "unknown")
-        series_keys = sorted(
-            (k for k in params if re.fullmatch(r"M\d+", k)),
-            key=lambda k: int(k[1:]),
-        )
-        for key in series_keys:
-            series_id = f"{matchlist_id}_{key}"
-            games.extend(
-                parse_match(params[key], series_id=series_id, season=season, stage=stage)
-            )
-    return games
+    played games across all its series. Public entry point for round-robin
+    pages (regular season)."""
+    return _parse_series_container(
+        text,
+        template_name="Matchlist",
+        series_key_pattern=r"M\d+",
+        sort_key=lambda k: int(k[1:]),
+        season=season,
+        stage=stage,
+    )
+
+
+def parse_bracket(
+    text: str,
+    *,
+    season: str,
+    stage: Literal["regular_season", "playoffs"],
+) -> list[ParsedGame]:
+    """Parse every '{{Bracket|...}}' template in a page's wikitext into
+    played games across all its series. Public entry point for elimination
+    bracket pages (playoffs) — same {{Match}} bodies as Matchlist, but
+    keyed 'R{round}M{match}' instead of 'M{n}'."""
+    return _parse_series_container(
+        text,
+        template_name="Bracket",
+        series_key_pattern=r"R\d+M\d+",
+        sort_key=lambda k: tuple(int(n) for n in re.findall(r"\d+", k)),
+        season=season,
+        stage=stage,
+    )
