@@ -10,7 +10,7 @@ Target users are analysts for the 8 MPL Malaysia teams. Nobody has asked for thi
 Solo project by Fiz (final-year IT/BI & Analytics student, QA background). Originated as a public Threads tutorial thread on the data pipeline for Selangor Red Giants (SRG); now scoping into a league-wide tool.
 
 ## Project state — read this before assuming anything exists
-**As of 13 Aug 2026:** `pipeline/` exists — parser, alias normalization, throttled Liquipedia fetcher, snapshot writer, 40 tests passing. **No data has been fetched yet**; `data/raw/` is empty and there is no database, no metrics, and no dashboard. See docs/current-context.md for the live state.
+**As of 17 Aug 2026:** v1 is wired end to end on real data. `data/raw/*.wiki` (backfilled S17 + S18-to-date, live wiki) → `data/mlbb.db` (committed, 181 games / 71 series) → `frontend/src/lib/data/dataset.json` → all three screens (Team Scouting, League Overview, Match Log), live and browser-verified. `frontend/` is a SvelteKit 2 + Svelte 5 + Tailwind v4 project with no mock left in the tree — it was deleted once real JSON existed. 97 tests passing (83 pipeline + 14 frontend). Still open: GitHub Actions weekly cron, generated TypeScript types from the Pydantic models, flex rate, per-role UI, the standings-based validation invariant. See docs/current-context.md for the live state and detail.
 
 An earlier version of this file claimed a working, validated parser and a loaded S17 dataset while no code existed at all. Treat any claim here as unverified unless docs/data-source.md says it was measured.
 

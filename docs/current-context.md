@@ -4,11 +4,16 @@ _Last updated: 17 Aug 2026_
 
 ## Where things stand
 
-**SQLite build, metrics, and a frontend mockup all exist now, on top of the backfilled archive.** `pipeline/src/mlbb_pipeline/schema.py` + `build.py` rebuild `data/mlbb.db` (committed) from every `data/raw/` snapshot — 181 games / 71 series (S17's verified 164/64 plus S18-to-date's 17/7), a regression guard halts the swap if a rebuild ever produces fewer games/series than what's committed. `metrics.py` implements presence and HHI (overall and per-role) exactly per CLAUDE.md's formulas, `team_id=None`/`season=None` reused as the league-baseline and all-seasons scope rather than separate code paths — sanity-checked against the real archive, which caught a wrong assumption in the test itself (freya has higher combined presence than guinevere: banned 133/328 team-instances vs guinevere's 101 — the tool's own baseline-vs-raw-number thesis, live in the first real number pulled from it).
+**v1 is wired end to end on real data.** `data/raw/*.wiki` → `data/mlbb.db` → `frontend/src/lib/data/dataset.json` → all three screens, no mock left anywhere in the tree. Concretely:
 
-`frontend/` is a new SvelteKit 2 + Svelte 5 + Tailwind v4 project with all three v1 screens (Team Scouting, League Overview, Match Log) built and browser-verified against a seeded mock dataset — no real JSON emitted yet, per frontend.md's mock-first order. The mock's `metrics.ts` is a line-for-line TypeScript mirror of the Python `metrics.py`, so the two must agree once real data is wired up. 98 tests passing total (79 pipeline + 19 frontend).
+- `pipeline/src/mlbb_pipeline/schema.py` + `build.py` rebuild `data/mlbb.db` (committed) from every `data/raw/` snapshot — 181 games / 71 series (S17's verified 164/64 plus S18-to-date's 17/7). A regression guard halts the swap if a rebuild ever produces fewer games/series than what's committed.
+- `metrics.py` implements presence and HHI (overall and per-role) exactly per CLAUDE.md's formulas — `team_id=None`/`season=None` reused as the league-baseline and all-seasons scope rather than separate code paths. Sanity-checked against the real archive, which caught a wrong assumption in the test itself: freya has higher combined presence than guinevere (banned 133/328 team-instances vs guinevere's 101) — the tool's own baseline-vs-raw-number thesis, live in the first real number pulled from it.
+- `emit.py` maps the SQLite rows to one `dataset.json`, field-for-field matching `frontend/src/lib/types.ts` (camelCase). `mlbb-build` now does the whole chain in one pass: rebuild `data/mlbb.db` → emit `dataset.json`, both gated by the same regression check.
+- `frontend/` is a SvelteKit 2 + Svelte 5 + Tailwind v4 project. All three v1 screens (Team Scouting, League Overview, Match Log) were built and browser-verified against a seeded mock first (frontend.md's mock-first order, so the JSON shape was discovered rather than guessed), then `src/lib/mock/` was deleted entirely per frontend.md's own instruction — only `metrics.ts` survived the deletion, moved to `src/lib/metrics.ts` unchanged, since it was never mock-specific. `src/lib/data.ts` now imports the committed `dataset.json` directly.
+- Browser-verified against real Liquipedia data: `/league` shows freya leading league presence at 49.4%, matching the metrics sanity check; `/team/srg` shows SRG's own freya rate (34.0%) sitting *below* that baseline — planning.md's core thesis, live, not hypothetical.
+- 97 tests passing total (83 pipeline + 14 frontend — the frontend count dropped from 19 once the mock generator's own tests were deleted along with the generator).
 
-Next: emit real JSON from the pipeline and swap the frontend's mock module for it — deferred until now specifically so the frontend screens (just built) could pin down the shape instead of it being guessed.
+**Still open, all previously deferred, none blocking:** a real `generatedAt` timestamp (currently `new Date()` at page-load time, wrong for a static site — needs the pipeline to emit one), generated TypeScript types from the Pydantic models, GitHub Actions weekly cron, flex-rate UI, per-role breakdowns wired into the Team Scouting screen, the standings-based build-halting invariant (needs a standings-page parser that doesn't exist yet).
 
 Everything below this paragraph describes earlier state.
 
@@ -44,11 +49,11 @@ Season 18 is the reason to build now rather than keep analyzing S17 retrospectiv
 3. ~~Backfill: run the fetcher against S17 and S18-to-date, fix the halts that surface.~~ Done 17 Aug 2026 — snapshots fetched and committed to `data/raw/` (stack.md: raw archive is deliberately committed, not a build artifact), alias tables complete, two parser bugs fixed (unplayed-future-match filter, playoff bracket parsing), S17 counts verified.
 4. ~~SQLite build → metrics.~~ Done 17 Aug 2026 — schema, seed, insert, regression guard, `mlbb-build` CLI; presence/HHI/per-role variants; `data/mlbb.db` committed (181 games / 71 series).
 5. ~~Frontend mockup: all three screens, against a mock data module.~~ Done 17 Aug 2026 — SvelteKit 2 + Svelte 5 + Tailwind v4, browser-verified.
-6. JSON emit from the pipeline (real presence/HHI/matches, shaped to match what the mock's `mock/data.ts` + `mock/metrics.ts` already expect) → swap the frontend's mock module for it — next.
-7. Generated TypeScript types from the Pydantic models (roadmap.md) — after JSON emit exists to generate from.
-8. GitHub Actions weekly cron (stack.md's build strategy step 6) — after the pipeline has a stable one-shot `mlbb-build`/JSON-emit path to schedule.
+6. ~~JSON emit from the pipeline → swap the frontend's mock module for it.~~ Done 17 Aug 2026 — `emit.py` + `mlbb-build`, `src/lib/mock/` deleted, browser-verified against real data.
+7. Generated TypeScript types from the Pydantic models (roadmap.md) — next up.
+8. GitHub Actions weekly cron (stack.md's build strategy step 6) — after types, so CI runs against a schema that can't silently drift.
 
-No blocking unknowns remain. The only open item is cosmetic (RRQ Tora's short code).
+No blocking unknowns remain. Open items are all cosmetic or explicitly deferred polish: RRQ Tora's short code, the `generatedAt` timestamp, flex rate, per-role UI, the standings invariant.
 
 ## Known constraints going in
 
