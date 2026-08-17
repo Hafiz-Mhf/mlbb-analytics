@@ -11,6 +11,9 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
 
+[project.scripts]
+mlbb-backfill = "mlbb_pipeline.backfill:main"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
