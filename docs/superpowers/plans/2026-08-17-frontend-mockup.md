@@ -380,23 +380,12 @@ function generateGame(
 	const picks: [number, number][] = [];
 	const bans: [number, number][] = [];
 
-	// Universal fanny-ban tendency: one side or the other bans her
-	// first, 85% of the time, before any other ban is drawn.
-	if (rng() < 0.85) {
-		const banningSlot = rng() < 0.5 ? 1 : 2;
-		used.add(UNIVERSALLY_BANNED_HERO);
-		bans.push([banningSlot, heroIndex.get(UNIVERSALLY_BANNED_HERO)!]);
-	}
-
-	for (const [slot, teamIdx] of [
-		[1, team1Idx],
-		[2, team2Idx]
-	] as const) {
-		const pool = teamPool(teamIdx);
-		while (bans.filter(([s]) => s === slot).length < 5) {
-			bans.push([slot, heroIndex.get(draw(rng, pool, used))!]);
-		}
-	}
+	// Picks are drawn before bans, deliberately not mirroring real draft
+	// phase order (bans-then-picks), so a team's small signature pool
+	// (the "predictable" shaping) is never crowded out by an unrelated
+	// ban drawn from the full pool first. This is a mock-generation
+	// detail, not a claim about real draft order (data-source.md: order
+	// isn't even recorded).
 	for (const [slot, teamIdx] of [
 		[1, team1Idx],
 		[2, team2Idx]
@@ -404,6 +393,23 @@ function generateGame(
 		const pool = teamPool(teamIdx);
 		for (let i = 0; i < 5; i++) {
 			picks.push([slot, heroIndex.get(draw(rng, pool, used))!]);
+		}
+	}
+
+	// Universal fanny-ban tendency: one side or the other bans her
+	// first, 85% of the time (if she wasn't already picked this game).
+	if (!used.has(UNIVERSALLY_BANNED_HERO) && rng() < 0.85) {
+		const banningSlot = rng() < 0.5 ? 1 : 2;
+		used.add(UNIVERSALLY_BANNED_HERO);
+		bans.push([banningSlot, heroIndex.get(UNIVERSALLY_BANNED_HERO)!]);
+	}
+
+	// Remaining bans draw from the full pool, never a team's signature
+	// pick pool — a "predictable" team's bans aren't what make it
+	// predictable, its picks are.
+	for (const [slot] of [[1], [2]] as const) {
+		while (bans.filter(([s]) => s === slot).length < 5) {
+			bans.push([slot, heroIndex.get(draw(rng, HERO_POOL, used))!]);
 		}
 	}
 
