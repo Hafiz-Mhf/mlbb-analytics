@@ -90,11 +90,15 @@ Real excerpt, S17 Regular Season, Week 1 Match 1:
 
 ## Verified counts — Season 17
 
+_Series column corrected 17 Aug 2026, re-measured by actually running the parser against the live backfill (see below) — the original 64/72 figures here were never re-derived from real data and turned out wrong. Map-block, skip, and played-game columns were right all along._
+
 | | Series | Map blocks | `finished=skip` | Played games |
 |---|---|---|---|---|
-| Regular Season | 64 | 168 | 36 | **132** |
+| Regular Season | 56 | 168 | 36 | **132** |
 | Playoffs | 8 | 38 | 6 | **32** |
-| **Total** | **72** | **206** | **42** | **164** |
+| **Total** | **64** | **206** | **42** | **164** |
+
+56 regular-season series is exactly `C(8,2) × 2` — a full double round robin among the 8 teams — and 168 map blocks ÷ 56 series = 3.0 exactly (every series scheduled as Bo3). Neither identity holds against 64.
 
 Field coverage was measured on the 132 Regular Season games. Playoffs counts above are structural only; run the same coverage check on Playoffs before trusting it.
 
@@ -231,7 +235,7 @@ Keying team identity separately from per-season display name (database.md) is st
 
 ### Brace matching is required, not optional
 
-A flat regex over `{{TeamOpponent|...}}` recovered only 56 of the 64 known Regular Season series. The misses are the nested forms — `{{TeamOpponent|Selangor Red Giants |substitutes={{PlayerSubstitutions|...}}}}` spans lines and contains braces. Confirms the field-map note above: the parser must match braces properly.
+A flat regex over `{{TeamOpponent|...}}` was tried against Regular Season and appeared to be missing series relative to an assumed total of 64 — that assumed total was itself wrong (see "Verified counts" above; the real total is 56, which the flat regex actually matched exactly). The finding underneath still stands on its own merits, independent of the count: `{{TeamOpponent|Selangor Red Giants |substitutes={{PlayerSubstitutions|...}}}}` nests and spans lines, so a flat regex would silently mis-scope on any page where it occurs. Confirms the field-map note above: the parser must match braces properly, and counts must be re-derived from real parses, not assumed and carried forward.
 
 ## Player roles are recorded — and they unblock Hazard 2
 

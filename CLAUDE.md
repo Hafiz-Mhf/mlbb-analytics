@@ -20,7 +20,7 @@ Everything below was measured against the live wiki on 13 Aug 2026. Detail and m
 - Data source is Liquipedia **wikitext** via the free MediaWiki action API (no key; 1 req/2s; custom User-Agent required). Moonton has no public esports API and MPL's own site is JS-rendered.
 - **LPDB is unusable here** — the MLBB wiki still uses legacy `{{Matchlist}}`/`{{Match}}`/`{{Map}}` templates, so `match2` structured data is not populated. Wikitext parsing is the only path.
 - Picks are `t{1,2}h{1..5}`, bans are `t{1,2}b{1..5}`, both inside `{{Map}}`. Games with `finished=skip` are unplayed and must be filtered.
-- **Season 17 real totals: 72 series (64 regular season + 8 playoffs), 164 played games (132 + 32).** The old "64 series / 164 games" pairing mixed two different scopes.
+- **Season 17 real totals: 64 series (56 regular season + 8 playoffs), 164 played games (132 + 32).** Corrected 17 Aug 2026 by actually running the parser against the live backfill — 56 regular season is `C(8,2)×2`, a full double round robin; the earlier "64 regular / 72 total" figures were never re-derived from real data.
 - Data quality is high: of 132 regular-season games, zero are missing a pick, ban, side, winner, or length.
 - **Hero aliases are the top correctness hazard.** 94 distinct hero strings represent only 80 heroes (`guin`/`guinevere`, `yz`/`yu zhong`, `phove`/`phoveus`, 11 more). Unnormalized, this invents phantom heroes and corrupts HHI, which squares shares. An unknown hero string must halt the pipeline, never create a new hero.
 - **No patch field exists** on any game. Patch-based filtering must derive from date, or be dropped.
