@@ -14,6 +14,7 @@ dev = ["pytest>=8.0"]
 [project.scripts]
 mlbb-backfill = "mlbb_pipeline.backfill:main"
 mlbb-build = "mlbb_pipeline.build:main"
+mlbb-gen-types = "mlbb_pipeline.gen_ts:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
