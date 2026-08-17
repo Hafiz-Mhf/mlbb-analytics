@@ -1,0 +1,385 @@
+{{DISPLAYTITLE:MPL Malaysia Season 17 - Playoffs}}
+{{MPL Tabs|region=Malaysia|season=17|no-qual=true}}
+{{HiddenDataBox}}
+==Format==
+* Matches will be played with {{AMC}}
+{{#section:MPL/Malaysia/Season 17|PLFormat}}
+==Playoffs==
+{{Toggle bracket start|tournament=MPL/Malaysia/Season_17/Playoffs}}
+{{Bracket|Bracket/4L2DSU2L1D|id=MPLMYS17PL
+
+<!-- Upper Bracket Quarterfinals -->
+|R1M1={{Match
+    |bestof=5 |caster1=Mars (Malaysian caster) |caster2=ReezPiuPiu |mvp=Sepat
+    |opponent1={{TeamOpponent|Team Vamos}}
+    |opponent2={{TeamOpponent|rrq tora}}
+    |date=June 3, 2026 - 15:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=https://www.youtube.com/live/ioxbrBTrXxI?si=21JwjZuWg1OsadWz&t=2964
+        |team1side=blue |team2side=red |length=19:32 |winner=1 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=paquito |t1h2=guinevere |t1h3=valentina |t1h4=karrie |t1h5=atlas
+        |t2h1=esmeralda |t2h2=nolan |t2h3=zhuxin |t2h4=claude |t2h5=gatotkaca
+        <!-- Hero bans -->
+        |t1b1=marcel |t1b2=phoveus |t1b3=kalea |t1b4=yi sun-shin |t1b5=alice
+        |t2b1=fanny |t2b2=freya |t2b3=harith |t2b4=gloo |t2b5=clint
+    }}
+	|map2={{Map|vod=https://www.youtube.com/live/ioxbrBTrXxI?si=Rh828mHYLjOeoQeC&t=5812
+        |team1side=red |team2side=blue |length=11:55 |winner=1 |comment=<b>Broken Walls</b>
+        <!-- Hero picks -->
+        |t1h1=phoveus |t1h2=guinevere |t1h3=yve |t1h4=claude |t1h5=gatotkaca
+        |t2h1=terizla |t2h2=yi sun-shin |t2h3=zhuxin |t2h4=obsidia |t2h5=kalea
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=paquito |t1b3=marcel |t1b4=karrie |t1b5=alice
+        |t2b1=fanny |t2b2=harley |t2b3=harith |t2b4=gloo |t2b5=atlas
+    }}
+	|map3={{Map|vod=https://www.youtube.com/live/ioxbrBTrXxI?si=9630q0ZGY4MhfhwC&t=7823
+        |team1side=blue |team2side=red |length=10:52 |winner=1 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=paquito |t1h2=suyou |t1h3=zetian |t1h4=obsidia |t1h5=chou
+        |t2h1=arlott |t2h2=guinevere |t2h3=zhuxin |t2h4=claude |t2h5=hilda
+        <!-- Hero bans -->
+        |t1b1=marcel |t1b2=phoveus |t1b3=kalea |t1b4=atlas |t1b5=khaleed
+        |t2b1=fanny |t2b2=freya |t2b3=harith |t2b4=gatotkaca |t2b5=gloo
+    }}
+	|map4={{Map|finished=skip}}
+	|map5={{Map|finished=skip}}
+}}
+|R1M2={{Match
+    |bestof=5 |caster1=Mars (Malaysian caster) |caster2=ReezPiuPiu |mvp=CikuGais
+    |opponent1={{TeamOpponent|Team Rey}}
+    |opponent2={{TeamOpponent|bigetron my by vit}}
+    |date=June 3, 2026 - 19:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=https://www.youtube.com/live/ioxbrBTrXxI?si=MDhwG7jRPZWTwJFr&t=17521
+        |team1side=red |team2side=blue |length=17:33 |winner=2 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=paquito |t1h2=suyou |t1h3=yve |t1h4=obsidia |t1h5=hylos
+        |t2h1=phoveus |t2h2=fredrinn |t2h3=gord |t2h4=claude |t2h5=gatotkaca
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=leomord |t1b3=marcel |t1b4=gloo |t1b5=atlas
+        |t2b1=baxia |t2b2=zhuxin |t2b3=guinevere |t2b4=akai |t2b5=karrie
+    }}
+	|map2={{Map|vod=https://www.youtube.com/live/ioxbrBTrXxI?si=AIUmYCRJhWi1aehi&t=20475
+        |team1side=red |team2side=blue |length=22:14 |winner=2 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=edith |t1h2=akai |t1h3=yve |t1h4=obsidia |t1h5=gloo
+        |t2h1=paquito |t2h2=fredrinn |t2h3=gord |t2h4=karrie |t2h5=atlas
+        <!-- Hero bans -->
+        |t1b1=marcel |t1b2=claude |t1b3=freya |t1b4=kalea |t1b5=gatotkaca
+        |t2b1=zhuxin |t2b2=baxia |t2b3=guinevere |t2b4=benedetta |t2b5=sora
+    }}
+	|map3={{Map|vod=https://www.youtube.com/live/ioxbrBTrXxI?si=ezTqja1JtR_8erpS&t=23281
+        |team1side=blue |team2side=red |length=20:46 |winner=2 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=gloo |t1h2=akai |t1h3=gord |t1h4=freya |t1h5=hylos
+        |t2h1=phoveus |t2h2=leomord |t2h3=angela |t2h4=harith |t2h5=chou
+        <!-- Hero bans -->
+        |t1b1=claude |t1b2=marcel |t1b3=fredrinn |t1b4=karrie |t1b5=moskov
+        |t2b1=chip |t2b2=guinevere |t2b3=baxia |t2b4=obsidia |t2b5=yi sun-shin
+    }}
+	|map4={{Map|finished=skip}}
+	|map5={{Map|finished=skip}}
+}}
+
+<!-- Upper Bracket Semifinals -->
+|R2M1={{Match
+    |bestof=5 |caster1=Laphel |caster2=ReezPiuPiu |mvp=SwayLow
+    |opponent1={{TeamOpponent|Invictus Gaming}}
+    |opponent2={{TeamOpponent|team vamos}}
+    |date=June 4, 2026 - 15:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=https://www.youtube.com/live/OeIVcQJpl9M?si=0y5hxfuf3n4MM7Va&t=2587
+        |team1side=blue |team2side=red |length=12:56 |winner=2 |comment=<b>Broken Walls</b>
+        <!-- Hero picks -->
+        |t1h1=arlott |t1h2=guinevere |t1h3=zhuxin |t1h4=claude |t1h5=hylos
+        |t2h1=paquito |t2h2=leomord |t2h3=yve |t2h4=harith |t2h5=gatotkaca
+        <!-- Hero bans -->
+        |t1b1=phoveus |t1b2=gloo |t1b3=suyou |t1b4=zetian |t1b5=atlas
+        |t2b1=fanny |t2b2=yi sun-shin |t2b3=freya |t2b4=kalea |t2b5=karrie
+    }}
+	|map2={{Map|vod=https://www.youtube.com/live/OeIVcQJpl9M?si=j46K_6mRI5iruayz&t=4842
+        |team1side=red |team2side=blue |length=17:29 |winner=2 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=sora |t1h2=guinevere |t1h3=zhuxin |t1h4=claude |t1h5=gloo
+        |t2h1=alice |t2h2=leomord |t2h3=yve |t2h4=harith |t2h5=kalea
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=fanny |t1b3=paquito |t1b4=gatotkaca |t1b5=chou
+        |t2b1=yi sun-shin |t2b2=phoveus |t2b3=harley |t2b4=atlas |t2b5=khaleed
+    }}
+	|map3={{Map|vod=https://www.youtube.com/live/OeIVcQJpl9M?si=Z0KwMwgyuO7zOH69&t=7652
+        |team1side=blue |team2side=red |length=24:09 |winner=1 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=paquito |t1h2=baxia |t1h3=yve |t1h4=claude |t1h5=marcel
+        |t2h1=arlott |t2h2=leomord |t2h3=zhuxin |t2h4=clint |t2h5=gatotkaca
+        <!-- Hero bans -->
+        |t1b1=phoveus |t1b2=guinevere |t1b3=harith |t1b4=atlas |t1b5=gloo
+        |t2b1=fanny |t2b2=yi sun-shin |t2b3=freya |t2b4=khaleed |t2b5=harley
+    }}
+	|map4={{Map|vod=https://www.youtube.com/live/OeIVcQJpl9M?si=S5tmGHyLgt3HDVc1&t=10623
+        |team1side=red |team2side=blue |length=23:56 |winner=1 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=paquito |t1h2=hayabusa |t1h3=zhuxin |t1h4=moskov |t1h5=gatotkaca
+        |t2h1=hilda |t2h2=harley |t2h3=valentina |t2h4=freya |t2h5=kalea
+        <!-- Hero bans -->
+        |t1b1=guinevere |t1b2=harith |t1b3=fanny |t1b4=lunox |t1b5=uranus
+        |t2b1=phoveus |t2b2=yi sun-shin |t2b3=marcel |t2b4=baxia |t2b5=leomord
+    }}
+	|map5={{Map|vod=https://www.youtube.com/live/OeIVcQJpl9M?si=sFhPt68aNR3cmeax&t=13517
+        |team1side=blue |team2side=red |length=27:36 |winner=1 |comment=<b>Expanding Rivers</b>
+        <!-- Hero picks -->
+        |t1h1=paquito |t1h2=nolan |t1h3=zhuxin |t1h4=clint |t1h5=gatotkaca
+        |t2h1=hilda |t2h2=suyou |t2h3=valentina |t2h4=moskov |t2h5=khaleed
+        <!-- Hero bans -->
+        |t1b1=phoveus |t1b2=guinevere |t1b3=harith |t1b4=atlas |t1b5=gloo
+        |t2b1=yi sun-shin |t2b2=fanny |t2b3=freya |t2b4=harley |t2b5=baxia
+    }}
+}}
+|R2M2={{Match
+    |bestof=5 |caster1=Laphel |caster2=ReezPiuPiu |mvp=Yums
+    |opponent1={{TeamOpponent|Selangor Red Giants}}
+    |opponent2={{TeamOpponent|Bigetron MY by Vit}}
+    |date=June 4, 2026 - 19:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=https://www.youtube.com/live/OeIVcQJpl9M?si=FJQ7A1Lzs0aDuD-Q&t=20415
+        |team1side=blue |team2side=red |length=18:03 |winner=2 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=terizla |t1h2=leomord |t1h3=zhuxin |t1h4=claude |t1h5=marcel
+        |t2h1=arlott |t2h2=fredrinn |t2h3=valentina |t2h4=moskov |t2h5=gloo
+        <!-- Hero bans -->
+        |t1b1=phoveus |t1b2=guinevere |t1b3=paquito |t1b4=harith |t1b5=atlas
+        |t2b1=fanny |t2b2=kalea |t2b3=freya |t2b4=yu zhong |t2b5=lapu-lapu
+    }}
+	|map2={{Map|vod=https://www.youtube.com/live/OeIVcQJpl9M?si=huoNwm_gB50BazS3&t=23031
+        |team1side=red |team2side=blue |length=20:25 |winner=2 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=lapu-lapu |t1h2=yi sun-shin |t1h3=kimmy |t1h4=paquito |t1h5=hylos
+        |t2h1=phoveus |t2h2=guinevere |t2h3=yve |t2h4=claude |t2h5=khaleed
+        <!-- Hero bans -->
+        |t1b1=marcel |t1b2=fredrinn |t1b3=arlott |t1b4=gloo |t1b5=atlas
+        |t2b1=fanny |t2b2=kalea |t2b3=freya |t2b4=zhuxin |t2b5=valentina
+    }}
+	|map3={{Map|vod=https://www.youtube.com/live/OeIVcQJpl9M?si=oJJ0jl7MZUA6xZ_u&t=26123
+        |team1side=blue |team2side=red |length=13:15 |winner=1 |comment=<b>Broken Walls</b>
+        <!-- Hero picks -->
+        |t1h1=paquito |t1h2=suyou |t1h3=valir |t1h4=harith |t1h5=gloo
+        |t2h1=sora |t2h2=leomord |t2h3=valentina |t2h4=claude |t2h5=atlas
+        <!-- Hero bans -->
+        |t1b1=fredrinn |t1b2=marcel |t1b3=phoveus |t1b4=arlott |t1b5=freya
+        |t2b1=fanny |t2b2=guinevere |t2b3=kalea |t2b4=zhuxin |t2b5=chou
+    }}
+	|map4={{Map|vod=https://www.youtube.com/live/OeIVcQJpl9M?si=q2sSU4EGurZoKq3J&t=28422
+        |team1side=red |team2side=blue |length=16:27 |winner=1 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=freya |t1h2=leomord |t1h3=lylia |t1h4=harith |t1h5=atlas
+        |t2h1=paquito |t2h2=baxia |t2h3=kimmy |t2h4=clint |t2h5=hylos
+        <!-- Hero bans -->
+        |t1b1=fredrinn |t1b2=marcel |t1b3=phoveus |t1b4=claude |t1b5=gloo
+        |t2b1=fanny |t2b2=kalea |t2b3=guinevere |t2b4=valir |t2b5=chou
+    }}
+	|map5={{Map|vod=https://www.youtube.com/live/OeIVcQJpl9M?si=T_K252f4C9aPntTx&t=31038
+        |team1side=blue |team2side=red |length=14:42 |winner=1 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=lapu-lapu |t1h2=harley |t1h3=yve |t1h4=claude |t1h5=chou
+        |t2h1=phoveus |t2h2=suyou |t2h3=valentina |t2h4=roger |t2h5=gloo
+        <!-- Hero bans -->
+        |t1b1=marcel |t1b2=fredrinn |t1b3=guinevere |t1b4=harith |t1b5=moskov
+        |t2b1=fanny |t2b2=kalea |t2b3=freya |t2b4=valir |t2b5=lylia
+    }}
+}}
+
+<!-- Lower Bracket Semifinal -->
+|R2M3={{Match
+    |bestof=5 |caster1=Mars (Malaysian caster) |caster2=Shamilo |mvp=Error 404
+    |opponent1={{TeamOpponent|team vamos}}
+    |opponent2={{TeamOpponent|Bigetron MY by Vit}}
+    |date=June 5, 2026 - 15:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=https://www.youtube.com/live/Gaws5OlzAts?si=_EZZLyf8Nw0Cwl7E&t=2468
+        |team1side=red |team2side=blue |length=17:17 |winner=1 |comment=<b>Broken Walls</b>
+        <!-- Hero picks -->
+        |t1h1=freya |t1h2=suyou |t1h3=valentina |t1h4=claude |t1h5=gatotkaca
+        |t2h1=paquito |t2h2=leomord |t2h3=yve |t2h4=clint |t2h5=gloo
+        <!-- Hero bans -->
+        |t1b1=marcel |t1b2=fredrinn |t1b3=guinevere |t1b4=moskov |t1b5=karrie
+        |t2b1=fanny |t2b2=harith |t2b3=phoveus |t2b4=atlas |t2b5=kalea
+    }}
+	|map2={{Map|vod=https://www.youtube.com/live/Gaws5OlzAts?si=cZOewVCIkHv8JVNL&t=4737
+        |team1side=red |team2side=blue |length=17:11 |winner=2 |comment=<b>Broken Walls</b>
+        <!-- Hero picks -->
+        |t1h1=phoveus |t1h2=leomord |t1h3=yve |t1h4=obsidia |t1h5=chou
+        |t2h1=arlott |t2h2=guinevere |t2h3=lylia |t2h4=karrie |t2h5=gloo
+        <!-- Hero bans -->
+        |t1b1=marcel |t1b2=fredrinn |t1b3=claude |t1b4=kalea |t1b5=valentina
+        |t2b1=fanny |t2b2=harith |t2b3=freya |t2b4=gatotkaca |t2b5=atlas
+    }}
+	|map3={{Map|vod=https://www.youtube.com/live/Gaws5OlzAts?si=9Yau4ObDDC1yOMN0&t=7073
+        |team1side=blue |team2side=red |length=14:52 |winner=1 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=phoveus |t1h2=yi sun-shin |t1h3=zhuxin |t1h4=freya |t1h5=gloo
+        |t2h1=lapu-lapu |t2h2=leomord |t2h3=yve |t2h4=karrie |t2h5=atlas
+        <!-- Hero bans -->
+        |t1b1=marcel |t1b2=fredrinn |t1b3=claude |t1b4=baxia |t1b5=alice
+        |t2b1=fanny |t2b2=harith |t2b3=guinevere |t2b4=valentina |t2b5=kalea
+    }}
+	|map4={{Map|vod=https://www.youtube.com/live/Gaws5OlzAts?si=lNnuOLxwv1KCsUVG&t=9150
+        |team1side=red |team2side=blue |length=23:54 |winner=1 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=phoveus |t1h2=suyou |t1h3=valentina |t1h4=moskov |t1h5=gloo
+        |t2h1=lapu-lapu |t2h2=harley |t2h3=yve |t2h4=claude |t2h5=hylos
+        <!-- Hero bans -->
+        |t1b1=marcel |t1b2=fredrinn |t1b3=guinevere |t1b4=alice |t1b5=baxia
+        |t2b1=fanny |t2b2=freya |t2b3=harith |t2b4=karrie |t2b5=zhuxin
+    }}
+	|map5={{Map|finished=skip}}
+}}
+
+<!-- Upper Bracket Final -->
+|R3M1={{Match
+    |bestof=5 |caster1=Mars (Malaysian caster) |caster2=Shamilo |mvp=Kramm
+    |opponent1={{TeamOpponent|invictus gaming
+		|substitutes={{PlayerSubstitutions
+	    |{{Substitution|in={{OpponentPlayer|Darmew|flag=my}}|out=Melqt|games=5}}}}
+	    }}
+    |opponent2={{TeamOpponent|Selangor Red Giants}}
+    |date=June 5, 2026 - 19:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=https://www.youtube.com/live/Gaws5OlzAts?si=rnmJJMTivi8kpf_l&t=16645
+        |team1side=red |team2side=blue |length=14:08 |winner=1 |comment=<b>Expanding Rivers</b>
+        <!-- Hero picks -->
+        |t1h1=benedetta |t1h2=baxia |t1h3=zhuxin |t1h4=claude |t1h5=marcel
+        |t2h1=hilda |t2h2=suyou |t2h3=lylia |t2h4=harith |t2h5=gloo
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=fanny |t1b3=paquito |t1b4=lapu-lapu |t1b5=atlas
+        |t2b1=yi sun-shin |t2b2=phoveus |t2b3=harley |t2b4=valentina |t2b5=yve
+    }}
+	|map2={{Map|vod=https://www.youtube.com/live/Gaws5OlzAts?si=wwqWFmxc_1EWPcLL&t=19014
+        |team1side=blue |team2side=red |length=19:06 |winner=2 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=freya |t1h2=baxia |t1h3=yve |t1h4=claude |t1h5=gatotkaca
+        |t2h1=paquito |t2h2=suyou |t2h3=zhuxin |t2h4=harith |t2h5=kalea
+        <!-- Hero bans -->
+        |t1b1=phoveus |t1b2=harley |t1b3=guinevere |t1b4=gloo |t1b5=atlas
+        |t2b1=yi sun-shin |t2b2=fanny |t2b3=marcel |t2b4=moskov |t2b5=chip
+    }}
+	|map3={{Map|vod=https://www.youtube.com/live/Gaws5OlzAts?si=4pfxF0uUTAz2ObYT&t=22063
+        |team1side=red |team2side=blue |length=13:11 |winner=2 |comment=<b>Broken Walls</b>
+        <!-- Hero picks -->
+        |t1h1=phoveus |t1h2=hayabusa |t1h3=yve |t1h4=claude |t1h5=khaleed
+        |t2h1=yu zhong |t2h2=harley |t2h3=zhuxin |t2h4=moskov |t2h5=chou
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=fanny |t1b3=paquito |t1b4=kalea |t1b5=atlas
+        |t2b1=yi sun-shin |t2b2=marcel |t2b3=harith |t2b4=guinevere |t2b5=gloo
+    }}
+	|map4={{Map|vod=https://www.youtube.com/live/Gaws5OlzAts?si=d64AE1EUk8RtaVCk&t=24627
+        |team1side=red |team2side=blue |length=15:43 |winner=2 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=phoveus |t1h2=hayabusa |t1h3=zhuxin |t1h4=moskov |t1h5=chou
+        |t2h1=lapu-lapu |t2h2=harley |t2h3=yve |t2h4=claude |t2h5=hilda
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=fanny |t1b3=paquito |t1b4=kalea |t1b5=gloo
+        |t2b1=yi sun-shin |t2b2=marcel |t2b3=harith |t2b4=khaleed |t2b5=atlas
+    }}
+	|map5={{Map|finished=skip}}
+}}
+
+<!-- Lower Bracket Final -->
+|R3M2={{Match
+    |bestof=7 |caster1=Sunfrost |caster2=Mars (Malaysian caster) |mvp=Error 404
+    |opponent1={{TeamOpponent|Invictus Gaming}}
+    |opponent2={{TeamOpponent|Team Vamos}}
+    |date=June 6, 2026 - 17:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=https://www.youtube.com/live/FBT-QSDO6Ag?si=4NcQ8YMZTGIApTOi&t=3389
+        |team1side=blue |team2side=red |length=18:21 |winner=2 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=freya |t1h2=fredrinn |t1h3=yve |t1h4=brody |t1h5=khaleed
+        |t2h1=paquito |t2h2=nolan |t2h3=zhuxin |t2h4=claude |t2h5=gatotkaca
+        <!-- Hero bans -->
+        |t1b1=phoveus |t1b2=guinevere |t1b3=harith |t1b4=atlas |t1b5=suyou
+        |t2b1=fanny |t2b2=yi sun-shin |t2b3=marcel |t2b4=chip |t2b5=moskov
+    }}
+	|map2={{Map|vod=https://www.youtube.com/live/FBT-QSDO6Ag?si=s3ApzTJuCXL8ogJ3&t=5868
+        |team1side=red |team2side=blue |length=12:24 |winner=2 |comment=<b>Expanding Rivers</b>
+        <!-- Hero picks -->
+        |t1h1=benedetta |t1h2=guinevere |t1h3=zhuxin |t1h4=moskov |t1h5=gatotkaca
+        |t2h1=paquito |t2h2=suyou |t2h3=valentina |t2h4=claude |t2h5=gloo
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=fanny |t1b3=harith |t1b4=zetian |t1b5=atlas
+        |t2b1=marcel |t2b2=yi sun-shin |t2b3=phoveus |t2b4=kalea |t2b5=khaleed
+    }}
+	|map3={{Map|vod=https://www.youtube.com/live/FBT-QSDO6Ag?si=h56s1yqqC21aJWKu&t=8465
+        |team1side=red |team2side=blue |length=15:23 |winner=2 |comment=<b>Expanding Rivers</b>
+        <!-- Hero picks -->
+        |t1h1=lapu-lapu |t1h2=fredrinn |t1h3=zhuxin |t1h4=claude |t1h5=chip
+        |t2h1=paquito |t2h2=guinevere |t2h3=zetian |t2h4=karrie |t2h5=badang
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=harith |t1b3=fanny |t1b4=valentina |t1b5=atlas
+        |t2b1=marcel |t2b2=yi sun-shin |t2b3=phoveus |t2b4=baxia |t2b5=harley
+    }}
+	|map4={{Map|vod=https://www.youtube.com/live/FBT-QSDO6Ag?si=SPaThVenbrcTo2QG&t=11129
+        |team1side=red |team2side=blue |length=17:24 |winner=2 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=uranus |t1h2=hayabusa |t1h3=zhuxin |t1h4=brody |t1h5=gloo
+        |t2h1=paquito |t2h2=guinevere |t2h3=valentina |t2h4=claude |t2h5=khaleed
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=fanny |t1b3=harith |t1b4=faramis |t1b5=kalea
+        |t2b1=marcel |t2b2=yi sun-shin |t2b3=phoveus |t2b4=moskov |t2b5=karrie
+    }}
+	|map5={{Map|finished=skip}}
+	|map6={{Map|finished=skip}}
+	|map7={{Map|finished=skip}}
+}}
+
+<!-- Grand Final -->
+|R4M1={{Match
+    |bestof=7 |caster1=Mars (Malaysian caster) |caster2=ReezPiuPiu |mvp=Yums
+    |opponent1={{TeamOpponent|Selangor Red Giants}}
+    |opponent2={{TeamOpponent|Team Vamos}}
+    |date=June 7, 2026 - 17:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=https://www.youtube.com/live/kVotJbRseik?si=-Yplgk3e01JMq_P3&t=4198
+        |team1side=blue |team2side=red |length=13:49 |winner=1 |comment=<b>Broken Walls</b>
+        <!-- Hero picks -->
+        |t1h1=phoveus |t1h2=leomord |t1h3=kimmy |t1h4=harith |t1h5=chou
+        |t2h1=alice |t2h2=yi sun-shin |t2h3=zhuxin |t2h4=claude |t2h5=hylos
+        <!-- Hero bans -->
+        |t1b1=guinevere |t1b2=kalea |t1b3=gloo |t1b4=harley |t1b5=suyou
+        |t2b1=freya |t2b2=paquito |t2b3=fanny |t2b4=lylia |t2b5=yve
+    }}
+	|map2={{Map|vod=https://www.youtube.com/live/kVotJbRseik?si=rDh0baHdKDZ89I-s&t=6577
+        |team1side=red |team2side=blue |length=25:10 |winner=1 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=paquito |t1h2=harley |t1h3=pharsa |t1h4=claude |t1h5=atlas
+        |t2h1=freya |t2h2=suyou |t2h3=lylia |t2h4=karrie |t2h5=gloo
+        <!-- Hero bans -->
+        |t1b1=fanny |t1b2=guinevere |t1b3=harith |t1b4=valentina |t1b5=khaleed
+        |t2b1=phoveus |t2b2=kalea |t2b3=marcel |t2b4=zhuxin |t2b5=chou
+    }}
+	|map3={{Map|vod=https://www.youtube.com/live/kVotJbRseik?si=4dH2pztx2uVbPkTM&t=9464
+        |team1side=blue |team2side=red |length=11:15 |winner=1 |comment=<b>Expanding Rivers</b>
+        <!-- Hero picks -->
+        |t1h1=paquito |t1h2=suyou |t1h3=zhuxin |t1h4=clint |t1h5=hilda
+        |t2h1=freya |t2h2=harley |t2h3=yve |t2h4=claude |t2h5=chou
+        <!-- Hero bans -->
+        |t1b1=guinevere |t1b2=gloo |t1b3=kalea |t1b4=valentina |t1b5=atlas
+        |t2b1=harith |t2b2=fanny |t2b3=phoveus |t2b4=brody |t2b5=moskov
+    }}
+	|map4={{Map|vod=https://www.youtube.com/live/kVotJbRseik?si=ncJsyDGRFeSeJMRn&t=11948
+        |team1side=red |team2side=blue |length=15:08 |winner=1 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=freya |t1h2=leomord |t1h3=kimmy |t1h4=claude |t1h5=chou
+        |t2h1=paquito |t2h2=suyou |t2h3=zhuxin |t2h4=yi sun-shin |t2h5=gatotkaca
+        <!-- Hero bans -->
+        |t1b1=fanny |t1b2=guinevere |t1b3=harith |t1b4=gloo |t1b5=karrie
+        |t2b1=phoveus |t2b2=kalea |t2b3=marcel |t2b4=atlas |t2b5=chip
+    }}
+	|map5={{Map|finished=skip}}
+	|map6={{Map|finished=skip}}
+	|map7={{Map|finished=skip}}
+}}
+}}
+{{Toggle bracket end}}
+
+==References==
+{{Reflist}}

@@ -1,0 +1,13 @@
+{{DISPLAYTITLE:MPL Malaysia Season 17 - Statistics}}
+{{MPL Tabs|region=Malaysia|season=17|no-qual=true}}
+{{Tabs static
+|name1=Overall			|link1=MPL/Malaysia/Season 17/Statistics
+|name2=Regular Season	|link2=MPL/Malaysia/Season 17/Statistics/Regular Season
+|name3=Playoffs			|link3=MPL/Malaysia/Season 17/Statistics/Playoffs
+}}
+
+==Hero Statistics==
+<section begin="Hero Stats"/>{{HeroStats
+|statspage=MPL/Malaysia/Season 17/Statistics/Regular Season
+|tournament=MPL/Malaysia/Season 17/Regular Season
+}}<section end="Hero Stats"/>

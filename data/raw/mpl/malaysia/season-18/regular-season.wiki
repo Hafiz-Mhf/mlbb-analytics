@@ -1,0 +1,1984 @@
+{{DISPLAYTITLE:MPL Malaysia Season 18 - Regular Season}}
+{{MPL Tabs|region=Malaysia|season=18|no-qual=true}}
+{{HiddenDataBox}}
+==Format==
+* Matches will be played with {{AMC}}
+{{#section:MPL/Malaysia/Season 18|RSFormat}}
+
+==Results==
+{{LPDB round|lpdbname=Group Stage}}
+<section begin="Group Stage" />
+{{box|start|padding=4em}}
+{{GroupTableLeague
+|title={{Flag|my}} Regular Season|width=550px|show_g=true|show_p=true|diff=true
+|pbg1=up|pbg2=up|pbg3=stayup|pbg4=stayup|pbg5=stayup|pbg6=stayup|pbg7=down|pbg8=down
+|tiebreaker1=points|tiebreaker2=diff|tiebreaker3=h2h series|tiebreaker4=h2h games
+|win_p=1|lose_p=0
+|team1=AC Esports |bg1=
+|team2=Bigetron MY by VIT |bg2=
+|team3=Invictus Gaming |bg3=
+|team4=RRQ Tora |bg4=
+|team5=Selangor Red Giants  |bg5=
+|team6=Team Flash  |bg6=
+|team7=Team Rey    |bg7=
+|team8=Team Vamos |bg8=
+|roundtitle=Week
+|round1edate=August 16, 2026 - 23:59 {{abbr/MYT}}
+|round2edate=August 23, 2026 - 23:59 {{abbr/MYT}}
+|round3edate=August 30, 2026 - 23:59 {{abbr/MYT}}
+|round4edate=September 6, 2026 - 23:59 {{abbr/MYT}}
+|round5edate=September 13, 2026 - 23:59 {{abbr/MYT}}
+|round6edate=September 20, 2026 - 23:59 {{abbr/MYT}}
+|round7edate=October 11, 2026 - 23:59 {{abbr/MYT}}
+|edate=October 18, 2026 - 23:59 {{abbr/MYT}}
+|exclusive=false
+|tournament=MPL/Malaysia/Season 18/Regular Season
+}}
+<small>''Tiebreakers: 1.Points  | 2.Diff| 3.H2H Series| 4.H2H Games ''</small>
+{{box|break|padding=2em}}
+{{CrossTableLeague|width=450px
+|team1=AC Esports          
+|team2=Bigetron MY by VIT 
+|team3=Invictus Gaming    
+|team4=RRQ Tora 
+|team5=Selangor Red Giants  
+|team6=Team Flash  
+|team7=Team Rey    
+|team8=Team Vamos 
+|double=true
+|tournament=MPL/Malaysia/Season 18/Regular Season
+}}
+{{box|end}}
+<section end="Group Stage" />
+
+==Detailed Results==
+<big>'''[[Special:RunQuery/Draft Generator|Click here to access the Draft Input generator]]'''</big>
+{{Toggle group start|state=show}}
+
+{{box|start|padding=2em}}
+==={{HiddenSort|RS: Week 1}}===
+{{Matchlist|width=350px|id=MPLMYS18W1|title=Week 1
+|M1header=Day 1|M3header=Day 2 |M6header=Day 3
+|M1={{Match
+    |bestof=3 |caster1=GideonQ |caster2=Sdafhaa |mvp=
+    |opponent1={{TeamOpponent|AC Esports
+		|substitutes={{PlayerSubstitutions
+			|{{Substitution|in=Martzy|out=Izanami}}
+    	}}		
+	}}
+    |opponent2={{TeamOpponent|Bigetron MY by VIT}}
+    |date=August 14, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side=red |team2side=blue |length=10:34 |winner=2 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=carmilla |t1h2=harley |t1h3=valentina |t1h4=clint |t1h5=belerick
+        |t2h1=barats |t2h2=suyou |t2h3=eudora |t2h4=hanabi |t2h5=atlas
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=hirara |t1b3=paquito |t1b4=brody |t1b5=nolan
+        |t2b1=uranus |t2b2=melissa |t2b3=marcel |t2b4=claude |t2b5=alice
+    }}
+    |map2={{Map|vod=
+        |team1side=red |team2side=blue |length=29:47 |winner=1 |comment=<b>Broken Walls</b>
+        <!-- Hero picks -->
+        |t1h1=alice |t1h2=ling |t1h3=selena |t1h4=paquito |t1h5=belerick
+        |t2h1=terizla |t2h2=nolan |t2h3=novaria |t2h4=karrie |t2h5=atlas
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=hirara |t1b3=barats |t1b4=brody |t1b5=phoveus
+        |t2b1=melissa |t2b2=uranus |t2b3=marcel |t2b4=eudora |t2b5=esmeralda
+    }}
+    |map3={{Map|vod=
+        |team1side=blue |team2side=red |length=30:02 |winner=2 |comment=<b>Broken Walls</b>
+        <!-- Hero picks -->
+        |t1h1=esmeralda |t1h2=yi sun-shin |t1h3=lylia |t1h4=melissa |t1h5=belerick
+        |t2h1=uranus |t2h2=suyou |t2h3=valir |t2h4=ixia |t2h5=mathilda
+        <!-- Hero bans -->
+        |t1b1=hirara |t1b2=barats |t1b3=atlas |t1b4=brody |t1b5=claude
+        |t2b1=freya |t2b2=marcel |t2b3=paquito |t2b4=fanny |t2b5=ling
+    }}
+}}
+|M2={{Match
+    |bestof=3 |caster1=GideonQ |caster2=Sdafhaa |mvp=
+    |opponent1={{TeamOpponent|Team Vamos}}
+    |opponent2={{TeamOpponent|Team Flash}}
+    |date=August 14, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side=blue |team2side=red |length=11:52 |winner=1 |comment=<b>Expanding Rivers</b>
+        <!-- Hero picks -->
+        |t1h1=phoveus |t1h2=harley |t1h3=valentina |t1h4=freya |t1h5=belerick
+        |t2h1=esmeralda |t2h2=paquito |t2h3=eudora |t2h4=karrie |t2h5=chou
+        <!-- Hero bans -->
+        |t1b1=marcel |t1b2=selena |t1b3=atlas |t1b4=moskov |t1b5=nolan
+        |t2b1=fanny |t2b2=hirara |t2b3=melissa |t2b4=zhuxin |t2b5=barats
+    }}
+    |map2={{Map|vod=
+        |team1side=red |team2side=blue |length=12:55 |winner=2 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=esmeralda |t1h2=harley |t1h3=valentina |t1h4=claude |t1h5=atlas
+        |t2h1=uranus |t2h2=paquito |t2h3=rafaela |t2h4=obsidia |t2h5=belerick
+        <!-- Hero bans -->
+        |t1b1=melissa |t1b2=freya |t1b3=selena |t1b4=moskov |t1b5=harith
+        |t2b1=fanny |t2b2=hirara |t2b3=marcel |t2b4=brody |t2b5=barats
+    }}
+    |map3={{Map|vod=
+        |team1side=blue |team2side=red |length=15:40 |winner=1 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=yz |t1h2=nolan |t1h3=eudora |t1h4=melissa |t1h5=atlas
+        |t2h1=arlott |t2h2=paquito |t2h3=rafaela |t2h4=obsidia |t2h5=belerick
+        <!-- Hero bans -->
+        |t1b1=marcel |t1b2=selena |t1b3=uranus |t1b4=esmeralda |t1b5=harley
+        |t2b1=fanny |t2b2=hirara |t2b3=freya |t2b4=zhuxin |t2b5=barats
+    }}
+}}
+|M3={{Match
+    |bestof=3 |caster1=Laphel |caster2=GideonQ |mvp=
+    |opponent1={{TeamOpponent|Team Flash}}
+    |opponent2={{TeamOpponent|Bigetron MY by VIT}}
+    |date=August 15, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side=blue |team2side=red |length=19:20 |winner=1 |comment=<b>Expanding Rivers</b>
+        <!-- Hero picks -->
+        |t1h1=esmeralda |t1h2=nolan |t1h3=selena |t1h4=melissa |t1h5=gatotkaca
+        |t2h1=barats |t2h2=paquito |t2h3=valentina |t2h4=claude |t2h5=gloo
+        <!-- Hero bans -->
+        |t1b1=uranus |t1b2=atlas |t1b3=hirara |t1b4=novaria |t1b5=eudora
+        |t2b1=freya |t2b2=marcel |t2b3=belerick |t2b4=chou |t2b5=alice
+    }}
+    |map2={{Map|vod=
+        |team1side=blue |team2side=red |length=18:22 |winner=2 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=carmilla |t1h2=yi sun-shin |t1h3=rafaela |t1h4=melissa |t1h5=belerick
+        |t2h1=barats |t2h2=paquito |t2h3=novaria |t2h4=ixia |t2h5=gatotkaca
+        <!-- Hero bans -->
+        |t1b1=uranus |t1b2=hirara |t1b3=atlas |t1b4=mathilda |t1b5=brody
+        |t2b1=freya |t2b2=selena |t2b3=marcel |t2b4=nolan |t2b5=esmeralda
+    }}
+    |map3={{Map|vod=
+        |team1side=blue |team2side=red |length=16:38 |winner=2 |comment=<b>Expanding Rivers</b>
+        <!-- Hero picks -->
+        |t1h1=esmeralda |t1h2=nolan |t1h3=vexana |t1h4=hanabi |t1h5=marcel
+        |t2h1=barats |t2h2=paquito |t2h3=eudora |t2h4=moskov |t2h5=rafaela
+        <!-- Hero bans -->
+        |t1b1=uranus |t1b2=hirara |t1b3=atlas |t1b4=gatotkaca |t1b5=belerick
+        |t2b1=freya |t2b2=selena |t2b3=melissa |t2b4=lylia |t2b5=brody
+    }}
+}}
+|M4={{Match
+    |bestof=3 |caster1=Laphel |caster2=GideonQ |mvp=
+    |opponent1={{TeamOpponent|RRQ Tora}}
+    |opponent2={{TeamOpponent|Team Rey}}
+    |date=August 15, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side=blue |team2side=red |length=14:37 |winner=2 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=esmeralda |t1h2=yi sun-shin |t1h3=rafaela |t1h4=melissa |t1h5=gloo
+        |t2h1=barats |t2h2=paquito |t2h3=novaria |t2h4=claude |t2h5=belerick
+        <!-- Hero bans -->
+        |t1b1=marcel |t1b2=fanny |t1b3=atlas |t1b4=mathilda |t1b5=brody
+        |t2b1=freya |t2b2=hirara |t2b3=uranus |t2b4=guin |t2b5=harley
+    }}
+    |map2={{Map|vod=
+        |team1side=red |team2side=blue |length=15:01 |winner=2 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=esmeralda |t1h2=paquito |t1h3=novaria |t1h4=clint |t1h5=belerick
+        |t2h1=barats |t2h2=hirara |t2h3=valentina |t2h4=brody |t2h5=mathilda
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=fanny |t1b3=marcel |t1b4=selena |t1b5=eudora
+        |t2b1=uranus |t2b2=atlas |t2b3=melissa |t2b4=harley |t2b5=rafaela
+    }}
+    |map3={{Map|finished=skip}}
+}}
+|M5={{Match
+    |bestof=3 |caster1=Laphel |caster2=GideonQ |mvp=
+    |opponent1={{TeamOpponent|Selangor Red Giants}}
+    |opponent2={{TeamOpponent|IG}}
+    |date=August 15, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side=blue |team2side=red |length=11:13 |winner=1 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=ruby |t1h2=paquito |t1h3=rafaela |t1h4=clint |t1h5=belerick
+        |t2h1=uranus |t2h2=hirara |t2h3=selena |t2h4=moskov |t2h5=gatotkaca
+        <!-- Hero bans -->
+        |t1b1=atlas |t1b2=marcel |t1b3=barats |t1b4=gloo |t1b5=mathilda
+        |t2b1=melissa |t2b2=freya |t2b3=fanny |t2b4=zhuxin |t2b5=brody
+    }}
+    |map2={{Map|vod=
+        |team1side=red |team2side=blue |length=11:57 |winner=1 |comment=<b>Dangerous Grass</b>
+        <!-- Hero picks -->
+        |t1h1=uranus |t1h2=hirara |t1h3=valentina |t1h4=melissa |t1h5=badang
+        |t2h1=esmeralda |t2h2=fanny |t2h3=pharsa |t2h4=brody |t2h5=chou
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=marcel |t1b3=paquito |t1b4=eudora |t1b5=zhuxin
+        |t2b1=atlas |t2b2=belerick |t2b3=barats |t2b4=khufra |t2b5=selena
+    }}
+    |map3={{Map|finished=skip}}
+}}
+|M6={{Match
+    |bestof=3 |caster1=Mars (Malaysian Caster) |caster2=Karakuri |mvp=
+    |opponent1={{TeamOpponent|IG}}
+    |opponent2={{TeamOpponent|RRQ Tora}}
+    |date=August 16, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side=blue |team2side=red |length=16:38 |winner=1 |comment=<b>Expanding Rivers</b>
+        <!-- Hero picks -->
+        |t1h1=hilda |t1h2=paquito |t1h3=rafaela |t1h4=melissa |t1h5=belerick
+        |t2h1=phoveus |t2h2=hirara |t2h3=eudora |t2h4=moskov |t2h5=marcel
+        <!-- Hero bans -->
+        |t1b1=atlas |t1b2=uranus |t1b3=esmeralda |t1b4=brody |t1b5=alice
+        |t2b1=freya |t2b2=fanny |t2b3=barats |t2b4=lylia |t2b5=selena
+    }}
+    |map2={{Map|vod=
+        |team1side=red |team2side=blue |length=22:18 |winner=1 |comment=<b>Expanding Rivers</b>
+        <!-- Hero picks -->
+        |t1h1=esmeralda |t1h2=nolan |t1h3=zhuxin |t1h4=paquito |t1h5=belerick
+        |t2h1=dyrroth |t2h2=paquito |t2h3=novaria |t2h4=claude |t2h5=gatotkaca
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=hirara |t1b3=melissa |t1b4=mathilda |t1b5=marcel
+        |t2b1=atlas |t2b2=fanny |t2b3=uranus |t2b4=brody |t2b5=eudora
+    }}
+    |map3={{Map|finished=skip
+    }}
+}}
+|M7={{Match
+    |bestof=3 |caster1=Mars (Malaysian Caster) |caster2=Karakuri |mvp=
+    |opponent1={{TeamOpponent|Team Rey}}
+    |opponent2={{TeamOpponent|Selangor Red Giants}}
+    |date=August 16, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side=blue |team2side=red |length=11:35 |winner=2 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=esmeralda |t1h2=hirara |t1h3=eudora |t1h4=claude |t1h5=badang
+        |t2h1=barats |t2h2=leomord |t2h3=rafaela |t2h4=clint |t2h5=belerick
+        <!-- Hero bans -->
+        |t1b1=atlas |t1b2=paquito |t1b3=melissa |t1b4=harley |t1b5=nolan
+        |t2b1=freya |t2b2=marcel |t2b3=uranus |t2b4=mathilda |t2b5=gloo
+    }}
+    |map2={{Map|vod=
+        |team1side=red |team2side=blue |length=13:08 |winner=2 |comment=<b>Flying Cloud</b>
+        <!-- Hero picks -->
+        |t1h1=sora |t1h2=fanny |t1h3=valentina |t1h4=claude |t1h5=belerick
+        |t2h1=uranus |t2h2=paquito |t2h3=rafaela |t2h4=obsidia |t2h5=ruby
+        <!-- Hero bans -->
+        |t1b1=freya |t1b2=hirara |t1b3=melissa |t1b4=khufra |t1b5=badang
+        |t2b1=atlas |t2b2=marcel |t2b3=barats |t2b4=esmeralda |t2b5=brody
+    }}
+    |map3={{Map|finished=skip}}
+}}
+}}
+{{box|break|padding=2em}}
+
+==={{HiddenSort|RS: Week 2}}===
+{{Matchlist|width=350px|id=MPLMYS18W2|title=Week 2
+|M1header=Day 1|M3header=Day 2|M6header=Day 3
+|M1={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|IG}}
+    |opponent2={{TeamOpponent|Team Vamos}}
+    |date=August 21, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M2={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Bigetron MY by VIT}}
+    |opponent2={{TeamOpponent|Selangor Red Giants}}
+    |date=August 21, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M3={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Rey}}
+    |opponent2={{TeamOpponent|Team Vamos}}
+    |date=August 22, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M4={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|AC Esports}}
+    |opponent2={{TeamOpponent|IG}}
+    |date=August 22, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M5={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Bigetron MY by VIT}}
+    |opponent2={{TeamOpponent|RRQ Tora}}
+    |date=August 22, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M6={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Rey}}
+    |opponent2={{TeamOpponent|AC Esports}}
+    |date=August 23, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M7={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Flash}}
+    |opponent2={{TeamOpponent|Selangor Red Giants}}
+    |date=August 23, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+}}
+{{box|break|padding=2em}}
+
+==={{HiddenSort|RS: Week 3}}===
+{{Matchlist|width=350px|id=MPLMYS18W3|title=Week 3
+|M1header=Day 1|M3header=Day 2|M6header=Day 3
+|M1={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Bigetron MY by VIT}}
+    |opponent2={{TeamOpponent|Team Rey}}
+    |date=August 28, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M2={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Vamos}}
+    |opponent2={{TeamOpponent|RRQ Tora}}
+    |date=August 28, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M3={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Flash}}
+    |opponent2={{TeamOpponent|Team Rey}}
+    |date=August 29, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M4={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Bigetron MY by VIT}}
+    |opponent2={{TeamOpponent|Team Vamos}}
+    |date=August 29, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M5={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Selangor Red Giants}}
+    |opponent2={{TeamOpponent|AC Esports}}
+    |date=August 29, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M6={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|IG}}
+    |opponent2={{TeamOpponent|Team Flash}}
+    |date=August 30, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M7={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|RRQ Tora}}
+    |opponent2={{TeamOpponent|AC Esports}}
+    |date=August 30, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+}}
+{{box|break|padding=2em}}
+
+==={{HiddenSort|RS: Week 4}}===
+{{Matchlist|width=350px|id=MPLMYS18W4|title=Week 4
+|M1header=Day 1|M3header=Day 2|M6header=Day 3
+|M1={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|AC Esports}}
+    |opponent2={{TeamOpponent|Team Flash}}
+    |date=September 4, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M2={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|RRQ Tora}}
+    |opponent2={{TeamOpponent|Selangor Red Giants}}
+    |date=September 4, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M3={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Flash}}
+    |opponent2={{TeamOpponent|RRQ Tora}}
+    |date=September 5, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M4={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Rey}}
+    |opponent2={{TeamOpponent|IG}}
+    |date=September 5, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M5={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Selangor Red Giants}}
+    |opponent2={{TeamOpponent|Team Vamos}}
+    |date=September 5, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M6={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|IG}}
+    |opponent2={{TeamOpponent|Bigetron MY by VIT}}
+    |date=September 6, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M7={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Vamos}}
+    |opponent2={{TeamOpponent|AC Esports}}
+    |date=September 6, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+}}
+{{box|break|padding=2em}}
+
+==={{HiddenSort|RS: Week 5}}===
+{{Matchlist|width=350px|id=MPLMYS18W5|title=Week 5
+|M1header=Day 1|M3header=Day 2|M6header=Day 3
+|M1={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|IG}}
+    |opponent2={{TeamOpponent|Team Rey}}
+    |date=September 11, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M2={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Selangor Red Giants}}
+    |opponent2={{TeamOpponent|Bigetron MY by VIT}}
+    |date=September 11, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M3={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Flash}}
+    |opponent2={{TeamOpponent|AC Esports}}
+    |date=September 12, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M4={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Vamos}}
+    |opponent2={{TeamOpponent|Team Rey}}
+    |date=September 12, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M5={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Selangor Red Giants}}
+    |opponent2={{TeamOpponent|RRQ Tora}}
+    |date=September 12, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M6={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Bigetron MY by VIT}}
+    |opponent2={{TeamOpponent|AC Esports}}
+    |date=September 13, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M7={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|RRQ Tora}}
+    |opponent2={{TeamOpponent|Team Flash}}
+    |date=September 13, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+}}
+{{box|break|padding=2em}}
+
+==={{HiddenSort|RS: Week 6}}===
+{{Matchlist|width=350px|id=MPLMYS18W6|title=Week 6
+|M1header=Day 1|M3header=Day 2|M6header=Day 3
+|M1={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Rey}}
+    |opponent2={{TeamOpponent|Team Flash}}
+    |date=September 18, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M2={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|RRQ Tora}}
+    |opponent2={{TeamOpponent|Team Vamos}}
+    |date=September 18, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M3={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Vamos}}
+    |opponent2={{TeamOpponent|Bigetron MY by VIT}}
+    |date=September 19, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M4={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|RRQ Tora}}
+    |opponent2={{TeamOpponent|IG}}
+    |date=September 19, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M5={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|AC Esports}}
+    |opponent2={{TeamOpponent|Selangor Red Giants}}
+    |date=September 19, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M6={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Bigetron MY by VIT}}
+    |opponent2={{TeamOpponent|IG}}
+    |date=September 20, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M7={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Selangor Red Giants}}
+    |opponent2={{TeamOpponent|Team Rey}}
+    |date=September 20, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+}}
+{{box|break|padding=2em}}
+
+==={{HiddenSort|RS: Week 7}}===
+{{Matchlist|width=350px|id=MPLMYS18W7|title=Week 7
+|M1header=Day 1|M3header=Day 2|M6header=Day 3
+|M1={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Rey}}
+    |opponent2={{TeamOpponent|Bigetron MY by VIT}}
+    |date=October 8, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M2={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Selangor Red Giants}}
+    |opponent2={{TeamOpponent|Team Flash}}
+    |date=October 8, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M3={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Vamos}}
+    |opponent2={{TeamOpponent|IG}}
+    |date=October 9, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M4={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|AC Esports}}
+    |opponent2={{TeamOpponent|RRQ Tora}}
+    |date=October 9, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M5header=Day 3
+|M5={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Flash}}
+    |opponent2={{TeamOpponent|Team Vamos}}
+    |date=October 11, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M6={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|IG}}
+    |opponent2={{TeamOpponent|AC Esports}}
+    |date=October 11, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M7={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Rey}}
+    |opponent2={{TeamOpponent|RRQ Tora}}
+    |date=October 11, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+}}
+{{box|break|padding=2em}}
+
+==={{HiddenSort|RS: Week 8}}===
+{{Matchlist|width=350px|id=MPLMYS18W8|title=Week 8
+|M1header=Day 1|M3header=Day 2|M6header=Day 3
+|M1={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Flash}}
+    |opponent2={{TeamOpponent|IG}}
+    |date=October 16, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M2={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Team Vamos}}
+    |opponent2={{TeamOpponent|Selangor Red Giants}}
+    |date=October 16, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M3={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|Bigetron MY by VIT}}
+    |opponent2={{TeamOpponent|Team Flash}}
+    |date=October 17, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M4={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|AC Esports}}
+    |opponent2={{TeamOpponent|Team Rey}}
+    |date=October 17, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M5={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|IG}}
+    |opponent2={{TeamOpponent|Selangor Red Giants}}
+    |date=October 17, 2026 - 20:15 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M6={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|AC Esports}}
+    |opponent2={{TeamOpponent|Team Vamos}}
+    |date=October 18, 2026 - 14:30 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+|M7={{Match
+    |bestof=3 |caster1= |caster2= |caster3= |mvp=
+    |opponent1={{TeamOpponent|RRQ Tora}}
+    |opponent2={{TeamOpponent|Bigetron MY by VIT}}
+    |date=October 18, 2026 - 17:00 {{Abbr/MYT}}
+	|youtube=MPL Malaysia |facebook=MPL Malaysia
+    |map1={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map2={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+    |map3={{Map|vod=
+        |team1side= |team2side= |length= |winner= |comment=<b></b>
+        <!-- Hero picks -->
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+        |t2h1= |t2h2= |t2h3= |t2h4= |t2h5=
+        <!-- Hero bans -->
+        |t1b1= |t1b2= |t1b3= |t1b4= |t1b5=
+        |t2b1= |t2b2= |t2b3= |t2b4= |t2b5=
+    }}
+}}
+}}
+
+{{box|end|padding=2em}}
