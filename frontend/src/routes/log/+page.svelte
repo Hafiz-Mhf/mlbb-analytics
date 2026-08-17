@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mockDataset, generatedAt } from '$lib/mock/data';
+	import { mockDataset, generatedAt } from '$lib/data';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
 

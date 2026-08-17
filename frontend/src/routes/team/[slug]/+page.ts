@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { mockDataset } from '$lib/mock/data';
+import { mockDataset } from '$lib/data';
 import { TEAM_SHORT_CODES } from '$lib/teams';
 
 export const prerender = true;

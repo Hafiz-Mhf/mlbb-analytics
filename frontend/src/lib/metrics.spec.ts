@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { hhi, hhiByRole, pickRateByRole, presence } from './metrics';
-import type { MockDataset } from '../types';
+import type { MockDataset } from './types';
 
 // Same two-game fixture as pipeline/tests/test_metrics.py, translated —
 // hand-computed expected values must match the Python side exactly.

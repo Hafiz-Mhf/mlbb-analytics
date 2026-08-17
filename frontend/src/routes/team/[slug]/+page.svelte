@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { mockDataset, generatedAt } from '$lib/mock/data';
-	import { hhi, presence } from '$lib/mock/metrics';
+	import { mockDataset, generatedAt } from '$lib/data';
+	import { hhi, presence } from '$lib/metrics';
 	import BaselineAnnotation from '$lib/components/BaselineAnnotation.svelte';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
 	import TeamTag from '$lib/components/TeamTag.svelte';

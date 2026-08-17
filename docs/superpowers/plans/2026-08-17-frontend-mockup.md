@@ -1010,11 +1010,11 @@ export const selectedTeam = createSelectedTeam();
 
 	let { children } = $props();
 
-	const navLinks = [
+	const navLinks = $derived([
 		{ href: `/team/${$selectedTeam}`, label: 'Team Scouting' },
 		{ href: '/league', label: 'League Overview' },
 		{ href: '/log', label: 'Match Log' }
-	];
+	]);
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
@@ -1026,8 +1026,9 @@ export const selectedTeam = createSelectedTeam();
 			{#each navLinks as link (link.href)}
 				<a
 					href={link.href}
-					class="text-[#8a8478] transition-colors hover:text-[--color-amber]"
-					class:text-[--color-amber]={page.url.pathname === link.href}
+					class={page.url.pathname === link.href
+						? 'text-[--color-amber]'
+						: 'text-[#8a8478] transition-colors hover:text-[--color-amber]'}
 				>
 					{link.label}
 				</a>

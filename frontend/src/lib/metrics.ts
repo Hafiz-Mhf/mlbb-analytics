@@ -1,6 +1,6 @@
 // Mirrors pipeline/src/mlbb_pipeline/metrics.py exactly. Same formulas,
 // same league-scope doubling — see that file's docstrings for why.
-import type { DraftRow, MatchRow, MockDataset } from '../types';
+import type { DraftRow, MatchRow, MockDataset } from './types';
 
 export interface ScopeOptions {
 	teamId?: number;
