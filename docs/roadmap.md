@@ -32,7 +32,7 @@ Format: Now / Next / Later, anchored to MPL MY Season 18 (14 Aug – Oct 2026).
 - [x] Build the shared data-table and baseline-annotation components once, before wiring individual screens
 - [x] Wire Tailwind + Audit Trail tokens (design-direction-v1.md)
 - [x] Swap the mock module for real emitted JSON — done 17 Aug 2026, `src/lib/mock/` deleted per this file's own instruction, browser-verified against real data
-- [ ] Generated TypeScript types from the Pydantic models, so a field rename breaks the build instead of rendering `undefined`
+- [x] Generated TypeScript types from the Pydantic models, so a field rename breaks the build instead of rendering `undefined` — done 17 Aug 2026, `dataset_models.py` + `gen_ts.py` (custom generator, no new npm dep) + `emit.py` validation. Plan: `docs/superpowers/plans/2026-08-17-generated-ts-types.md`.
 
 **Target:** correct and public during Season 18, with S17 as baseline. Not "before week 1".
 

@@ -1,6 +1,6 @@
 # Current Context
 
-_Last updated: 17 Aug 2026_
+_Last updated: 17 Aug 2026 (generated TS types)_
 
 ## Where things stand
 
@@ -13,7 +13,9 @@ _Last updated: 17 Aug 2026_
 - Browser-verified against real Liquipedia data: `/league` shows freya leading league presence at 49.4%, matching the metrics sanity check; `/team/srg` shows SRG's own freya rate (34.0%) sitting *below* that baseline — planning.md's core thesis, live, not hypothetical.
 - 97 tests passing total (83 pipeline + 14 frontend — the frontend count dropped from 19 once the mock generator's own tests were deleted along with the generator).
 
-**Still open, all previously deferred, none blocking:** a real `generatedAt` timestamp (currently `new Date()` at page-load time, wrong for a static site — needs the pipeline to emit one), generated TypeScript types from the Pydantic models, GitHub Actions weekly cron, flex-rate UI, per-role breakdowns wired into the Team Scouting screen, the standings-based build-halting invariant (needs a standings-page parser that doesn't exist yet).
+**Generated TypeScript types are now live** (17 Aug 2026): `pipeline/src/mlbb_pipeline/dataset_models.py` defines wire-format Pydantic models (`Team`/`Hero`/`MatchRow`/`DraftRow`/`Dataset`, `extra="forbid"`) mirroring `dataset.json` exactly. `emit.py` validates the assembled dict against `Dataset` before writing — a shape mismatch now raises and halts the build. `gen_ts.py` (new `mlbb-gen-types` CLI) introspects those same models and generates `frontend/src/lib/types.ts` — no new npm dependency, since the four models are simple enough that a generic `json-schema-to-typescript` pipeline would be more machinery than needed. `test_gen_ts.py` asserts the generated output matches the committed `types.ts` byte-for-byte, so a model change without regenerating fails `pytest`. `MockDataset` was renamed to `Dataset` across `types.ts`/`data.ts`/`metrics.ts`/`metrics.spec.ts` in the same pass — the "Mock" name was stale since `src/lib/mock/` no longer exists. 103 tests passing (89 pipeline + 14 frontend). Plan: `docs/superpowers/plans/2026-08-17-generated-ts-types.md`.
+
+**Still open, all previously deferred, none blocking:** a real `generatedAt` timestamp (currently `new Date()` at page-load time, wrong for a static site — needs the pipeline to emit one), GitHub Actions weekly cron, flex-rate UI, per-role breakdowns wired into the Team Scouting screen, the standings-based build-halting invariant (needs a standings-page parser that doesn't exist yet).
 
 Everything below this paragraph describes earlier state.
 
@@ -50,8 +52,8 @@ Season 18 is the reason to build now rather than keep analyzing S17 retrospectiv
 4. ~~SQLite build → metrics.~~ Done 17 Aug 2026 — schema, seed, insert, regression guard, `mlbb-build` CLI; presence/HHI/per-role variants; `data/mlbb.db` committed (181 games / 71 series).
 5. ~~Frontend mockup: all three screens, against a mock data module.~~ Done 17 Aug 2026 — SvelteKit 2 + Svelte 5 + Tailwind v4, browser-verified.
 6. ~~JSON emit from the pipeline → swap the frontend's mock module for it.~~ Done 17 Aug 2026 — `emit.py` + `mlbb-build`, `src/lib/mock/` deleted, browser-verified against real data.
-7. Generated TypeScript types from the Pydantic models (roadmap.md) — next up.
-8. GitHub Actions weekly cron (stack.md's build strategy step 6) — after types, so CI runs against a schema that can't silently drift.
+7. ~~Generated TypeScript types from the Pydantic models.~~ Done 17 Aug 2026 — `dataset_models.py`, `gen_ts.py`, `emit.py` validation.
+8. GitHub Actions weekly cron (stack.md's build strategy step 6) — next up, now that CI can run against a schema that can't silently drift.
 
 No blocking unknowns remain. Open items are all cosmetic or explicitly deferred polish: RRQ Tora's short code, the `generatedAt` timestamp, flex rate, per-role UI, the standings invariant.
 
