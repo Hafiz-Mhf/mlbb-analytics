@@ -34,7 +34,7 @@ export interface DraftRow {
 	isBan: boolean;
 }
 
-export interface MockDataset {
+export interface Dataset {
 	teams: Team[];
 	heroes: Hero[];
 	matches: MatchRow[];

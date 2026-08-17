@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { hhi, hhiByRole, pickRateByRole, presence } from './metrics';
-import type { MockDataset } from './types';
+import type { Dataset } from './types';
 
 // Same two-game fixture as pipeline/tests/test_metrics.py, translated —
 // hand-computed expected values must match the Python side exactly.
-function fixture(): MockDataset {
+function fixture(): Dataset {
 	const teams = [
 		{ id: 1, canonicalName: 'Selangor Red Giants', shortCode: 'SRG' },
 		{ id: 2, canonicalName: 'Team Vamos', shortCode: 'VMS' }
@@ -22,7 +22,7 @@ function fixture(): MockDataset {
 		{ id: 2, seriesId: 'M1', season: '17', stage: 'regular_season' as const, team1Id: 1, team2Id: 2, team1Side: 'red' as const, winnerId: 2, gameLength: '12:00', gameNumberInSeries: 2, playedAt: null }
 	];
 
-	const drafts: MockDataset['drafts'] = [];
+	const drafts: Dataset['drafts'] = [];
 	let id = 1;
 	const addPicks = (matchId: number, teamId: number, names: string[]) =>
 		names.forEach((name, i) =>
