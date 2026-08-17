@@ -64,6 +64,9 @@ def test_dataset_from_db_uses_camelcase_field_names_matching_types_ts():
 import json
 from pathlib import Path
 
+import pytest
+from pydantic import ValidationError
+
 from mlbb_pipeline.emit import write_dataset
 
 
@@ -75,3 +78,28 @@ def test_write_dataset_writes_valid_json(tmp_path: Path):
 
     loaded = json.loads(out_path.read_text(encoding="utf-8"))
     assert loaded == dataset
+
+
+class _ColumnDroppingConn:
+    """Wraps a real connection, rewriting the teams query to null out
+    canonical_name — simulates a renamed/dropped SQL column without
+    relying on sqlite3.Connection being subclassable/patchable (it's a
+    C-level immutable type)."""
+
+    def __init__(self, conn: sqlite3.Connection):
+        self._conn = conn
+
+    def execute(self, sql, *args, **kwargs):
+        if "SELECT id, canonical_name, short_code FROM teams" in sql:
+            sql = sql.replace("canonical_name", "NULL")
+        return self._conn.execute(sql, *args, **kwargs)
+
+
+def test_dataset_from_db_raises_on_schema_break():
+    """Simulates a renamed/dropped SQL column (teams.canonical_name -> NULL)
+    to prove dataset_from_db halts instead of emitting a bad dataset.json —
+    the stack.md guarantee this whole model layer exists for."""
+    conn = _ColumnDroppingConn(_conn_with_one_game())
+
+    with pytest.raises(ValidationError):
+        dataset_from_db(conn)

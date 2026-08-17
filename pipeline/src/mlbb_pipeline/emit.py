@@ -4,6 +4,8 @@ import json
 import sqlite3
 from pathlib import Path
 
+from .dataset_models import Dataset
+
 
 def dataset_from_db(conn: sqlite3.Connection) -> dict:
     """Every row of teams/heroes/matches/drafts, field names mapped to
@@ -51,7 +53,9 @@ def dataset_from_db(conn: sqlite3.Connection) -> dict:
             "SELECT id, match_id, team_id, slot, hero_id, is_ban FROM drafts"
         )
     ]
-    return {"teams": teams, "heroes": heroes, "matches": matches, "drafts": drafts}
+    dataset = {"teams": teams, "heroes": heroes, "matches": matches, "drafts": drafts}
+    Dataset.model_validate(dataset)  # raises on shape mismatch — halts the build (stack.md)
+    return dataset
 
 
 def write_dataset(dataset: dict, path: Path) -> None:
