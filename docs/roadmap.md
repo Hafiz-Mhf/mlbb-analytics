@@ -24,7 +24,7 @@ Format: Now / Next / Later, anchored to MPL MY Season 18 (14 Aug – Oct 2026).
 - [x] Metrics: presence, HHI (overall + per-role) — league baseline is `team_id=None` reused, not a separate code path.
 - [x] Backfill Season 17 as historical baseline, then Season 18 to date — done 17 Aug 2026, live wiki run, counts verified/corrected.
 - [x] Typed JSON emit — `emit.py`, one `dataset.json` matching the frontend's TS types field-for-field. `mlbb-build` writes both the db and the JSON in one pass.
-- [ ] GitHub Actions weekly cron
+- [x] GitHub Actions weekly cron — done 17 Aug 2026, `.github/workflows/weekly-build.yml` (schedule + `workflow_dispatch`), smoke-tested via manual run: fetched S18, rebuilt db, committed and pushed `284c605` unattended. Plan: `docs/superpowers/plans/2026-08-17-weekly-cron.md`.
 
 **Frontend** (frontend.md)
 - [x] Scaffold SvelteKit routes: `/`, `/team/[slug]`, `/league`, `/log`

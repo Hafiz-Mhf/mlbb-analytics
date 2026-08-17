@@ -1,6 +1,6 @@
 # Current Context
 
-_Last updated: 17 Aug 2026 (generated TS types)_
+_Last updated: 17 Aug 2026 (weekly GitHub Actions cron live)_
 
 ## Where things stand
 
@@ -15,7 +15,9 @@ _Last updated: 17 Aug 2026 (generated TS types)_
 
 **Generated TypeScript types are now live** (17 Aug 2026): `pipeline/src/mlbb_pipeline/dataset_models.py` defines wire-format Pydantic models (`Team`/`Hero`/`MatchRow`/`DraftRow`/`Dataset`, `extra="forbid"`) mirroring `dataset.json` exactly. `emit.py` validates the assembled dict against `Dataset` before writing — a shape mismatch now raises and halts the build. `gen_ts.py` (new `mlbb-gen-types` CLI) introspects those same models and generates `frontend/src/lib/types.ts` — no new npm dependency, since the four models are simple enough that a generic `json-schema-to-typescript` pipeline would be more machinery than needed. `test_gen_ts.py` asserts the generated output matches the committed `types.ts` byte-for-byte, so a model change without regenerating fails `pytest`. `MockDataset` was renamed to `Dataset` across `types.ts`/`data.ts`/`metrics.ts`/`metrics.spec.ts` in the same pass — the "Mock" name was stale since `src/lib/mock/` no longer exists. 103 tests passing (89 pipeline + 14 frontend). Plan: `docs/superpowers/plans/2026-08-17-generated-ts-types.md`.
 
-**Still open, all previously deferred, none blocking:** a real `generatedAt` timestamp (currently `new Date()` at page-load time, wrong for a static site — needs the pipeline to emit one), GitHub Actions weekly cron, flex-rate UI, per-role breakdowns wired into the Team Scouting screen, the standings-based build-halting invariant (needs a standings-page parser that doesn't exist yet).
+**GitHub Actions weekly cron is now live** (17 Aug 2026): `.github/workflows/weekly-build.yml` runs Mondays 00:00 UTC (plus `workflow_dispatch` for manual runs) — `pytest` → `mlbb-backfill --season 18` (only the live season; S17 is closed and already committed) → `mlbb-build` → diff-gated commit+push as `github-actions[bot]`. Any step failing (network error, `check_no_regression` halt, alias gap, a failed test) stops the job before the commit step, so a bad run never publishes — same guarantee as every other invariant in the pipeline. Smoke-tested via manual dispatch: real fetch against Liquipedia, real rebuild, real push (`284c605`, `data/mlbb.db` only — no new S18 games since the last commit, so `dataset.json` and `data/raw/` were correctly left untouched). Plan: `docs/superpowers/plans/2026-08-17-weekly-cron.md`.
+
+**Still open, all previously deferred, none blocking:** a real `generatedAt` timestamp (currently `new Date()` at page-load time, wrong for a static site — needs the pipeline to emit one), flex-rate UI, per-role breakdowns wired into the Team Scouting screen, the standings-based build-halting invariant (needs a standings-page parser that doesn't exist yet).
 
 Everything below this paragraph describes earlier state.
 
@@ -53,9 +55,9 @@ Season 18 is the reason to build now rather than keep analyzing S17 retrospectiv
 5. ~~Frontend mockup: all three screens, against a mock data module.~~ Done 17 Aug 2026 — SvelteKit 2 + Svelte 5 + Tailwind v4, browser-verified.
 6. ~~JSON emit from the pipeline → swap the frontend's mock module for it.~~ Done 17 Aug 2026 — `emit.py` + `mlbb-build`, `src/lib/mock/` deleted, browser-verified against real data.
 7. ~~Generated TypeScript types from the Pydantic models.~~ Done 17 Aug 2026 — `dataset_models.py`, `gen_ts.py`, `emit.py` validation.
-8. GitHub Actions weekly cron (stack.md's build strategy step 6) — next up, now that CI can run against a schema that can't silently drift.
+8. ~~GitHub Actions weekly cron.~~ Done 17 Aug 2026 — `.github/workflows/weekly-build.yml`, smoke-tested with a real run.
 
-No blocking unknowns remain. Open items are all cosmetic or explicitly deferred polish: RRQ Tora's short code, the `generatedAt` timestamp, flex rate, per-role UI, the standings invariant.
+Both roadmap.md "Now" checklists (Pipeline, Frontend) are fully checked off. No blocking unknowns remain. Open items are all cosmetic or explicitly deferred polish: RRQ Tora's short code, the `generatedAt` timestamp, flex rate, per-role UI, the standings invariant — or roadmap.md's "Next" phase (post-game review, S17-vs-S18 trend views, checking whether Liquipedia has migrated to `match2`, and validating real usage before building more).
 
 ## Known constraints going in
 
