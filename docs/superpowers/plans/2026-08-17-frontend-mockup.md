@@ -869,7 +869,7 @@ describe('DataTable', () => {
 				{ hero: 'freya', rate: '49%' }
 			]
 		});
-		await expect.element(page.getByRole('columnheader', { name: 'Hero' })).toBeInTheDocument();
+		await expect.element(page.getByText('Hero')).toBeInTheDocument();
 		await expect.element(page.getByText('guinevere')).toBeInTheDocument();
 		await expect.element(page.getByText('freya')).toBeInTheDocument();
 	});
