@@ -150,3 +150,37 @@ def test_hhi_by_role_is_scoped_to_that_slot_only():
 def test_hhi_returns_zero_when_no_picks_in_scope():
     conn = _conn_with_two_games()
     assert hhi(conn, season="18") == 0.0
+
+
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+REAL_DB_PATH = REPO_ROOT / "data" / "mlbb.db"
+
+
+def test_real_archive_presence_and_hhi_are_internally_consistent():
+    conn = sqlite3.connect(REAL_DB_PATH)
+
+    league_presence = presence(conn, season="17")
+    # every rate is a valid fraction
+    assert all(0.0 <= rate <= 1.0 for rate in league_presence.values())
+    # Cross-checked against raw SQL: freya has the highest combined
+    # presence in S17 (29 picks + 133 bans out of 328 team-instances =
+    # 0.494), ahead of guinevere despite far fewer picks (47 vs freya's
+    # 29) — she is banned almost every game. This is planning.md's whole
+    # thesis in miniature: a raw pick count alone would have missed her
+    # entirely, and picks-plus-bans is exactly why CLAUDE.md defines
+    # presence that way rather than as a pick rate.
+    assert league_presence["freya"] == max(league_presence.values())
+    assert league_presence["guinevere"] > 0.4  # still clearly high, just not #1
+
+    league_hhi = hhi(conn, season="17")
+    # a valid HHI over ~80 heroes is a small positive fraction, nowhere
+    # near 1.0 (that would mean one hero picked every single time)
+    assert 0.0 < league_hhi < 0.2
+
+    srg_id = conn.execute(
+        "SELECT id FROM teams WHERE canonical_name = 'Selangor Red Giants'"
+    ).fetchone()[0]
+    srg_hhi = hhi(conn, team_id=srg_id, season="17")
+    assert 0.0 < srg_hhi < 1.0
