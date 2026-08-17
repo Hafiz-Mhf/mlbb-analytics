@@ -43,3 +43,68 @@ def test_seed_reference_tables_inserts_heroes_with_aliases():
         "SELECT hero_id FROM hero_aliases WHERE alias = 'guin'"
     ).fetchone()[0]
     assert alias_hero_id == guinevere_id
+
+
+from mlbb_pipeline.build import insert_game
+from mlbb_pipeline.parser import parse_map
+
+RAW_MAP = (
+    "{{Map|team1side=blue|team2side=red|length=21:59|winner=1"
+    "|t1h1=sora|t1h2=guin|t1h3=zhuxin|t1h4=granger|t1h5=chou"
+    "|t2h1=phoveus|t2h2=leomord|t2h3=yve|t2h4=harith|t2h5=khaleed"
+    "|t1b1=baxia|t1b2=valen|t1b3=kalea|t1b4=suyou|t1b5=harley"
+    "|t2b1=freya|t2b2=marcel|t2b3=fanny|t2b4=gloo|t2b5=claude}}"
+)
+
+
+def _sample_game():
+    return parse_map(
+        RAW_MAP,
+        series_id="MPLMYS17W1_M1",
+        season="17",
+        stage="regular_season",
+        team1_raw="Selangor Red Giants",
+        team2_raw="Team Vamos",
+        played_at="April 3, 2026 - 17:00",
+        game_number_in_series=1,
+    )
+
+
+def test_insert_game_writes_one_match_row():
+    conn = _conn()
+    seed_reference_tables(conn)
+
+    match_id = insert_game(conn, _sample_game())
+
+    row = conn.execute(
+        "SELECT series_id, team1_id, team2_id, winner_id, game_length "
+        "FROM matches WHERE id = ?",
+        (match_id,),
+    ).fetchone()
+    srg_id, vamos_id = conn.execute(
+        "SELECT id FROM teams WHERE canonical_name IN "
+        "('Selangor Red Giants', 'Team Vamos') ORDER BY canonical_name"
+    ).fetchall()
+    srg_id, vamos_id = srg_id[0], vamos_id[0]
+    assert row == ("MPLMYS17W1_M1", srg_id, vamos_id, srg_id, "21:59")
+
+
+def test_insert_game_writes_twenty_draft_rows():
+    conn = _conn()
+    seed_reference_tables(conn)
+
+    match_id = insert_game(conn, _sample_game())
+
+    count = conn.execute(
+        "SELECT COUNT(*) FROM drafts WHERE match_id = ?", (match_id,)
+    ).fetchone()[0]
+    assert count == 20
+
+    guin_pick = conn.execute(
+        """SELECT h.canonical_name FROM drafts d
+           JOIN heroes h ON h.id = d.hero_id
+           WHERE d.match_id = ? AND d.slot = 2 AND d.is_ban = 0
+           AND d.team_id = (SELECT id FROM teams WHERE canonical_name = 'Selangor Red Giants')""",
+        (match_id,),
+    ).fetchone()[0]
+    assert guin_pick == "guinevere"

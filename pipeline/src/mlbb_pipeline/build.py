@@ -3,6 +3,7 @@ from __future__ import annotations
 import sqlite3
 
 from .aliases import known_hero_aliases, known_team_aliases
+from .models import ParsedGame
 
 # Short forms documented in CLAUDE.md's team list. RRQ Tora's is not yet
 # determined on the live wiki — a known cosmetic gap, not a blocker.
@@ -49,3 +50,58 @@ def seed_reference_tables(conn: sqlite3.Connection) -> None:
             (alias, hero_ids[canonical_name]),
         )
     conn.commit()
+
+
+def _team_id(conn: sqlite3.Connection, canonical_name: str) -> int:
+    row = conn.execute(
+        "SELECT id FROM teams WHERE canonical_name = ?", (canonical_name,)
+    ).fetchone()
+    return row[0]
+
+
+def _hero_id(conn: sqlite3.Connection, canonical_name: str) -> int:
+    row = conn.execute(
+        "SELECT id FROM heroes WHERE canonical_name = ?", (canonical_name,)
+    ).fetchone()
+    return row[0]
+
+
+def insert_game(conn: sqlite3.Connection, game: ParsedGame) -> int:
+    """Insert one already-validated, already-alias-resolved ParsedGame
+    (parser.py) as one matches row plus twenty drafts rows. Returns the
+    new matches.id."""
+    match = game.match
+    team1_id = _team_id(conn, match.team1)
+    team2_id = _team_id(conn, match.team2)
+    winner_id = team1_id if match.winner == 1 else team2_id
+
+    cur = conn.execute(
+        """INSERT INTO matches
+           (series_id, season, stage, team1_id, team2_id, team1_side,
+            winner_id, game_length, game_number_in_series, played_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (
+            match.series_id,
+            match.season,
+            match.stage,
+            team1_id,
+            team2_id,
+            match.team1_side,
+            winner_id,
+            match.game_length,
+            match.game_number_in_series,
+            match.played_at,
+        ),
+    )
+    match_id = cur.lastrowid
+
+    for draft in game.drafts:
+        team_id = team1_id if draft.team_slot == 1 else team2_id
+        hero_id = _hero_id(conn, draft.hero)
+        conn.execute(
+            """INSERT INTO drafts (match_id, team_id, slot, hero_id, is_ban)
+               VALUES (?, ?, ?, ?, ?)""",
+            (match_id, team_id, draft.slot, hero_id, int(draft.is_ban)),
+        )
+
+    return match_id
