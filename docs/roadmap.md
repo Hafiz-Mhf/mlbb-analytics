@@ -20,17 +20,17 @@ Format: Now / Next / Later, anchored to MPL MY Season 18 (14 Aug – Oct 2026).
 - [x] Hero alias normalization table + the rule that an unknown hero string **halts** the run (team alias table done too, same rule)
 - [x] Validation invariants (stack.md): 10 picks / 10 bans per game — enforced in `ParsedGame`. Team records vs. published standings, counts moving plausibly between runs — still open, need the DB/multi-run layer.
 - [x] Golden-file tests against a committed fixture. Unit tests on every metric function — still open, no metrics exist yet.
-- [ ] SQLite build from snapshots (database.md)
-- [ ] Metrics: presence, HHI, league baselines → typed JSON emit
-- [ ] Backfill Season 17 as historical baseline, then Season 18 to date
+- [x] SQLite build from snapshots (database.md) — schema, seed, insert, regression guard, `mlbb-build` CLI. `data/mlbb.db` committed.
+- [x] Metrics: presence, HHI (overall + per-role) — league baseline is `team_id=None` reused, not a separate code path. Still open: typed JSON emit.
+- [x] Backfill Season 17 as historical baseline, then Season 18 to date — done 17 Aug 2026, live wiki run, counts verified/corrected.
 - [ ] GitHub Actions weekly cron
 
 **Frontend** (frontend.md)
-- [ ] Scaffold SvelteKit routes: `/`, `/team/[slug]`, `/league`, `/log`
-- [ ] Mock data module matching the pipeline's JSON contract exactly, so screens can be built before the pipeline finishes
-- [ ] Build the shared data-table and baseline-annotation components once, before wiring individual screens
-- [ ] Wire Tailwind + Audit Trail tokens (design-direction-v1.md)
-- [ ] Swap the mock module for real emitted JSON
+- [x] Scaffold SvelteKit routes: `/`, `/team/[slug]`, `/league`, `/log`
+- [x] Mock data module matching database.md's raw row shapes (not pre-computed metrics), so screens could be built before real JSON exists
+- [x] Build the shared data-table and baseline-annotation components once, before wiring individual screens
+- [x] Wire Tailwind + Audit Trail tokens (design-direction-v1.md)
+- [ ] Swap the mock module for real emitted JSON — next up, now that the mock has pinned the shape
 - [ ] Generated TypeScript types from the Pydantic models, so a field rename breaks the build instead of rendering `undefined`
 
 **Target:** correct and public during Season 18, with S17 as baseline. Not "before week 1".

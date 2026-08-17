@@ -4,6 +4,14 @@ _Last updated: 17 Aug 2026_
 
 ## Where things stand
 
+**SQLite build, metrics, and a frontend mockup all exist now, on top of the backfilled archive.** `pipeline/src/mlbb_pipeline/schema.py` + `build.py` rebuild `data/mlbb.db` (committed) from every `data/raw/` snapshot — 181 games / 71 series (S17's verified 164/64 plus S18-to-date's 17/7), a regression guard halts the swap if a rebuild ever produces fewer games/series than what's committed. `metrics.py` implements presence and HHI (overall and per-role) exactly per CLAUDE.md's formulas, `team_id=None`/`season=None` reused as the league-baseline and all-seasons scope rather than separate code paths — sanity-checked against the real archive, which caught a wrong assumption in the test itself (freya has higher combined presence than guinevere: banned 133/328 team-instances vs guinevere's 101 — the tool's own baseline-vs-raw-number thesis, live in the first real number pulled from it).
+
+`frontend/` is a new SvelteKit 2 + Svelte 5 + Tailwind v4 project with all three v1 screens (Team Scouting, League Overview, Match Log) built and browser-verified against a seeded mock dataset — no real JSON emitted yet, per frontend.md's mock-first order. The mock's `metrics.ts` is a line-for-line TypeScript mirror of the Python `metrics.py`, so the two must agree once real data is wired up. 98 tests passing total (79 pipeline + 19 frontend).
+
+Next: emit real JSON from the pipeline and swap the frontend's mock module for it — deferred until now specifically so the frontend screens (just built) could pin down the shape instead of it being guessed.
+
+Everything below this paragraph describes earlier state.
+
 **Backfill has run against the live wiki.** S17 (Regular Season + Playoffs) and S18-to-date are fetched and snapshotted under `data/raw/`. The gap scanner ran clean afterward — 0 unresolved hero strings, 0 unresolved team strings — after extending `hero_aliases.json` with 61 previously-unseen full hero names (the golden fixture had only exercised 44 short-form/alias entries, not the full ~100-hero roster). Two real parser bugs surfaced by live data, both fixed with a failing test first: (1) `parse_map` only treated `finished=skip` as unplayed, but a scheduled future match on an in-progress season (S18) is instead an empty `{{Map}}` template with blank `winner=` and no `finished` param at all — now both are treated as unplayed; (2) the parser only understood `{{Matchlist}}` (regular season), never `{{Bracket}}` (playoffs), so every playoff series was silently dropped — `parse_bracket` now handles it via shared logic with `parse_matchlist`. 52 tests passing.
 
 **Season 17 counts are now verified against a real parse, and corrected:** 64 series total (56 regular season + 8 playoffs), 164 played games (132 + 32) — see data-source.md. The previously-documented "72 series / 64 regular season" was never actually re-derived from data; 56 is exactly a full double round robin among 8 teams (`C(8,2)×2`) and 168 map blocks ÷ 56 series = 3.0 exactly. Season 18 to date (as of 17 Aug 2026, season started 14 Aug): 7 series / 17 games played so far — sanity-checked only, season is ongoing.
@@ -34,8 +42,11 @@ Season 18 is the reason to build now rather than keep analyzing S17 retrospectiv
 1. ~~Write the v1 spec, then the implementation plan.~~ Done — parser foundation plan executed, merged 13 Aug 2026.
 2. ~~Fetcher + snapshot.~~ Done — merged 13 Aug 2026.
 3. ~~Backfill: run the fetcher against S17 and S18-to-date, fix the halts that surface.~~ Done 17 Aug 2026 — snapshots fetched and committed to `data/raw/` (stack.md: raw archive is deliberately committed, not a build artifact), alias tables complete, two parser bugs fixed (unplayed-future-match filter, playoff bracket parsing), S17 counts verified.
-4. SQLite build → metrics → JSON emit — next.
-5. Then the frontend mockup: all three screens shallow, SvelteKit + Tailwind, against a mock data module whose shape matches the pipeline's JSON output.
+4. ~~SQLite build → metrics.~~ Done 17 Aug 2026 — schema, seed, insert, regression guard, `mlbb-build` CLI; presence/HHI/per-role variants; `data/mlbb.db` committed (181 games / 71 series).
+5. ~~Frontend mockup: all three screens, against a mock data module.~~ Done 17 Aug 2026 — SvelteKit 2 + Svelte 5 + Tailwind v4, browser-verified.
+6. JSON emit from the pipeline (real presence/HHI/matches, shaped to match what the mock's `mock/data.ts` + `mock/metrics.ts` already expect) → swap the frontend's mock module for it — next.
+7. Generated TypeScript types from the Pydantic models (roadmap.md) — after JSON emit exists to generate from.
+8. GitHub Actions weekly cron (stack.md's build strategy step 6) — after the pipeline has a stable one-shot `mlbb-build`/JSON-emit path to schedule.
 
 No blocking unknowns remain. The only open item is cosmetic (RRQ Tora's short code).
 
