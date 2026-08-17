@@ -55,6 +55,18 @@ def resolve_hero(raw: str) -> str:
     return table[key]
 
 
+def known_hero_aliases() -> dict[str, str]:
+    """Read-only view of the loaded hero alias table, for tooling that
+    needs to check membership without triggering resolve_hero's halt
+    (e.g. alias_gaps.py's triage scanner)."""
+    return dict(_hero_aliases())
+
+
+def known_team_aliases() -> dict[str, str]:
+    """Same as known_hero_aliases(), one level up."""
+    return dict(_team_aliases())
+
+
 def resolve_team(raw: str) -> str:
     key = " ".join(raw.strip().lower().split())
     table = _team_aliases()

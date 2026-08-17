@@ -1,6 +1,13 @@
 import pytest
 
-from mlbb_pipeline.aliases import UnknownHeroError, UnknownTeamError, resolve_hero, resolve_team
+from mlbb_pipeline.aliases import (
+    UnknownHeroError,
+    UnknownTeamError,
+    known_hero_aliases,
+    known_team_aliases,
+    resolve_hero,
+    resolve_team,
+)
 
 
 def test_resolve_hero_normalizes_full_name_casing():
@@ -37,3 +44,15 @@ def test_resolve_team_normalizes_short_forms():
 def test_resolve_team_unknown_string_halts():
     with pytest.raises(UnknownTeamError):
         resolve_team("Definitely Not A Team")
+
+
+def test_known_hero_aliases_contains_documented_short_forms():
+    table = known_hero_aliases()
+    assert table["guin"] == "guinevere"
+    assert table["guinevere"] == "guinevere"
+
+
+def test_known_team_aliases_contains_all_eight_teams():
+    table = known_team_aliases()
+    assert table["srg"] == "Selangor Red Giants"
+    assert len(set(table.values())) == 8
