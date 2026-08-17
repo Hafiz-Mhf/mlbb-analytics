@@ -34,7 +34,7 @@ def scan_unknown_aliases(root: Path) -> AliasGaps:
 
         for body in find_template_calls(text, "Map"):
             params = params_dict(split_top_level(body))
-            if params.get("finished") == "skip":
+            if params.get("finished") == "skip" or not params.get("winner"):
                 continue
             for team_slot in (1, 2):
                 for slot in range(1, 6):

@@ -58,3 +58,25 @@ def test_scan_unknown_aliases_returns_empty_for_no_files(tmp_path: Path):
     gaps = scan_unknown_aliases(tmp_path)
     assert gaps.heroes == frozenset()
     assert gaps.teams == frozenset()
+
+
+def test_scan_unknown_aliases_skips_unplayed_future_matches(tmp_path: Path):
+    # No finished param at all — just blank fields, same as a scheduled
+    # future match on the live wiki (winner="" instead of finished=skip).
+    unplayed_text = """
+{{Matchlist|id=Y|M1={{Match
+    |opponent1={{TeamOpponent|Selangor Red Giants}}
+    |opponent2={{TeamOpponent|Team Vamos}}
+    |map1={{Map|team1side= |team2side= |length= |winner=
+        |t1h1= |t1h2= |t1h3= |t1h4= |t1h5=
+    }}
+}}}}
+"""
+    (tmp_path / "season-18").mkdir()
+    (tmp_path / "season-18" / "regular-season.wiki").write_text(
+        unplayed_text, encoding="utf-8"
+    )
+
+    gaps = scan_unknown_aliases(tmp_path)
+
+    assert gaps.heroes == frozenset()
