@@ -1,1 +1,15 @@
 @import 'tailwindcss';
+
+@theme {
+	--color-charcoal: #1a1814;
+	--color-amber: #c8a97e;
+	--font-display: 'Syne', sans-serif;
+	--font-body: 'Inter', sans-serif;
+	--font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+	background-color: var(--color-charcoal);
+	color: #e8e4dc;
+	font-family: var(--font-body);
+}
