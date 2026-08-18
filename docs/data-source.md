@@ -17,7 +17,7 @@ Liquipedia offers two APIs. Only one is usable here.
 
 **LPDB is a dead end for this project.** The MLBB wiki still uses the *legacy* match templates (`{{Matchlist}}` / `{{Match}}` / `{{Map}}`). Neither S17 page contains a single `MatchGroup` occurrence, which means `match2` / `match2game` is not populated for this wiki. There is no structured pick/ban data to query. Wikitext parsing is the only path.
 
-Re-check this before Phase 2. If the wiki migrates to the new match system, the parser becomes deletable and the format-change risk disappears with it.
+**Re-checked 18 Aug 2026** (roadmap.md's "Next" phase, item 3): still not migrated. Checked two ways — grepped the committed `data/raw/mpl/malaysia/season-18/regular-season.wiki` snapshot (fetched 17 Aug during the weekly cron run) and did one fresh live fetch of `MPL/Malaysia/Season 18/Regular Season` via `MediaWikiClient.fetch_wikitext` — both show 0 occurrences of `MatchGroup` or `match2`, and 8 `{{Matchlist}}` blocks (live fetch) / 176 total legacy-template occurrences (snapshot). The parser stays necessary; re-check again at the next natural checkpoint (Phase 3, or sooner if a fetch ever starts failing to find expected templates).
 
 ### Terms compliance (binding, not optional)
 
