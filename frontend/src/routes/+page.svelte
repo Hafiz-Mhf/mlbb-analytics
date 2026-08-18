@@ -1,11 +1,28 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { selectedTeam } from '$lib/teamSelection';
-	import { onMount } from 'svelte';
-
-	onMount(() => {
-		goto(`/team/${$selectedTeam}`);
-	});
+	import { resolve } from '$app/paths';
 </script>
 
-<p class="font-mono text-sm text-[#8a8478]">Loading…</p>
+<svelte:head>
+	<!-- Redirects to the last-selected team (mirrors teamSelection.ts's STORAGE_KEY)
+	     without waiting on hydration, so a slow connection doesn't sit on "Loading…". -->
+	<script>
+		(function () {
+			try {
+				var slug = localStorage.getItem('mlbb-analytics:selected-team') || 'srg';
+				location.replace('/team/' + slug);
+			} catch (e) {
+				location.replace('/team/srg');
+			}
+		})();
+	</script>
+</svelte:head>
+
+<noscript>
+	<p class="font-mono text-sm text-[#8a8478]">
+		This page needs JavaScript to redirect automatically.
+		<a href={resolve('/league')} class="text-[--color-amber] hover:underline"
+			>View League Overview</a
+		> instead.
+	</p>
+</noscript>
+<p class="font-mono text-sm text-[#8a8478]">Redirecting…</p>

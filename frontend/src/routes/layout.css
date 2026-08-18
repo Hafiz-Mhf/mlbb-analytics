@@ -13,3 +13,37 @@ body {
 	color: #e8e4dc;
 	font-family: var(--font-body);
 }
+
+:focus-visible {
+	outline: 2px solid var(--color-amber);
+	outline-offset: 2px;
+}
+
+::selection {
+	background-color: var(--color-amber);
+	color: var(--color-charcoal);
+}
+
+* {
+	scrollbar-color: #3a352c var(--color-charcoal);
+	scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--color-charcoal);
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #3a352c;
+	border: 2px solid var(--color-charcoal);
+	border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: var(--color-amber);
+}

@@ -3,6 +3,7 @@
 	import { hhi, pickWinRateDelta, presence, presenceDelta, rollingHhi } from '$lib/metrics';
 	import BaselineAnnotation from '$lib/components/BaselineAnnotation.svelte';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
+	import StatBlock from '$lib/components/StatBlock.svelte';
 	import TeamTag from '$lib/components/TeamTag.svelte';
 	import TrendChart from '$lib/components/TrendChart.svelte';
 	import { selectedTeam } from '$lib/teamSelection';
@@ -34,7 +35,9 @@
 			(m) => (m.team1Id === team.id || m.team2Id === team.id) && m.season === '18'
 		).length
 	);
-	const seasonDeltas = $derived(presenceDelta(mockDataset, '17', '18', { teamId: team.id }));
+	const seasonDeltas = $derived(
+		presenceDelta(mockDataset, '17', '18', { teamId: team.id }).slice(0, 15)
+	);
 
 	const rows = $derived(
 		Object.entries(teamPresence)
@@ -53,73 +56,86 @@
 		<FreshnessIndicator {generatedAt} />
 	</div>
 
-	<div class="font-mono text-sm text-[#8a8478]">
-		<abbr
-			title="How concentrated this team's hero picks are. Higher = more predictable, always picks the same heroes. Lower = more varied. (Hero Herfindahl-Hirschman Index, HHI)"
-			class="no-underline">Draft predictability</abbr
-		>: <BaselineAnnotation value={teamHhi} baseline={leagueHhi} format={(n) => n.toFixed(3)} />
-	</div>
+	<StatBlock
+		label="Draft predictability"
+		labelTooltip="How concentrated this team's hero picks are. Higher = more predictable, always picks the same heroes. Lower = more varied. (Hero Herfindahl-Hirschman Index, HHI)"
+		value={teamHhi}
+		baseline={leagueHhi}
+	/>
 
 	<div>
 		<h2 class="mb-2 font-[Syne] text-lg">Predictability trend, last 10 games</h2>
-		<TrendChart values={trend.map((p) => p.hhi)} label={`${team.canonicalName} rolling HHI`} />
+		<TrendChart
+			values={trend.map((p) => p.hhi)}
+			pointLabels={trend.map(
+				(p) => `${(p.playedAt ?? 'unknown date').split(' - ')[0]} · ${p.hhi.toFixed(3)}`
+			)}
+			label={`${team.canonicalName} rolling HHI`}
+		/>
 	</div>
 
 	<div>
 		<h2 class="mb-2 font-[Syne] text-lg">Season 17 vs Season 18, by hero</h2>
 		<p class="mb-3 font-mono text-sm text-[#8a8478]">
-			Draft predictability: {teamHhiS17.toFixed(3)} ({s17Games} games) → {teamHhiS18.toFixed(
-				3
-			)} ({s18Games} games)
+			Draft predictability: {teamHhiS17.toFixed(3)} ({s17Games} games) → {teamHhiS18.toFixed(3)} ({s18Games}
+			games)
 		</p>
-		<table class="w-full border-collapse font-mono text-sm">
-			<thead>
-				<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
-					<th class="px-3 py-2 font-normal">Hero</th>
-					<th class="px-3 py-2 font-normal">S17</th>
-					<th class="px-3 py-2 font-normal">S18</th>
-					<th class="px-3 py-2 font-normal">Change</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each seasonDeltas as row (row.hero)}
-					<tr class="border-b border-[#2a2620]">
-						<td class="px-3 py-2">{row.hero}</td>
-						<td class="px-3 py-2">{(row.before * 100).toFixed(1)}%</td>
-						<td class="px-3 py-2">{(row.after * 100).toFixed(1)}%</td>
-						<td class="px-3 py-2">{row.delta >= 0 ? '+' : ''}{(row.delta * 100).toFixed(1)}%</td>
+		<div class="overflow-x-auto">
+			<table class="w-full border-collapse font-mono text-sm">
+				<thead>
+					<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
+						<th class="px-3 py-2 font-normal">Hero</th>
+						<th class="px-3 py-2 font-normal">S17</th>
+						<th class="px-3 py-2 font-normal">S18</th>
+						<th class="px-3 py-2 font-normal">Change</th>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{#each seasonDeltas as row (row.hero)}
+						<tr class="border-b border-[#2a2620] hover:bg-[#221f19]">
+							<td class="px-3 py-2">{row.hero}</td>
+							<td class="px-3 py-2">{(row.before * 100).toFixed(1)}%</td>
+							<td class="px-3 py-2">{(row.after * 100).toFixed(1)}%</td>
+							<td class="px-3 py-2 {row.delta >= 0 ? 'text-[#8fbf8a]' : 'text-[#d98873]'}"
+								>{row.delta >= 0 ? '+' : ''}{(row.delta * 100).toFixed(1)}%</td
+							>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
 
 	{#snippet deltaTable(rows: { hero: string; delta: number; games: number }[])}
 		{#if rows.length === 0}
 			<p class="font-mono text-xs text-[#8a8478]">Not enough games yet.</p>
 		{:else}
-			<table class="w-full border-collapse font-mono text-sm">
-				<thead>
-					<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
-						<th class="px-3 py-2 font-normal">Hero</th>
-						<th class="px-3 py-2 font-normal">Win rate vs. normal</th>
-						<th class="px-3 py-2 font-normal">Games</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each rows as row (row.hero)}
-						<tr class="border-b border-[#2a2620]">
-							<td class="px-3 py-2">{row.hero}</td>
-							<td class="px-3 py-2">{row.delta >= 0 ? '+' : ''}{(row.delta * 100).toFixed(1)}%</td>
-							<td class="px-3 py-2">{row.games}</td>
+			<div class="overflow-x-auto">
+				<table class="w-full border-collapse font-mono text-sm">
+					<thead>
+						<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
+							<th class="px-3 py-2 font-normal">Hero</th>
+							<th class="px-3 py-2 font-normal">Win rate vs. normal</th>
+							<th class="px-3 py-2 font-normal">Games</th>
 						</tr>
-					{/each}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{#each rows as row (row.hero)}
+							<tr class="border-b border-[#2a2620] hover:bg-[#221f19]">
+								<td class="px-3 py-2">{row.hero}</td>
+								<td class="px-3 py-2 {row.delta >= 0 ? 'text-[#8fbf8a]' : 'text-[#d98873]'}"
+									>{row.delta >= 0 ? '+' : ''}{(row.delta * 100).toFixed(1)}%</td
+								>
+								<td class="px-3 py-2">{row.games}</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
 		{/if}
 	{/snippet}
 
-	<div class="grid grid-cols-2 gap-8">
+	<div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
 		<div>
 			<h2 class="mb-2 font-[Syne] text-lg">Picks that line up with winning</h2>
 			{@render deltaTable(pickDeltas)}
@@ -130,22 +146,24 @@
 		</div>
 	</div>
 
-	<table class="w-full border-collapse font-mono text-sm">
-		<thead>
-			<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
-				<th class="px-3 py-2 font-normal">Hero</th>
-				<th class="px-3 py-2 font-normal">Pick/ban rate (vs. league average)</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each rows as row (row.hero)}
-				<tr class="border-b border-[#2a2620]">
-					<td class="px-3 py-2">{row.hero}</td>
-					<td class="px-3 py-2">
-						<BaselineAnnotation value={row.value} baseline={row.baseline} />
-					</td>
+	<div class="overflow-x-auto">
+		<table class="w-full border-collapse font-mono text-sm">
+			<thead>
+				<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
+					<th class="px-3 py-2 font-normal">Hero</th>
+					<th class="px-3 py-2 font-normal">Pick/ban rate (vs. league average)</th>
 				</tr>
-			{/each}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				{#each rows as row (row.hero)}
+					<tr class="border-b border-[#2a2620] hover:bg-[#221f19]">
+						<td class="px-3 py-2">{row.hero}</td>
+						<td class="px-3 py-2">
+							<BaselineAnnotation value={row.value} baseline={row.baseline} />
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
 </div>

@@ -3,8 +3,9 @@
 
 	interface Props {
 		name: string;
+		size?: number;
 	}
-	let { name }: Props = $props();
+	let { name, size = 16 }: Props = $props();
 	const label = $derived(TEAM_SHORT_CODES[name] ?? name);
 	let logoFailed = $state(false);
 </script>
@@ -14,9 +15,10 @@
 		<img
 			src={teamLogo(name)}
 			alt=""
-			width="16"
-			height="16"
-			class="h-4 w-4 object-contain"
+			width={size}
+			height={size}
+			style={`width:${size}px;height:${size}px`}
+			class="object-contain"
 			onerror={() => (logoFailed = true)}
 		/>
 	{/if}

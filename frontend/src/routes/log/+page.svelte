@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { mockDataset, generatedAt } from '$lib/data';
+	import { resolve } from '$app/paths';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
 
@@ -10,7 +11,12 @@
 
 	const rows = $derived(
 		mockDataset.matches
-			.filter((m) => teamFilter === 'all' || m.team1Id === Number(teamFilter) || m.team2Id === Number(teamFilter))
+			.filter(
+				(m) =>
+					teamFilter === 'all' ||
+					m.team1Id === Number(teamFilter) ||
+					m.team2Id === Number(teamFilter)
+			)
 			.filter((m) => stageFilter === 'all' || m.stage === stageFilter)
 			.map((m) => ({
 				id: m.id,
@@ -62,6 +68,6 @@
 			{ key: 'length', label: 'Length' }
 		]}
 		{rows}
-		rowHref={(row) => `/match/${row.id}`}
+		rowHref={(row) => resolve('/match/[id]', { id: String(row.id) })}
 	/>
 </div>

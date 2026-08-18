@@ -39,17 +39,21 @@
 	</div>
 
 	<div class="font-mono text-sm text-[#8a8478]">
-		{match.stage} · Season {match.season} · {match.gameLength} · winner {teamName.get(match.winnerId)}
+		{match.stage} · Season {match.season} · {match.gameLength} · winner {teamName.get(
+			match.winnerId
+		)}
 	</div>
 
-	<div class="grid grid-cols-2 gap-8">
+	<div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
 		<div>
 			<h2 class="mb-2 flex items-center gap-2 font-[Syne] text-lg">
 				<TeamTag name={teamName.get(match.team1Id)!} />
 				{teamName.get(match.team1Id)}
 			</h2>
 			{#each team1Rows as row (row.kind + row.hero)}
-				<div class="flex items-center justify-between border-b border-[#2a2620] py-2 font-mono text-sm">
+				<div
+					class="flex items-center justify-between border-b border-[#2a2620] py-2 font-mono text-sm"
+				>
 					<span>{row.kind}: {row.hero}</span>
 					<BaselineAnnotation value={row.value} baseline={row.baseline} />
 				</div>
@@ -61,7 +65,9 @@
 				{teamName.get(match.team2Id)}
 			</h2>
 			{#each team2Rows as row (row.kind + row.hero)}
-				<div class="flex items-center justify-between border-b border-[#2a2620] py-2 font-mono text-sm">
+				<div
+					class="flex items-center justify-between border-b border-[#2a2620] py-2 font-mono text-sm"
+				>
 					<span>{row.kind}: {row.hero}</span>
 					<BaselineAnnotation value={row.value} baseline={row.baseline} />
 				</div>

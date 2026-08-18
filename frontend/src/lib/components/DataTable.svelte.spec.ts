@@ -33,4 +33,21 @@ describe('DataTable', () => {
 		await expect.element(link).toBeInTheDocument();
 		await expect.element(link).toHaveAttribute('href', '/match/M1');
 	});
+
+	it('sorts rows numerically when a column header is clicked, and reverses on a second click', async () => {
+		const screen = render(DataTable, {
+			columns: [{ key: 'length', label: 'Length' }],
+			rows: [{ length: 30 }, { length: 5 }, { length: 15 }]
+		});
+		const cells = () => screen.container.querySelectorAll('tbody td');
+		const header = screen.getByRole('button', { name: /Length/ });
+
+		await header.click();
+		let values = Array.from(cells()).map((c) => c.textContent?.trim());
+		expect(values).toEqual(['5', '15', '30']);
+
+		await header.click();
+		values = Array.from(cells()).map((c) => c.textContent?.trim());
+		expect(values).toEqual(['30', '15', '5']);
+	});
 });
