@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { hhi, hhiByRole, pickRateByRole, presence, rollingHhi } from './metrics';
+import { hhi, hhiByRole, pickRateByRole, pickWinRateDelta, presence, rollingHhi } from './metrics';
 import type { Dataset } from './types';
 
 // Same two-game fixture as pipeline/tests/test_metrics.py, translated —
@@ -130,5 +130,69 @@ describe('rollingHhi', () => {
 		const data = seasonSpanningFixture();
 		const points = rollingHhi(data, 1, 2);
 		expect(points[2].hhi).toBeCloseTo(0.5, 10); // window is just [id 5, id 10]: one freya, one guinevere
+	});
+});
+
+function winRateFixture(): Dataset {
+	const teams = [
+		{ id: 1, canonicalName: 'Selangor Red Giants', shortCode: 'SRG' },
+		{ id: 2, canonicalName: 'Team Vamos', shortCode: 'VMS' }
+	];
+	const heroes = [
+		{ id: 1, canonicalName: 'sora' },
+		{ id: 2, canonicalName: 'guinevere' },
+		{ id: 3, canonicalName: 'freya' }
+	];
+	const heroId = (name: string) => heroes.find((h) => h.canonicalName === name)!.id;
+
+	// Team 1 plays 9 games: wins games 1-5, loses games 6-9.
+	const winners = [1, 1, 1, 1, 1, 2, 2, 2, 2];
+	const matches: Dataset['matches'] = winners.map((winnerId, i) => ({
+		id: i + 1,
+		seriesId: `M${i + 1}`,
+		season: '18',
+		stage: 'regular_season' as const,
+		team1Id: 1,
+		team2Id: 2,
+		team1Side: 'blue' as const,
+		winnerId,
+		gameLength: '10:00',
+		gameNumberInSeries: 1,
+		playedAt: null
+	}));
+
+	const drafts: Dataset['drafts'] = [];
+	let id = 1;
+	const pick = (matchId: number, hero: string) =>
+		drafts.push({ id: id++, matchId, teamId: 1, slot: 1, heroId: heroId(hero), isBan: false });
+
+	// sora: picked in all 5 wins only -> 5 games, 100% win rate (well above team's 5/9 overall).
+	for (let g = 1; g <= 5; g++) pick(g, 'sora');
+	// freya: picked in the 5 wins plus 1 loss -> 6 games, 5/6 win rate (still above overall, smaller edge).
+	for (let g = 1; g <= 5; g++) pick(g, 'freya');
+	pick(6, 'freya');
+	// guinevere: picked only in the 4 losses -> 4 games, below the 5-game threshold, must be excluded.
+	pick(6, 'guinevere');
+	pick(7, 'guinevere');
+	pick(8, 'guinevere');
+	pick(9, 'guinevere');
+
+	return { teams, heroes, matches, drafts };
+}
+
+describe('pickWinRateDelta', () => {
+	it('excludes heroes below the 5-game threshold, includes at and above it, sorted best first', () => {
+		const data = winRateFixture();
+		const deltas = pickWinRateDelta(data, 1);
+		expect(deltas.map((d) => d.hero)).toEqual(['sora', 'freya']);
+		expect(deltas[0].games).toBe(5);
+		expect(deltas[0].delta).toBeCloseTo(1 - 5 / 9, 10);
+		expect(deltas[1].games).toBe(6);
+		expect(deltas[1].delta).toBeCloseTo(5 / 6 - 5 / 9, 10);
+	});
+
+	it('scopes to bans only when isBan is set, and returns nothing when there are none', () => {
+		const data = winRateFixture();
+		expect(pickWinRateDelta(data, 1, { isBan: true })).toEqual([]);
 	});
 });

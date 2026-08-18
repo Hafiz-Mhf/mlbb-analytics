@@ -127,3 +127,50 @@ export function rollingHhi(
 		return { matchId: game.id, playedAt: game.playedAt, hhi: hhiFromCounts(counts) };
 	});
 }
+
+export interface WinRateDelta {
+	hero: string;
+	delta: number;
+	games: number;
+}
+
+const MIN_SAMPLE = 5;
+
+function teamWinRate(
+	data: Dataset,
+	teamId: number,
+	matchIds?: Set<number>
+): { wins: number; games: number; rate: number } {
+	const games = data.matches.filter(
+		(m) => (m.team1Id === teamId || m.team2Id === teamId) && (!matchIds || matchIds.has(m.id))
+	);
+	const wins = games.filter((m) => m.winnerId === teamId).length;
+	return { wins, games: games.length, rate: games.length === 0 ? 0 : wins / games.length };
+}
+
+export function pickWinRateDelta(
+	data: Dataset,
+	teamId: number,
+	opts: { isBan?: boolean } = {}
+): WinRateDelta[] {
+	const isBan = opts.isBan ?? false;
+	const overall = teamWinRate(data, teamId);
+	const heroName = new Map(data.heroes.map((h) => [h.id, h.canonicalName]));
+	const matchIdsByHero = new Map<number, Set<number>>();
+	for (const d of data.drafts) {
+		if (d.teamId !== teamId || d.isBan !== isBan) continue;
+		if (!matchIdsByHero.has(d.heroId)) matchIdsByHero.set(d.heroId, new Set());
+		matchIdsByHero.get(d.heroId)!.add(d.matchId);
+	}
+	const results: WinRateDelta[] = [];
+	for (const [heroId, matchIds] of matchIdsByHero) {
+		if (matchIds.size < MIN_SAMPLE) continue;
+		const withHero = teamWinRate(data, teamId, matchIds);
+		results.push({
+			hero: heroName.get(heroId)!,
+			delta: withHero.rate - overall.rate,
+			games: withHero.games
+		});
+	}
+	return results.sort((a, b) => b.delta - a.delta);
+}
