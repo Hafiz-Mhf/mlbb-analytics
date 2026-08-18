@@ -8,7 +8,7 @@ describe('BaselineAnnotation', () => {
 		render(BaselineAnnotation, { value: 0.78, baseline: 0.847 });
 
 		await expect.element(page.getByText('78.0%')).toBeInTheDocument();
-		await expect.element(page.getByText(/baseline/i)).toBeInTheDocument();
+		await expect.element(page.getByText(/league avg/i)).toBeInTheDocument();
 		await expect.element(page.getByText('84.7%')).toBeInTheDocument();
 	});
 

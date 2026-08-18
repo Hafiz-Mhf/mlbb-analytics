@@ -27,14 +27,17 @@
 	</div>
 
 	<p class="font-mono text-sm text-[#8a8478]">
-		League baseline HHI: {leagueHhiValue.toFixed(3)}
+		League-wide <abbr
+			title="How concentrated a team's hero picks are. Higher = more predictable, always picks the same heroes. Lower = more varied. (Hero Herfindahl-Hirschman Index, HHI)"
+			class="no-underline">draft predictability</abbr
+		>: {leagueHhiValue.toFixed(3)}
 	</p>
 
 	<table class="w-full border-collapse font-mono text-sm">
 		<thead>
 			<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
 				<th class="px-3 py-2 font-normal">Team</th>
-				<th class="px-3 py-2 font-normal">HHI (draft concentration)</th>
+				<th class="px-3 py-2 font-normal">Draft predictability</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -47,12 +50,12 @@
 		</tbody>
 	</table>
 
-	<h2 class="pt-4 font-[Syne] text-lg">Meta-wide presence (top 10)</h2>
+	<h2 class="pt-4 font-[Syne] text-lg">Most picked & banned heroes (top 10)</h2>
 	<table class="w-full border-collapse font-mono text-sm">
 		<thead>
 			<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
 				<th class="px-3 py-2 font-normal">Hero</th>
-				<th class="px-3 py-2 font-normal">League presence</th>
+				<th class="px-3 py-2 font-normal">Pick/ban rate</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -69,7 +72,9 @@
 
 	<h2 class="pt-4 font-[Syne] text-lg">Season 17 vs Season 18, biggest swings</h2>
 	<p class="mb-3 font-mono text-sm text-[#8a8478]">
-		League HHI: {leagueHhiS17.toFixed(3)} ({s17Games} games) → {leagueHhiS18.toFixed(3)} ({s18Games} games)
+		League draft predictability: {leagueHhiS17.toFixed(3)} ({s17Games} games) → {leagueHhiS18.toFixed(
+			3
+		)} ({s18Games} games)
 	</p>
 	<table class="w-full border-collapse font-mono text-sm">
 		<thead>

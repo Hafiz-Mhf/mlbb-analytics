@@ -54,18 +54,23 @@
 	</div>
 
 	<div class="font-mono text-sm text-[#8a8478]">
-		Team HHI: <BaselineAnnotation value={teamHhi} baseline={leagueHhi} format={(n) => n.toFixed(3)} />
+		<abbr
+			title="How concentrated this team's hero picks are. Higher = more predictable, always picks the same heroes. Lower = more varied. (Hero Herfindahl-Hirschman Index, HHI)"
+			class="no-underline">Draft predictability</abbr
+		>: <BaselineAnnotation value={teamHhi} baseline={leagueHhi} format={(n) => n.toFixed(3)} />
 	</div>
 
 	<div>
-		<h2 class="mb-2 font-[Syne] text-lg">Draft concentration, last 10 games</h2>
+		<h2 class="mb-2 font-[Syne] text-lg">Predictability trend, last 10 games</h2>
 		<TrendChart values={trend.map((p) => p.hhi)} label={`${team.canonicalName} rolling HHI`} />
 	</div>
 
 	<div>
 		<h2 class="mb-2 font-[Syne] text-lg">Season 17 vs Season 18, by hero</h2>
 		<p class="mb-3 font-mono text-sm text-[#8a8478]">
-			HHI: {teamHhiS17.toFixed(3)} ({s17Games} games) → {teamHhiS18.toFixed(3)} ({s18Games} games)
+			Draft predictability: {teamHhiS17.toFixed(3)} ({s17Games} games) → {teamHhiS18.toFixed(
+				3
+			)} ({s18Games} games)
 		</p>
 		<table class="w-full border-collapse font-mono text-sm">
 			<thead>
@@ -129,7 +134,7 @@
 		<thead>
 			<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
 				<th class="px-3 py-2 font-normal">Hero</th>
-				<th class="px-3 py-2 font-normal">Presence (vs. baseline)</th>
+				<th class="px-3 py-2 font-normal">Pick/ban rate (vs. league average)</th>
 			</tr>
 		</thead>
 		<tbody>
