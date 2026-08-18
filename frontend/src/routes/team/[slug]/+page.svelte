@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { mockDataset, generatedAt } from '$lib/data';
-	import { hhi, presence } from '$lib/metrics';
+	import { hhi, pickWinRateDelta, presence, rollingHhi } from '$lib/metrics';
 	import BaselineAnnotation from '$lib/components/BaselineAnnotation.svelte';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
 	import TeamTag from '$lib/components/TeamTag.svelte';
+	import TrendChart from '$lib/components/TrendChart.svelte';
 	import { selectedTeam } from '$lib/teamSelection';
 	import { page } from '$app/state';
 
@@ -18,6 +19,9 @@
 	const leaguePresence = $derived(presence(mockDataset));
 	const teamHhi = $derived(hhi(mockDataset, { teamId: team.id }));
 	const leagueHhi = $derived(hhi(mockDataset));
+	const trend = $derived(rollingHhi(mockDataset, team.id));
+	const pickDeltas = $derived(pickWinRateDelta(mockDataset, team.id));
+	const banDeltas = $derived(pickWinRateDelta(mockDataset, team.id, { isBan: true }));
 
 	const rows = $derived(
 		Object.entries(teamPresence)
@@ -38,6 +42,47 @@
 
 	<div class="font-mono text-sm text-[#8a8478]">
 		Team HHI: <BaselineAnnotation value={teamHhi} baseline={leagueHhi} format={(n) => n.toFixed(3)} />
+	</div>
+
+	<div>
+		<h2 class="mb-2 font-[Syne] text-lg">Draft concentration, last 10 games</h2>
+		<TrendChart values={trend.map((p) => p.hhi)} label={`${team.canonicalName} rolling HHI`} />
+	</div>
+
+	{#snippet deltaTable(rows: { hero: string; delta: number; games: number }[])}
+		{#if rows.length === 0}
+			<p class="font-mono text-xs text-[#8a8478]">Not enough games yet.</p>
+		{:else}
+			<table class="w-full border-collapse font-mono text-sm">
+				<thead>
+					<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
+						<th class="px-3 py-2 font-normal">Hero</th>
+						<th class="px-3 py-2 font-normal">Win rate vs. normal</th>
+						<th class="px-3 py-2 font-normal">Games</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each rows as row (row.hero)}
+						<tr class="border-b border-[#2a2620]">
+							<td class="px-3 py-2">{row.hero}</td>
+							<td class="px-3 py-2">{row.delta >= 0 ? '+' : ''}{(row.delta * 100).toFixed(1)}%</td>
+							<td class="px-3 py-2">{row.games}</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		{/if}
+	{/snippet}
+
+	<div class="grid grid-cols-2 gap-8">
+		<div>
+			<h2 class="mb-2 font-[Syne] text-lg">Picks that line up with winning</h2>
+			{@render deltaTable(pickDeltas)}
+		</div>
+		<div>
+			<h2 class="mb-2 font-[Syne] text-lg">Bans that line up with winning</h2>
+			{@render deltaTable(banDeltas)}
+		</div>
 	</div>
 
 	<table class="w-full border-collapse font-mono text-sm">
