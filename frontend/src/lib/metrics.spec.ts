@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { hhi, hhiByRole, pickRateByRole, presence } from './metrics';
+import { hhi, hhiByRole, pickRateByRole, presence, rollingHhi } from './metrics';
 import type { Dataset } from './types';
 
 // Same two-game fixture as pipeline/tests/test_metrics.py, translated —
@@ -83,5 +83,52 @@ describe('pickRateByRole', () => {
 		const slot1 = pickRateByRole(data, 1, { teamId: 1 });
 		expect(slot1['sora']).toBe(0.5);
 		expect(slot1['guinevere']).toBe(0.5);
+	});
+});
+
+function seasonSpanningFixture(): Dataset {
+	const teams = [
+		{ id: 1, canonicalName: 'Selangor Red Giants', shortCode: 'SRG' },
+		{ id: 2, canonicalName: 'Team Vamos', shortCode: 'VMS' }
+	];
+	const heroes = [
+		{ id: 1, canonicalName: 'freya' },
+		{ id: 2, canonicalName: 'guinevere' }
+	];
+	// Ids are deliberately out of chronological order (20, 5, 10) so a test
+	// that passes only by sorting on `playedAt` — not on `id` — proves the
+	// function actually reads the date, not just happens to agree with it.
+	const matches: Dataset['matches'] = [
+		{ id: 20, seriesId: 'S17M1', season: '17', stage: 'regular_season', team1Id: 1, team2Id: 2, team1Side: 'blue', winnerId: 1, gameLength: '10:00', gameNumberInSeries: 1, playedAt: 'June 1, 2026 - 15:00' },
+		{ id: 5, seriesId: 'S17M2', season: '17', stage: 'regular_season', team1Id: 1, team2Id: 2, team1Side: 'blue', winnerId: 2, gameLength: '10:00', gameNumberInSeries: 1, playedAt: 'June 8, 2026 - 15:00' },
+		{ id: 10, seriesId: 'S18M1', season: '18', stage: 'regular_season', team1Id: 1, team2Id: 2, team1Side: 'blue', winnerId: 1, gameLength: '10:00', gameNumberInSeries: 1, playedAt: 'August 14, 2026 - 15:00' }
+	];
+	const drafts: Dataset['drafts'] = [
+		{ id: 1, matchId: 20, teamId: 1, slot: 1, heroId: 1, isBan: false }, // freya
+		{ id: 2, matchId: 5, teamId: 1, slot: 1, heroId: 2, isBan: false }, // guinevere
+		{ id: 3, matchId: 10, teamId: 1, slot: 1, heroId: 1, isBan: false } // freya again
+	];
+	return { teams, heroes, matches, drafts };
+}
+
+describe('rollingHhi', () => {
+	it('returns an empty list for a team with no games', () => {
+		const data = seasonSpanningFixture();
+		expect(rollingHhi(data, 999)).toEqual([]);
+	});
+
+	it('sorts by playedAt (not id) and keeps accumulating across the season boundary', () => {
+		const data = seasonSpanningFixture();
+		const points = rollingHhi(data, 1, 10);
+		expect(points.map((p) => p.matchId)).toEqual([20, 5, 10]);
+		expect(points[0].hhi).toBeCloseTo(1, 10); // just freya
+		expect(points[1].hhi).toBeCloseTo(0.5, 10); // freya + guinevere, 50/50
+		expect(points[2].hhi).toBeCloseTo(5 / 9, 10); // freya x2, guinevere x1 across all 3
+	});
+
+	it('drops the oldest game once the window is full', () => {
+		const data = seasonSpanningFixture();
+		const points = rollingHhi(data, 1, 2);
+		expect(points[2].hhi).toBeCloseTo(0.5, 10); // window is just [id 5, id 10]: one freya, one guinevere
 	});
 });

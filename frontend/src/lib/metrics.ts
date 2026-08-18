@@ -78,3 +78,52 @@ export function hhiByRole(data: Dataset, role: number, opts: ScopeOptions = {}):
 		countByHero(data, scopedDrafts(data, { ...opts, picksOnly: true, role }))
 	);
 }
+
+export interface RollingHhiPoint {
+	matchId: number;
+	playedAt: string | null;
+	hhi: number;
+}
+
+const DEFAULT_ROLLING_WINDOW = 10;
+
+function parsePlayedAt(playedAt: string | null): number | null {
+	if (!playedAt) return null;
+	const t = new Date(playedAt.replace(' - ', ' ')).getTime();
+	return Number.isNaN(t) ? null : t;
+}
+
+function teamGamesSorted(data: Dataset, teamId: number): MatchRow[] {
+	const games = data.matches.filter((m) => m.team1Id === teamId || m.team2Id === teamId);
+	return games.slice().sort((a, b) => {
+		const ta = parsePlayedAt(a.playedAt);
+		const tb = parsePlayedAt(b.playedAt);
+		if (ta !== null && tb !== null) return ta - tb;
+		return a.id - b.id;
+	});
+}
+
+function draftsInMatches(
+	data: Dataset,
+	teamId: number,
+	matchIds: Set<number>,
+	picksOnly: boolean
+): DraftRow[] {
+	return data.drafts.filter(
+		(d) => d.teamId === teamId && matchIds.has(d.matchId) && (!picksOnly || !d.isBan)
+	);
+}
+
+export function rollingHhi(
+	data: Dataset,
+	teamId: number,
+	windowSize: number = DEFAULT_ROLLING_WINDOW
+): RollingHhiPoint[] {
+	const games = teamGamesSorted(data, teamId);
+	return games.map((game, i) => {
+		const window = games.slice(Math.max(0, i - windowSize + 1), i + 1);
+		const matchIds = new Set(window.map((m) => m.id));
+		const counts = countByHero(data, draftsInMatches(data, teamId, matchIds, true));
+		return { matchId: game.id, playedAt: game.playedAt, hhi: hhiFromCounts(counts) };
+	});
+}
