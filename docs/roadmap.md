@@ -39,7 +39,7 @@ Format: Now / Next / Later, anchored to MPL MY Season 18 (14 Aug – Oct 2026).
 ## Next — once v1 is live and stable
 
 - [x] Post-game review module (draft-decision scope, not match film) — done 18 Aug 2026: `/match/[id]` single-game draft breakdown, plus a rolling-HHI trend chart and pick/ban win-rate-delta tables on `/team/[slug]`. No pipeline changes needed. Spec: `docs/superpowers/specs/2026-08-18-post-game-review-design.md`. Plan: `docs/superpowers/plans/2026-08-18-post-game-review.md`.
-- [ ] Season 17 vs Season 18 trend views
+- [x] Season 17 vs Season 18 trend views — done 18 Aug 2026: `presenceDelta` reuses the existing season-filterable `presence`/`hhi`, no pipeline changes. New sections on `/team/[slug]` and `/league` compare each hero's S17 rate to S18-to-date, game counts shown next to every number instead of hidden. Spec: `docs/superpowers/specs/2026-08-18-season-trend-design.md`. Plan: `docs/superpowers/plans/2026-08-18-season-trend.md`.
 - [ ] Re-check whether Liquipedia has migrated MLBB to the new `match2` system — if so, the parser becomes deletable and the format-change risk below disappears
 - [ ] Revisit distribution: is anyone in the scene actually using v1? If not, find out why before building more
 
