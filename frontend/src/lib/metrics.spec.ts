@@ -51,7 +51,7 @@ function fixture(): Dataset {
 	addBans(2, 1, ['baxia', 'valentina', 'kalea', 'suyou', 'harley']);
 	addBans(2, 2, ['freya', 'marcel', 'fanny', 'gloo', 'claude']);
 
-	return { teams, heroes, matches, drafts };
+	return { teams, heroes, matches, drafts, generatedAt: '2026-08-18T00:00:00+00:00' };
 }
 
 describe('presence', () => {
@@ -116,7 +116,7 @@ function seasonSpanningFixture(): Dataset {
 		{ id: 2, matchId: 5, teamId: 1, slot: 1, heroId: 2, isBan: false }, // guinevere
 		{ id: 3, matchId: 10, teamId: 1, slot: 1, heroId: 1, isBan: false } // freya again
 	];
-	return { teams, heroes, matches, drafts };
+	return { teams, heroes, matches, drafts, generatedAt: '2026-08-18T00:00:00+00:00' };
 }
 
 describe('rollingHhi', () => {
@@ -185,7 +185,7 @@ function winRateFixture(): Dataset {
 	pick(8, 'guinevere');
 	pick(9, 'guinevere');
 
-	return { teams, heroes, matches, drafts };
+	return { teams, heroes, matches, drafts, generatedAt: '2026-08-18T00:00:00+00:00' };
 }
 
 describe('pickWinRateDelta', () => {
@@ -248,7 +248,7 @@ function seasonPresenceFixture(): Dataset {
 	// Team 2: kalea in every game, both seasons — never touches the other three heroes.
 	for (const matchId of [1, 2, 3, 4, 5, 6]) pick(matchId, 2, 'kalea');
 
-	return { teams, heroes, matches, drafts };
+	return { teams, heroes, matches, drafts, generatedAt: '2026-08-18T00:00:00+00:00' };
 }
 
 describe('presenceDelta', () => {

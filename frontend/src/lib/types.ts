@@ -39,4 +39,5 @@ export interface Dataset {
 	heroes: Hero[];
 	matches: MatchRow[];
 	drafts: DraftRow[];
+	generatedAt: string; // UTC ISO timestamp set when this dataset.json was built — not page-load time
 }

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from datetime import UTC, datetime
 from pathlib import Path
 
 from .dataset_models import Dataset
@@ -53,7 +54,13 @@ def dataset_from_db(conn: sqlite3.Connection) -> dict:
             "SELECT id, match_id, team_id, slot, hero_id, is_ban FROM drafts"
         )
     ]
-    dataset = {"teams": teams, "heroes": heroes, "matches": matches, "drafts": drafts}
+    dataset = {
+        "teams": teams,
+        "heroes": heroes,
+        "matches": matches,
+        "drafts": drafts,
+        "generatedAt": datetime.now(UTC).isoformat(),
+    }
     Dataset.model_validate(dataset)  # raises on shape mismatch — halts the build (stack.md)
     return dataset
 

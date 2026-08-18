@@ -35,7 +35,7 @@ def _conn_with_one_game() -> sqlite3.Connection:
 
 def test_dataset_from_db_has_all_four_tables():
     dataset = dataset_from_db(_conn_with_one_game())
-    assert set(dataset.keys()) == {"teams", "heroes", "matches", "drafts"}
+    assert set(dataset.keys()) == {"teams", "heroes", "matches", "drafts", "generatedAt"}
     assert len(dataset["teams"]) == 8
     assert len(dataset["matches"]) == 1
     assert len(dataset["drafts"]) == 20

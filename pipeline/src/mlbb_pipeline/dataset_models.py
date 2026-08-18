@@ -66,3 +66,6 @@ class Dataset(BaseModel):
     heroes: list[Hero]
     matches: list[MatchRow]
     drafts: list[DraftRow]
+    generatedAt: str = Field(
+        description="UTC ISO timestamp set when this dataset.json was built — not page-load time"
+    )

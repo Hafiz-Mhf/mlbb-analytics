@@ -16,6 +16,7 @@ VALID = {
         }
     ],
     "drafts": [{"id": 1, "matchId": 1, "teamId": 1, "slot": 1, "heroId": 1, "isBan": False}],
+    "generatedAt": "2026-08-18T10:00:00+00:00",
 }
 
 
