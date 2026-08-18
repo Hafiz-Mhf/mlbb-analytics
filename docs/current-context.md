@@ -1,6 +1,6 @@
 # Current Context
 
-_Last updated: 18 Aug 2026 (roadmap.md's "Next" phase fully checked off — see "What's actually blocking progress now" below)_
+_Last updated: 18 Aug 2026 (public-wording pass + real generatedAt timestamp — see below)_
 
 ## Where things stand
 
@@ -25,11 +25,13 @@ _Last updated: 18 Aug 2026 (roadmap.md's "Next" phase fully checked off — see 
 
 **Distribution checked (18 Aug 2026, roadmap.md's "Next" phase, item 4): nobody in the MPL MY scene is using v1 yet.** Fiz confirmed this directly. This means planning.md's "biggest open assumption" — whether analysts want a _public_ tool at all, vs. something private to their own team — is still unresolved, not resolved-negative and not resolved-positive. Roadmap.md's "Later" phase (live in-draft assistant, accounts/private notes) is explicitly gated on "once Next is validated," and validation is exactly the part that hasn't happened. **This is the real open question right now, not a missing feature.**
 
+**Public-wording pass + real `generatedAt` (18 Aug 2026):** two small, unplanned fixes done ahead of the Threads post, prompted by "make this usable for public, not just analysts." (1) Copy-only pass across `+layout.svelte`, `BaselineAnnotation.svelte`, `league/+page.svelte`, `team/[slug]/+page.svelte` — jargon (HHI, presence, baseline) replaced with plain labels (Draft Predictability, Pick/ban rate, League Average) plus `<abbr>` hover tooltips carrying the precise definition, and a plain-language tagline added to the header. Metric function/variable names in `metrics.ts` untouched — display copy only. (2) `generatedAt` was computed client-side with `new Date()` on every page load, always showing "now" regardless of actual data freshness — the exact bug flagged as still-open below. Fixed properly: `dataset_models.py`'s `Dataset` model gained a `generatedAt: str` field, `emit.py` stamps it with the real UTC build time, `gen_ts.py` regenerated `types.ts`, `data.ts` now reads it from the dataset instead of computing it. `data/mlbb.db` and `dataset.json` rebuilt. 116 tests passing, unchanged (89 pipeline + 27 frontend — existing fixtures updated, no new tests needed). Browser-verified: header now shows the actual `mlbb-build` run time. Two commits: `731c492` (wording), `b86e4d5` (generatedAt). Not pushed yet.
+
 ## What's actually blocking progress now
 
 Not a technical gap — every roadmap.md "Now" and "Next" item is done or checked. The gap is that nobody has confirmed wanting this yet. Before adding more features (Later phase or otherwise), the honest next move is distribution/outreach: get it in front of at least one real MPL MY analyst or scene-follower and see if it survives contact. Building further without that risks a well-engineered tool nobody asked for — see planning.md's own framing of this exact risk.
 
-**Still open, all previously deferred, none blocking:** a real `generatedAt` timestamp (currently `new Date()` at page-load time, wrong for a static site — needs the pipeline to emit one), flex-rate UI, per-role breakdowns wired into the Team Scouting screen, the standings-based build-halting invariant (needs a standings-page parser that doesn't exist yet).
+**Still open, all previously deferred, none blocking:** flex-rate UI, per-role breakdowns wired into the Team Scouting screen, the standings-based build-halting invariant (needs a standings-page parser that doesn't exist yet).
 
 Everything below this paragraph describes earlier state.
 
