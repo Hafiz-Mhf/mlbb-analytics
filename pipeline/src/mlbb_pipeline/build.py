@@ -20,7 +20,7 @@ TEAM_SHORT_CODES: dict[str, str | None] = {
     "RRQ Tora": None,
     "Selangor Red Giants": "SRG",
     "Team Flash": "FL",
-    "Team Rey": "REY",
+    "Team Rey": "TR",
     "Team Vamos": "VMS",
 }
 

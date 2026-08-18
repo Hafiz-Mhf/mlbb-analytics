@@ -204,7 +204,7 @@ Both seasons' `{{TeamParticipants}}` blocks confirm the **same eight teams in Se
 | RRQ Tora | *unconfirmed* | |
 | Selangor Red Giants | SRG | |
 | Team Flash | FL | |
-| Team Rey | REY | |
+| Team Rey | TR | |
 | Team Vamos | VMS | |
 
 An identical roster across both seasons is a real advantage: every Season 18 team has a complete Season 17 baseline from day one. No team starts the season with an empty comparison.

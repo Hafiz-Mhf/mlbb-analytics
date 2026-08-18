@@ -23,6 +23,16 @@ export const TEAM_SHORT_CODES: Record<string, string | null> = {
 	'RRQ Tora': null,
 	'Selangor Red Giants': 'SRG',
 	'Team Flash': 'FL',
-	'Team Rey': 'REY',
+	'Team Rey': 'TR',
 	'Team Vamos': 'VMS'
 };
+
+export function teamSlug(canonicalName: string): string {
+	return (TEAM_SHORT_CODES[canonicalName] ?? canonicalName).toLowerCase().replace(/\s+/g, '-');
+}
+
+// Logos live at static/teams/<slug>.webp, named after the same slug as the
+// team route (see [slug]/+page.ts) so both stay in lockstep automatically.
+export function teamLogo(canonicalName: string): string {
+	return `/teams/${teamSlug(canonicalName)}.webp`;
+}

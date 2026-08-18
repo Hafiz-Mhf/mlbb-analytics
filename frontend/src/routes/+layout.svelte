@@ -2,7 +2,10 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 	import { selectedTeam } from '$lib/teamSelection';
+	import { mockDataset } from '$lib/data';
+	import { teamSlug } from '$lib/teams';
 
 	let { children } = $props();
 
@@ -11,6 +14,16 @@
 		{ href: '/league', label: 'League Overview' },
 		{ href: '/log', label: 'Match Log' }
 	]);
+
+	const teamOptions = mockDataset.teams
+		.map((t) => ({ slug: teamSlug(t.canonicalName), name: t.canonicalName }))
+		.sort((a, b) => a.name.localeCompare(b.name));
+
+	function onTeamChange(e: Event) {
+		const slug = (e.target as HTMLSelectElement).value;
+		selectedTeam.set(slug);
+		goto(`/team/${slug}`);
+	}
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
@@ -24,7 +37,7 @@
 				does.
 			</p>
 		</div>
-		<nav class="flex gap-6 text-sm">
+		<nav class="flex items-center gap-6 text-sm">
 			{#each navLinks as link (link.href)}
 				<a
 					href={link.href}
@@ -35,6 +48,15 @@
 					{link.label}
 				</a>
 			{/each}
+			<select
+				value={$selectedTeam}
+				onchange={onTeamChange}
+				class="border border-[#3a352c] bg-transparent px-2 py-1 font-mono text-xs text-[#e8e4dc]"
+			>
+				{#each teamOptions as team (team.slug)}
+					<option value={team.slug}>{team.name}</option>
+				{/each}
+			</select>
 		</nav>
 	</header>
 	{@render children()}
