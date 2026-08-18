@@ -6,8 +6,9 @@
 	interface Props {
 		columns: Column[];
 		rows: Record<string, unknown>[];
+		rowHref?: (row: Record<string, unknown>) => string;
 	}
-	let { columns, rows }: Props = $props();
+	let { columns, rows, rowHref }: Props = $props();
 </script>
 
 <table class="w-full border-collapse font-mono text-sm">
@@ -21,8 +22,14 @@
 	<tbody>
 		{#each rows as row, i (i)}
 			<tr class="border-b border-[#2a2620]">
-				{#each columns as col (col.key)}
-					<td class="px-3 py-2">{row[col.key]}</td>
+				{#each columns as col, ci (col.key)}
+					<td class="px-3 py-2">
+						{#if rowHref && ci === 0}
+							<a href={rowHref(row)} class="text-[--color-amber] hover:underline">{row[col.key]}</a>
+						{:else}
+							{row[col.key]}
+						{/if}
+					</td>
 				{/each}
 			</tr>
 		{/each}

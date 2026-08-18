@@ -19,4 +19,18 @@ describe('DataTable', () => {
 		await expect.element(page.getByText('guinevere')).toBeInTheDocument();
 		await expect.element(page.getByText('freya')).toBeInTheDocument();
 	});
+
+	it('links the first cell of each row when rowHref is given', async () => {
+		render(DataTable, {
+			columns: [
+				{ key: 'series', label: 'Series' },
+				{ key: 'winner', label: 'Winner' }
+			],
+			rows: [{ series: 'M1', winner: 'SRG' }],
+			rowHref: (row: Record<string, unknown>) => `/match/${row.series}`
+		});
+		const link = page.getByRole('link', { name: 'M1' });
+		await expect.element(link).toBeInTheDocument();
+		await expect.element(link).toHaveAttribute('href', '/match/M1');
+	});
 });
