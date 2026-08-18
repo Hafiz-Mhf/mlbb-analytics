@@ -13,6 +13,7 @@
 			.filter((m) => teamFilter === 'all' || m.team1Id === Number(teamFilter) || m.team2Id === Number(teamFilter))
 			.filter((m) => stageFilter === 'all' || m.stage === stageFilter)
 			.map((m) => ({
+				id: m.id,
 				series: m.seriesId,
 				season: m.season,
 				stage: m.stage,
@@ -61,5 +62,6 @@
 			{ key: 'length', label: 'Length' }
 		]}
 		{rows}
+		rowHref={(row) => `/match/${row.id}`}
 	/>
 </div>
