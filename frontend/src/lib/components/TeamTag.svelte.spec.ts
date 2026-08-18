@@ -9,8 +9,8 @@ describe('TeamTag', () => {
 		await expect.element(page.getByText('SRG')).toBeInTheDocument();
 	});
 
-	it('falls back to the full name when no short code exists', async () => {
+	it('shows the short code for RRQ Tora', async () => {
 		render(TeamTag, { name: 'RRQ Tora' });
-		await expect.element(page.getByText('RRQ Tora')).toBeInTheDocument();
+		await expect.element(page.getByText('RRQ')).toBeInTheDocument();
 	});
 });

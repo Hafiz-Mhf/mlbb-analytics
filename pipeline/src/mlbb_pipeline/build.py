@@ -11,13 +11,12 @@ from .models import ParsedGame
 from .parser import parse_bracket, parse_matchlist
 from .schema import create_schema
 
-# Short forms documented in CLAUDE.md's team list. RRQ Tora's is not yet
-# determined on the live wiki — a known cosmetic gap, not a blocker.
+# Short forms documented in CLAUDE.md's team list.
 TEAM_SHORT_CODES: dict[str, str | None] = {
     "AC Esports": "AC",
     "Bigetron MY by VIT": "BTRM",
     "Invictus Gaming": "IG",
-    "RRQ Tora": None,
+    "RRQ Tora": "RRQ",
     "Selangor Red Giants": "SRG",
     "Team Flash": "FL",
     "Team Rey": "TR",

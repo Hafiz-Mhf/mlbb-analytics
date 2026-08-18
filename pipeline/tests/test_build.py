@@ -18,7 +18,7 @@ def test_seed_reference_tables_inserts_eight_teams_with_aliases():
     assert len(teams) == 8
     by_name = dict(teams)
     assert by_name["Selangor Red Giants"] == "SRG"
-    assert by_name["RRQ Tora"] is None  # short code not yet known (cosmetic gap)
+    assert by_name["RRQ Tora"] == "RRQ"
 
     srg_id = conn.execute(
         "SELECT id FROM teams WHERE canonical_name = 'Selangor Red Giants'"

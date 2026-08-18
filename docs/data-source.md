@@ -201,7 +201,7 @@ Both seasons' `{{TeamParticipants}}` blocks confirm the **same eight teams in Se
 | AC Esports | AC | Commonly called "All Combo" |
 | Bigetron MY by VIT | BTRM | Name unchanged since S17 |
 | Invictus Gaming | IG | |
-| RRQ Tora | *unconfirmed* | |
+| RRQ Tora | RRQ | |
 | Selangor Red Giants | SRG | |
 | Team Flash | FL | |
 | Team Rey | TR | |

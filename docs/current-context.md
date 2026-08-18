@@ -71,7 +71,7 @@ Season 18 is the reason to build now rather than keep analyzing S17 retrospectiv
 7. ~~Generated TypeScript types from the Pydantic models.~~ Done 17 Aug 2026 — `dataset_models.py`, `gen_ts.py`, `emit.py` validation.
 8. ~~GitHub Actions weekly cron.~~ Done 17 Aug 2026 — `.github/workflows/weekly-build.yml`, smoke-tested with a real run.
 
-Both roadmap.md "Now" checklists (Pipeline, Frontend) are fully checked off, and as of 18 Aug 2026 so is "Next" — post-game review, S17-vs-S18 trend views, the match2 re-check, and the distribution check are all done (see above; distribution came back "nobody yet," which is itself the finding). No blocking unknowns remain in the code. Open items are all cosmetic or explicitly deferred polish: RRQ Tora's short code, the `generatedAt` timestamp, flex rate, per-role UI, the standings invariant. The real open item is distribution, not code — see "What's actually blocking progress now" above.
+Both roadmap.md "Now" checklists (Pipeline, Frontend) are fully checked off, and as of 18 Aug 2026 so is "Next" — post-game review, S17-vs-S18 trend views, the match2 re-check, and the distribution check are all done (see above; distribution came back "nobody yet," which is itself the finding). No blocking unknowns remain in the code. Open items are all cosmetic or explicitly deferred polish: flex rate, per-role UI, the standings invariant. The real open item is distribution, not code — see "What's actually blocking progress now" above.
 
 ## Known constraints going in
 

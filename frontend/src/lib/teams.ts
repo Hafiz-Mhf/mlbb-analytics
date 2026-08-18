@@ -3,8 +3,7 @@
 // hue range (~35-45°) so a team swatch is never mistaken for the
 // baseline-annotation accent (design-direction-v1.md's open question).
 // Short codes copied from pipeline/src/mlbb_pipeline/build.py's
-// TEAM_SHORT_CODES so both sides agree — RRQ Tora's is genuinely
-// unknown (a documented cosmetic gap, not a bug).
+// TEAM_SHORT_CODES so both sides agree.
 export const TEAM_COLORS: Record<string, string> = {
 	'AC Esports': '#e5484d',
 	'Bigetron MY by VIT': '#12a594',
@@ -20,7 +19,7 @@ export const TEAM_SHORT_CODES: Record<string, string | null> = {
 	'AC Esports': 'AC',
 	'Bigetron MY by VIT': 'BTRM',
 	'Invictus Gaming': 'IG',
-	'RRQ Tora': null,
+	'RRQ Tora': 'RRQ',
 	'Selangor Red Giants': 'SRG',
 	'Team Flash': 'FL',
 	'Team Rey': 'TR',

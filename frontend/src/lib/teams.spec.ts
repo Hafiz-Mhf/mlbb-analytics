@@ -27,6 +27,6 @@ describe('teams', () => {
 
 	it('matches the pipeline short codes exactly (build.py TEAM_SHORT_CODES)', () => {
 		expect(TEAM_SHORT_CODES['Selangor Red Giants']).toBe('SRG');
-		expect(TEAM_SHORT_CODES['RRQ Tora']).toBeNull();
+		expect(TEAM_SHORT_CODES['RRQ Tora']).toBe('RRQ');
 	});
 });
