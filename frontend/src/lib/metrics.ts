@@ -174,3 +174,28 @@ export function pickWinRateDelta(
 	}
 	return results.sort((a, b) => b.delta - a.delta);
 }
+
+export interface PresenceDelta {
+	hero: string;
+	before: number;
+	after: number;
+	delta: number;
+}
+
+export function presenceDelta(
+	data: Dataset,
+	beforeSeason: string,
+	afterSeason: string,
+	opts: { teamId?: number } = {}
+): PresenceDelta[] {
+	const before = presence(data, { ...opts, season: beforeSeason });
+	const after = presence(data, { ...opts, season: afterSeason });
+	const heroes = new Set([...Object.keys(before), ...Object.keys(after)]);
+	return [...heroes]
+		.map((hero) => {
+			const b = before[hero] ?? 0;
+			const a = after[hero] ?? 0;
+			return { hero, before: b, after: a, delta: a - b };
+		})
+		.sort((x, y) => Math.abs(y.delta) - Math.abs(x.delta));
+}

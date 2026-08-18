@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { hhi, hhiByRole, pickRateByRole, pickWinRateDelta, presence, rollingHhi } from './metrics';
+import {
+	hhi,
+	hhiByRole,
+	pickRateByRole,
+	pickWinRateDelta,
+	presence,
+	presenceDelta,
+	rollingHhi
+} from './metrics';
 import type { Dataset } from './types';
 
 // Same two-game fixture as pipeline/tests/test_metrics.py, translated —
@@ -194,5 +202,76 @@ describe('pickWinRateDelta', () => {
 	it('scopes to bans only when isBan is set, and returns nothing when there are none', () => {
 		const data = winRateFixture();
 		expect(pickWinRateDelta(data, 1, { isBan: true })).toEqual([]);
+	});
+});
+
+function seasonPresenceFixture(): Dataset {
+	const teams = [
+		{ id: 1, canonicalName: 'Selangor Red Giants', shortCode: 'SRG' },
+		{ id: 2, canonicalName: 'Team Vamos', shortCode: 'VMS' }
+	];
+	const heroes = [
+		{ id: 1, canonicalName: 'freya' },
+		{ id: 2, canonicalName: 'guinevere' },
+		{ id: 3, canonicalName: 'chou' },
+		{ id: 4, canonicalName: 'kalea' }
+	];
+	const heroId = (name: string) => heroes.find((h) => h.canonicalName === name)!.id;
+
+	// Team 1 plays 4 games in S17, 2 in S18. Team 2 plays alongside them in
+	// every game (so league-scoped denominators differ from team-scoped
+	// ones) but only ever touches kalea, never the three heroes under test.
+	const matches: Dataset['matches'] = [
+		{ id: 1, seriesId: 'S17M1', season: '17', stage: 'regular_season', team1Id: 1, team2Id: 2, team1Side: 'blue', winnerId: 1, gameLength: '10:00', gameNumberInSeries: 1, playedAt: null },
+		{ id: 2, seriesId: 'S17M2', season: '17', stage: 'regular_season', team1Id: 1, team2Id: 2, team1Side: 'blue', winnerId: 1, gameLength: '10:00', gameNumberInSeries: 1, playedAt: null },
+		{ id: 3, seriesId: 'S17M3', season: '17', stage: 'regular_season', team1Id: 1, team2Id: 2, team1Side: 'blue', winnerId: 1, gameLength: '10:00', gameNumberInSeries: 1, playedAt: null },
+		{ id: 4, seriesId: 'S17M4', season: '17', stage: 'regular_season', team1Id: 1, team2Id: 2, team1Side: 'blue', winnerId: 1, gameLength: '10:00', gameNumberInSeries: 1, playedAt: null },
+		{ id: 5, seriesId: 'S18M1', season: '18', stage: 'regular_season', team1Id: 1, team2Id: 2, team1Side: 'blue', winnerId: 1, gameLength: '10:00', gameNumberInSeries: 1, playedAt: null },
+		{ id: 6, seriesId: 'S18M2', season: '18', stage: 'regular_season', team1Id: 1, team2Id: 2, team1Side: 'blue', winnerId: 1, gameLength: '10:00', gameNumberInSeries: 1, playedAt: null }
+	];
+
+	const drafts: Dataset['drafts'] = [];
+	let id = 1;
+	const pick = (matchId: number, teamId: number, hero: string) =>
+		drafts.push({ id: id++, matchId, teamId, slot: 1, heroId: heroId(hero), isBan: false });
+
+	// Team 1, S17: freya in all 4 games, chou in 1 of 4.
+	pick(1, 1, 'freya');
+	pick(2, 1, 'freya');
+	pick(3, 1, 'freya');
+	pick(4, 1, 'freya');
+	pick(1, 1, 'chou');
+	// Team 1, S18: freya in 1 of 2, guinevere (new) in both.
+	pick(5, 1, 'freya');
+	pick(5, 1, 'guinevere');
+	pick(6, 1, 'guinevere');
+	// Team 2: kalea in every game, both seasons — never touches the other three heroes.
+	for (const matchId of [1, 2, 3, 4, 5, 6]) pick(matchId, 2, 'kalea');
+
+	return { teams, heroes, matches, drafts };
+}
+
+describe('presenceDelta', () => {
+	it('computes before/after/delta per hero, filling 0 for a season a hero never appeared in, sorted by |delta| descending', () => {
+		const data = seasonPresenceFixture();
+		const deltas = presenceDelta(data, '17', '18', { teamId: 1 });
+		expect(deltas.map((d) => d.hero)).toEqual(['guinevere', 'freya', 'chou']);
+
+		expect(deltas[0]).toMatchObject({ before: 0, after: 1, delta: 1 }); // guinevere: new in S18
+		expect(deltas[1].before).toBeCloseTo(1, 10); // freya: 4/4 in S17
+		expect(deltas[1].after).toBeCloseTo(0.5, 10); // freya: 1/2 in S18
+		expect(deltas[1].delta).toBeCloseTo(-0.5, 10);
+		expect(deltas[2]).toMatchObject({ after: 0 }); // chou: absent from S18 entirely
+		expect(deltas[2].before).toBeCloseTo(0.25, 10); // chou: 1/4 in S17
+	});
+
+	it('scopes to one team when teamId is given, and to the whole league when it is omitted', () => {
+		const data = seasonPresenceFixture();
+		const teamScoped = presenceDelta(data, '17', '18', { teamId: 1 });
+		const leagueScoped = presenceDelta(data, '17', '18');
+		const teamFreya = teamScoped.find((d) => d.hero === 'freya')!;
+		const leagueFreya = leagueScoped.find((d) => d.hero === 'freya')!;
+		expect(teamFreya.before).toBeCloseTo(1, 10); // 4 of team 1's own 4 games
+		expect(leagueFreya.before).toBeCloseTo(0.5, 10); // 4 of 8 league team-instances (denominator doubles)
 	});
 });
