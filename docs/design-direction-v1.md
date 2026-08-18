@@ -21,3 +21,5 @@ Extends the existing Audit Trail system (from the hafizfaruqi.my portfolio) rath
 
 ## Open question to settle before building
 Amber-as-primary-accent works for a portfolio; on a data-dense dashboard, consider using it only for the baseline-annotation pattern and interactive elements, keeping team-color swatches as the dashboard's main "color" so amber doesn't visually compete with team identity.
+
+**Resolved (18 Aug 2026):** confirmed during the visual-hierarchy redesign pass — amber stayed scoped to links, focus rings, active nav, and the sort indicator; season/win-rate deltas got their own green/red pair instead of amber, so it never became a data color. See current-context.md.
