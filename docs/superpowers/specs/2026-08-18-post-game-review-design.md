@@ -16,9 +16,11 @@ Checked `frontend/src/lib/data/dataset.json`: every one of the 181 committed gam
 
 Both live next to the existing `presence`/`hhi`/`pickRateByRole` functions and follow the same style: take the full `Dataset`, filter down, return plain numbers — no classes, no framework code.
 
-### 1. Trend over time — `rollingHhi` / `rollingPresence`
+**Correction from the version discussed in chat:** that version named two rolling functions, `rollingHhi` and `rollingPresence`. Presence is always a per-hero number (how often _that specific hero_ shows up) — there's no single number that means "presence" for a team as a whole, so there's nothing to draw as one line on a chart. HHI has no such problem — it's already one number per team. So this phase ships __`rollingHhi` only__ as the trend line. The "how often does a specific hero show up, and does it line up with winning" question is already answered by the win-rate-delta calculation below, which is per-hero by design.
 
-For one team, walk through their games in the order they were actually played (sort by `playedAt`), and at each point look back over their last N games (N=10 by default) to recompute HHI (how narrow their hero pool is) or presence (how often each hero shows up). Output is a list of points — one per game — so it can be drawn as a line on a chart.
+### 1. Trend over time — `rollingHhi`
+
+For one team, walk through their games in the order they were actually played (sort by `playedAt`), and at each point look back over their last N games (N=10 by default) to recompute HHI (how narrow their hero pool is). Output is a list of points — one per game — so it can be drawn as a line on a chart.
 
 Because team IDs don't change between Season 17 and Season 18 (CLAUDE.md confirms same 8 teams), the trailing window keeps working right through the season boundary — a team's early-Season-18 trend line still has real history behind it instead of starting from zero.
 
@@ -32,19 +34,21 @@ For one team, for every hero they've picked (or separately, banned) at least a h
 
 ## New page: `/match/[id]` — one game, close up
 
-Shows one full game: both teams' five picks and five bans each, side by side. Every single pick or ban is labeled two ways — how often that team normally picks/bans that hero (their own history) and how often the league as a whole does (the baseline). This reuses the same baseline-comparison component already built for Team Scouting, rather than a new one. Also shows who won, game length, and which series/stage it's from (regular season vs playoffs).
+Shows one full game: both teams' five picks and five bans each, side by side. Every single pick or ban is labeled two ways — how often that team normally picks/bans that hero (their own history) and how often the league as a whole does (the baseline). This reuses the same baseline-comparison piece already built for Team Scouting (`BaselineAnnotation`) rather than a new one — no new component needed here, same as how the Team and League pages already wire existing pieces together without inventing page-specific ones. Also shows who won, game length, and which series/stage it's from (regular season vs playoffs).
 
-Reached by clicking a row on `/log` (Match Log already lists every game — it currently doesn't link anywhere, this makes each row clickable).
+Reached by clicking a row on `/log` (Match Log already lists every game — it currently doesn't link anywhere). The Match Log's shared table piece (`DataTable`) gets one small optional addition — a way to turn the first cell of each row into a link — so every other page using that same piece is unaffected unless it opts in.
 
 ## Team page (`/team/[slug]`): two new boxes
 
-1. **Trend chart** — the rolling HHI/presence line from above, last 10 games, small chart (sparkline-sized, not a full dashboard chart).
-2. **Win-rate-delta table** — one row per hero that's crossed the 5-game threshold, split into a picks table and a bans table, showing the delta and the game count it's based on. Heroes under the threshold aren't shown at all rather than shown grayed-out — an empty/short table for a team early in a season is honest, a long list of blanks isn't.
+1. **Trend chart** — the rolling HHI line from above, last 10 games, small chart (sparkline-sized, not a full dashboard chart). New small reusable piece since nothing in the site draws a line yet — one pure function that turns numbers into chart coordinates (so the math is testable on its own without a browser), plus a thin component that draws it.
+2. **Win-rate-delta table** — one row per hero that's crossed the 5-game threshold, split into a picks table and a bans table, showing the delta and the game count it's based on. Heroes under the threshold aren't shown at all rather than shown grayed-out — an empty/short table for a team early in a season is honest, a long list of blanks isn't. Built the same way the Team page already builds its presence table — a plain table in the page itself, not a new shared piece, since nothing here needs to be reused elsewhere yet.
 
 ## Testing
 
-- `metrics.spec.ts`: new cases for `rollingHhi`/`rollingPresence` (empty history, window spanning the S17→S18 boundary, N larger than games played) and `pickWinRateDelta` (right below/at/above the 5-game threshold, a team with zero picks of a hero, delta sign correctness).
-- New Vitest component tests for `/match/[id]` and the two team-page panels, following the same pattern as the existing three screens' tests.
+- `metrics.spec.ts`: new cases for `rollingHhi` (empty history, a window that spans the S17→S18 boundary, a window smaller than the games played) and `pickWinRateDelta` (right below/at/above the 5-game threshold, delta sign correctness, the ban/pick split).
+- A plain test file for the chart-coordinate function (no browser needed, it's just math).
+- A Vitest component test for the new trend-chart piece (empty state vs. a real chart), following the same pattern as the site's other small pieces (`BaselineAnnotation`, `TeamTag`, `FreshnessIndicator`).
+- The match page and the team page's new sections follow the same pattern already set by the Team/League/Match-Log pages in this codebase: none of those are tested directly today, only the reusable pieces and calculations they're built from are. This phase keeps that pattern rather than introducing a new one.
 
 ## Explicitly not in this phase
 
