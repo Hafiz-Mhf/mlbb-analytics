@@ -2,6 +2,7 @@
 	import { mockDataset, generatedAt } from '$lib/data';
 	import { hhi, presence, presenceDelta } from '$lib/metrics';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
+	import HeroTag from '$lib/components/HeroTag.svelte';
 	import StatBlock from '$lib/components/StatBlock.svelte';
 	import TeamTag from '$lib/components/TeamTag.svelte';
 
@@ -72,7 +73,7 @@
 						.sort(([, a], [, b]) => b - a)
 						.slice(0, 10) as [hero, rate] (hero)}
 						<tr class="border-b border-line/60 hover:bg-surface-2">
-							<td class="px-3 py-2 text-ink">{hero}</td>
+							<td class="px-3 py-2"><HeroTag name={hero} /></td>
 							<td class="px-3 py-2">{(rate * 100).toFixed(1)}%</td>
 						</tr>
 					{/each}
@@ -103,7 +104,7 @@
 				<tbody>
 					{#each seasonDeltas as row (row.hero)}
 						<tr class="border-b border-line/60 hover:bg-surface-2">
-							<td class="px-3 py-2 text-ink">{row.hero}</td>
+							<td class="px-3 py-2"><HeroTag name={row.hero} /></td>
 							<td class="px-3 py-2">{(row.before * 100).toFixed(1)}%</td>
 							<td class="px-3 py-2">{(row.after * 100).toFixed(1)}%</td>
 							<td class="px-3 py-2 {row.delta >= 0 ? 'text-positive' : 'text-negative'}"

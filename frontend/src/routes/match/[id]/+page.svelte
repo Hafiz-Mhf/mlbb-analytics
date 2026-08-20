@@ -4,6 +4,7 @@
 	import { resolve } from '$app/paths';
 	import BaselineAnnotation from '$lib/components/BaselineAnnotation.svelte';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
+	import HeroTag from '$lib/components/HeroTag.svelte';
 	import TeamTag from '$lib/components/TeamTag.svelte';
 
 	let { data } = $props();
@@ -48,7 +49,7 @@
 			<div class="flex items-center justify-between border-b border-line/60 py-2 font-mono text-sm">
 				<span class="flex items-center gap-2">
 					<span class={row.kind === 'Ban' ? 'text-negative' : 'text-positive'}>{row.kind}</span>
-					<span class="text-ink">{row.hero}</span>
+					<HeroTag name={row.hero} />
 				</span>
 				<BaselineAnnotation value={row.value} baseline={row.baseline} />
 			</div>
