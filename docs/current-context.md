@@ -1,6 +1,6 @@
 # Current Context
 
-_Last updated: 20 Aug 2026 (TrendChart fixed-width bug — see below)_
+_Last updated: 20 Aug 2026 (Match Log season split, team-switcher scoping, homepage logo alignment — see below)_
 
 ## Where things stand
 
@@ -71,6 +71,14 @@ Doc sync from this pass: frontend.md's route list and `DataTable` bullet, roadma
 **TrendChart fixed-width bug (20 Aug 2026):** direct report, screenshot of `/team/vms` showing the "Predictability trend" sparkline as a short flat blue segment stuck in the top-left of an otherwise-empty card. Root cause: `TrendChart.svelte`'s `<svg>` carried a literal `width={160}` HTML attribute (the component's own default), so it always rendered at 160 physical pixels regardless of how wide the card actually was — invisible as a bug on the narrower cards elsewhere in the app, obvious on Team Scouting's full-width card. Fixed by wrapping the chart in a `bind:clientWidth` div and driving both the `viewBox` and every point's x-coordinate off the measured width, so it fills the card at any size. Considered `preserveAspectRatio="none"` first (stretch the fixed 160-wide viewBox) but rejected it — non-uniform scaling would turn the 6px-radius point circles into horizontally-stretched ellipses; measuring real width and computing coordinates in true pixel space keeps circles round.
 
 Fixing the width exposed a second, smaller issue in the same card: the heading read "Predictability trend, last 10 games" but the chart plots `rollingHhi`'s 10-game _rolling average_ across the team's entire game history (~55 points for a team that's played that many), not the last 10 games in isolation — a label nobody could have caught while the chart was rendering as an unreadable 160px sliver. Relabeled to "10-game rolling average" to match what's actually drawn; no change to the underlying metric. 35/35 frontend tests still passing. One commit, `a3e9199`, pushed.
+
+**Match Log season split, team-switcher scoping, homepage logo alignment (20 Aug 2026):** three direct-feedback fixes, no schema/pipeline changes.
+
+1. **Match Log grouped by season.** `/log`'s series list mixed S17 and S18 in one chronological list; direct feedback asked for them kept apart, with room to add a future international event the same way. `seriesRows` (unchanged) now feeds a `seasonGroups` derived value in `+page.svelte` that buckets by the existing `season` string field, sorted newest-season-first; the page renders one `<h2>Season {n}</h2>` + card block per group instead of one flat card. The redundant `· S{season}` tag was dropped from each row since the section header already carries it. A future event just needs its own `season`-like key to slot into the same loop — no rework needed.
+2. **Team switcher scoped to Team Scouting only.** The header's "Switch scouted team" dropdown (added 18 Aug 2026) rendered on every route, including League Overview and Match Log where it does nothing. Wrapped in `{#if page.url.pathname.startsWith('/team')}` in `+layout.svelte`; nav links unaffected.
+3. **Homepage team-card grid was unevenly aligned** — root-caused, not guessed: Tailwind's preflight resets `<img>` to `height: auto`, which overrides the `height={40}` HTML attribute on `+page.svelte`'s logo `<img>`. Each of the 8 team logos has a different native aspect ratio (`tr.webp`, Team Rey, is a portrait 154×256 mark), so every logo rendered at its own natural height scaled to 40px width instead of a fixed 40×40 box — Team Rey's inflated to ~66px, stretching its entire grid row and leaving dead space under the shorter logos next to it (`object-contain` never got a chance to letterbox, since the box already equaled the content's own aspect). Fixed by adding `h-10 w-10` (real CSS, not just the attribute) alongside `object-contain`, so every logo — square crest or portrait/landscape wordmark — letterboxes into the same fixed square and all 8 cards sit at equal height.
+
+All three verified live in-browser (Playwright): Match Log shows "Season 18" then "Season 17" as separate sections; the team dropdown is present on `/team/srg` and absent on `/log`; the homepage grid renders 8 equal-height cards. `svelte-check` clean, 35/35 frontend tests still passing (pure layout/scoping, no new logic). Two commits pending push.
 
 ## What's actually blocking progress now
 

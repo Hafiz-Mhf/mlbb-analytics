@@ -9,7 +9,7 @@ SvelteKit — not Next.js. Less boilerplate, lighter runtime, no SSR/SEO need fo
 - `/` — Team Scouting (default landing, team selector drives everything below it)
 - `/team/[slug]` — deep-linkable Team Scouting for one team (e.g. `/team/srg`), so a view is shareable between analysts, not just usable in-session
 - `/league` — League Overview (cross-team HHI and presence comparison)
-- `/log` — Match Log (series list — score, Bo count, team logos — filterable by team and stage)
+- `/log` — Match Log (series list — score, Bo count, team logos — filterable by team and stage, grouped into per-season sections so S17/S18 never mix, ready for a future international-event section the same way)
 - `/series/[seriesId]` — one series' games as a collapsible accordion, each game's picks/bans against the league baseline (replaced `/match/[id]`'s one-route-per-game shape, 20 Aug 2026)
 
 Filtering by patch was previously listed here and has been removed — Liquipedia records no patch field (data-source.md).
