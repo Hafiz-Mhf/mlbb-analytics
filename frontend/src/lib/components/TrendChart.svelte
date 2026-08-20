@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { sparklinePoints } from '$lib/sparkline';
 
 	interface Props {
@@ -9,10 +10,15 @@
 		height?: number;
 	}
 	let { values, label, pointLabels, width = 160, height = 40 }: Props = $props();
-	const coords = $derived(sparklinePoints(values, width, height));
+	// Falls back to `width` until the wrapper reports its real size, then tracks
+	// the container so the chart fills the card instead of rendering at a fixed
+	// 160px regardless of how wide the card actually is.
+	let measuredWidth = $state(untrack(() => width));
+	const chartWidth = $derived(measuredWidth || width);
+	const coords = $derived(sparklinePoints(values, chartWidth, height));
 	const points = $derived(
 		values.map((v, i) => {
-			const x = values.length === 1 ? width / 2 : (i / (values.length - 1)) * width;
+			const x = values.length === 1 ? chartWidth / 2 : (i / (values.length - 1)) * chartWidth;
 			const y = height - v * height;
 			return { x, y, tooltip: pointLabels?.[i] ?? v.toFixed(3) };
 		})
@@ -32,69 +38,71 @@
 {#if values.length === 0}
 	<span class="text-xs text-muted">Not enough games yet</span>
 {:else}
-	<svg
-		{width}
-		height={height + tooltipPad}
-		viewBox={`0 0 ${width} ${height + tooltipPad}`}
-		role="img"
-		aria-label={label}
-		class="overflow-visible"
-	>
-		<defs>
-			<linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-				<stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.35" />
-				<stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0" />
-			</linearGradient>
-		</defs>
-		<g transform={`translate(0, ${tooltipPad})`}>
-			<path d={areaPath} fill={`url(#${gradientId})`} />
-			<polyline
-				points={coords}
-				fill="none"
-				style="stroke: var(--color-primary); stroke-width: 1.5"
-			/>
-			{#each points as p, i (i)}
-				<circle
-					cx={p.x}
-					cy={p.y}
-					r="6"
-					fill="var(--color-primary)"
-					tabindex="0"
-					role="button"
-					aria-label={p.tooltip}
-					class="opacity-50 transition-opacity duration-150 outline-none hover:opacity-100 focus-visible:opacity-100"
-					onmouseenter={() => (activeIndex = i)}
-					onmouseleave={() => (activeIndex = null)}
-					onfocus={() => (activeIndex = i)}
-					onblur={() => (activeIndex = null)}
-				>
-					<title>{p.tooltip}</title>
-				</circle>
-			{/each}
-			{#if activeIndex !== null}
-				{@const p = points[activeIndex]}
-				{@const boxW = Math.max(40, p.tooltip.length * 4.6 + 8)}
-				{@const tx = Math.min(Math.max(p.x, boxW / 2 + 1), width - boxW / 2 - 1)}
-				<g transform={`translate(${tx}, ${p.y})`} class="pointer-events-none">
-					<rect
-						x={-boxW / 2}
-						y="-24"
-						width={boxW}
-						height="14"
-						rx="2"
-						fill="var(--color-surface)"
-						stroke="var(--color-line)"
-					/>
-					<text
-						x="0"
-						y="-14"
-						text-anchor="middle"
-						font-size="8"
-						font-family="var(--font-mono)"
-						fill="var(--color-ink)">{p.tooltip}</text
+	<div bind:clientWidth={measuredWidth}>
+		<svg
+			width={chartWidth}
+			height={height + tooltipPad}
+			viewBox={`0 0 ${chartWidth} ${height + tooltipPad}`}
+			role="img"
+			aria-label={label}
+			class="overflow-visible"
+		>
+			<defs>
+				<linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+					<stop offset="0%" stop-color="var(--color-primary)" stop-opacity="0.35" />
+					<stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0" />
+				</linearGradient>
+			</defs>
+			<g transform={`translate(0, ${tooltipPad})`}>
+				<path d={areaPath} fill={`url(#${gradientId})`} />
+				<polyline
+					points={coords}
+					fill="none"
+					style="stroke: var(--color-primary); stroke-width: 1.5"
+				/>
+				{#each points as p, i (i)}
+					<circle
+						cx={p.x}
+						cy={p.y}
+						r="6"
+						fill="var(--color-primary)"
+						tabindex="0"
+						role="button"
+						aria-label={p.tooltip}
+						class="opacity-50 transition-opacity duration-150 outline-none hover:opacity-100 focus-visible:opacity-100"
+						onmouseenter={() => (activeIndex = i)}
+						onmouseleave={() => (activeIndex = null)}
+						onfocus={() => (activeIndex = i)}
+						onblur={() => (activeIndex = null)}
 					>
-				</g>
-			{/if}
-		</g>
-	</svg>
+						<title>{p.tooltip}</title>
+					</circle>
+				{/each}
+				{#if activeIndex !== null}
+					{@const p = points[activeIndex]}
+					{@const boxW = Math.max(40, p.tooltip.length * 4.6 + 8)}
+					{@const tx = Math.min(Math.max(p.x, boxW / 2 + 1), chartWidth - boxW / 2 - 1)}
+					<g transform={`translate(${tx}, ${p.y})`} class="pointer-events-none">
+						<rect
+							x={-boxW / 2}
+							y="-24"
+							width={boxW}
+							height="14"
+							rx="2"
+							fill="var(--color-surface)"
+							stroke="var(--color-line)"
+						/>
+						<text
+							x="0"
+							y="-14"
+							text-anchor="middle"
+							font-size="8"
+							font-family="var(--font-mono)"
+							fill="var(--color-ink)">{p.tooltip}</text
+						>
+					</g>
+				{/if}
+			</g>
+		</svg>
+	</div>
 {/if}

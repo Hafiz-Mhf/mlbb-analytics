@@ -66,7 +66,7 @@
 
 	<div class="card p-5">
 		<h2 class="mb-3 font-display text-lg tracking-wide text-ink">
-			Predictability trend, last 10 games
+			Predictability trend, 10-game rolling average
 		</h2>
 		<TrendChart
 			values={trend.map((p) => p.hhi)}
