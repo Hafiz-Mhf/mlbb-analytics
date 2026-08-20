@@ -23,13 +23,14 @@ function instanceCount(data: Dataset, opts: ScopeOptions): number {
 
 function scopedDrafts(
 	data: Dataset,
-	opts: ScopeOptions & { picksOnly?: boolean; role?: number }
+	opts: ScopeOptions & { picksOnly?: boolean; bansOnly?: boolean; role?: number }
 ): DraftRow[] {
 	const matchIds = new Set(scopedMatches(data, opts).map((m) => m.id));
 	return data.drafts.filter((d) => {
 		if (!matchIds.has(d.matchId)) return false;
 		if (opts.teamId !== undefined && d.teamId !== opts.teamId) return false;
 		if (opts.picksOnly && d.isBan) return false;
+		if (opts.bansOnly && !d.isBan) return false;
 		if (opts.role !== undefined && d.slot !== opts.role) return false;
 		return true;
 	});
@@ -49,6 +50,20 @@ export function presence(data: Dataset, opts: ScopeOptions = {}): Record<string,
 	const denominator = instanceCount(data, opts);
 	if (denominator === 0) return {};
 	const counts = countByHero(data, scopedDrafts(data, opts));
+	return Object.fromEntries(Object.entries(counts).map(([h, c]) => [h, c / denominator]));
+}
+
+export function pickRate(data: Dataset, opts: ScopeOptions = {}): Record<string, number> {
+	const denominator = instanceCount(data, opts);
+	if (denominator === 0) return {};
+	const counts = countByHero(data, scopedDrafts(data, { ...opts, picksOnly: true }));
+	return Object.fromEntries(Object.entries(counts).map(([h, c]) => [h, c / denominator]));
+}
+
+export function banRate(data: Dataset, opts: ScopeOptions = {}): Record<string, number> {
+	const denominator = instanceCount(data, opts);
+	if (denominator === 0) return {};
+	const counts = countByHero(data, scopedDrafts(data, { ...opts, bansOnly: true }));
 	return Object.fromEntries(Object.entries(counts).map(([h, c]) => [h, c / denominator]));
 }
 

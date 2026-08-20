@@ -1,13 +1,18 @@
 <script lang="ts">
 	import { mockDataset, generatedAt } from '$lib/data';
-	import { hhi, presence, presenceDelta } from '$lib/metrics';
+	import { banRate, hhi, pickRate, presenceDelta } from '$lib/metrics';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
 	import HeroTag from '$lib/components/HeroTag.svelte';
 	import StatBlock from '$lib/components/StatBlock.svelte';
 	import TeamTag from '$lib/components/TeamTag.svelte';
 
-	const leaguePresence = $derived(presence(mockDataset));
 	const leagueHhiValue = $derived(hhi(mockDataset));
+
+	function topN(rates: Record<string, number>, n = 10) {
+		return Object.entries(rates)
+			.sort(([, a], [, b]) => b - a)
+			.slice(0, n);
+	}
 
 	const rows = $derived(
 		mockDataset.teams
@@ -21,6 +26,11 @@
 	const s18Games = $derived(mockDataset.matches.filter((m) => m.season === '18').length);
 	const totalGames = $derived(mockDataset.matches.length);
 	const seasonDeltas = $derived(presenceDelta(mockDataset, '17', '18').slice(0, 15));
+
+	const s17Picks = $derived(topN(pickRate(mockDataset, { season: '17' })));
+	const s17Bans = $derived(topN(banRate(mockDataset, { season: '17' })));
+	const s18Picks = $derived(topN(pickRate(mockDataset, { season: '18' })));
+	const s18Bans = $derived(topN(banRate(mockDataset, { season: '18' })));
 </script>
 
 <div class="space-y-8">
@@ -58,20 +68,12 @@
 		</div>
 	</div>
 
-	<div class="card p-5">
-		<h2 class="mb-3 font-display text-lg tracking-wide text-ink">Most picked & banned heroes (top 10)</h2>
-		<div class="overflow-x-auto">
+	{#snippet rateTable(title: string, rows: [string, number][])}
+		<div>
+			<h3 class="mb-2 font-mono text-sm text-muted">{title}</h3>
 			<table class="w-full border-collapse font-mono text-sm">
-				<thead>
-					<tr class="border-b border-line text-left text-muted">
-						<th class="px-3 py-2 font-normal">Hero</th>
-						<th class="px-3 py-2 font-normal">Pick/ban rate</th>
-					</tr>
-				</thead>
 				<tbody>
-					{#each Object.entries(leaguePresence)
-						.sort(([, a], [, b]) => b - a)
-						.slice(0, 10) as [hero, rate] (hero)}
+					{#each rows as [hero, rate] (hero)}
 						<tr class="border-b border-line/60 hover:bg-surface-2">
 							<td class="px-3 py-2"><HeroTag name={hero} /></td>
 							<td class="px-3 py-2">{(rate * 100).toFixed(1)}%</td>
@@ -79,6 +81,26 @@
 					{/each}
 				</tbody>
 			</table>
+		</div>
+	{/snippet}
+
+	<div class="card p-5">
+		<h2 class="mb-3 font-display text-lg tracking-wide text-ink">Meta Draft (top 10)</h2>
+		<div class="grid gap-6 md:grid-cols-2">
+			<div>
+				<p class="mb-3 font-mono text-sm text-muted">Season 17 ({s17Games} games)</p>
+				<div class="grid gap-4 sm:grid-cols-2">
+					{@render rateTable('Most picked', s17Picks)}
+					{@render rateTable('Most banned', s17Bans)}
+				</div>
+			</div>
+			<div>
+				<p class="mb-3 font-mono text-sm text-muted">Season 18, to date ({s18Games} games)</p>
+				<div class="grid gap-4 sm:grid-cols-2">
+					{@render rateTable('Most picked', s18Picks)}
+					{@render rateTable('Most banned', s18Bans)}
+				</div>
+			</div>
 		</div>
 	</div>
 

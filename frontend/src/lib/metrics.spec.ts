@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
+	banRate,
 	hhi,
 	hhiByRole,
+	pickRate,
 	pickRateByRole,
 	pickWinRateDelta,
 	presence,
@@ -67,6 +69,45 @@ describe('presence', () => {
 		const data = fixture();
 		const rates = presence(data);
 		expect(rates['baxia']).toBe(0.5);
+	});
+});
+
+describe('pickRate', () => {
+	it('counts picks only, per team', () => {
+		const data = fixture();
+		const rates = pickRate(data, { teamId: 1 });
+		expect(rates['guinevere']).toBe(1.0);
+		expect(rates['sora']).toBe(0.5);
+		expect(rates['baxia']).toBeUndefined();
+	});
+
+	it('league scope doubles the denominator', () => {
+		const data = fixture();
+		expect(pickRate(data)['guinevere']).toBe(0.5);
+	});
+});
+
+describe('banRate', () => {
+	it('counts bans only, per team', () => {
+		const data = fixture();
+		const rates = banRate(data, { teamId: 1 });
+		expect(rates['baxia']).toBe(1.0);
+		expect(rates['guinevere']).toBeUndefined();
+	});
+
+	it('league scope doubles the denominator', () => {
+		const data = fixture();
+		expect(banRate(data)['baxia']).toBe(0.5);
+	});
+
+	it('sums with pickRate to equal presence, for every hero', () => {
+		const data = fixture();
+		const picks = pickRate(data, { teamId: 1 });
+		const bans = banRate(data, { teamId: 1 });
+		const combined = presence(data, { teamId: 1 });
+		for (const hero of Object.keys(combined)) {
+			expect((picks[hero] ?? 0) + (bans[hero] ?? 0)).toBeCloseTo(combined[hero], 10);
+		}
 	});
 });
 
