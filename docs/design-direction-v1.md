@@ -12,7 +12,7 @@ Replaced with a fresh, esports-native identity rather than re-wiring the old one
 - **Surface**: `#0c1120` card background, `#121a30` hover/elevated, `#1f2b45` borders — every table/stat block now sits in a bordered `.card` (`border-radius: 0.75rem`) instead of floating bare on the page background, which was most of what read as "basic"
 - **Text**: `#eef2f8` primary, `#7c8aa6` muted (contrast-checked: 5.9:1 muted-on-bg, primary ~14:1)
 - **Primary accent**: electric blue `#38bdf8` — links, active nav, focus rings, sort indicator, chart line/fill, filter dropdown text
-- **Gold accent**: `#fbbf24` — reserved for achievement/highlight only (winner badge ring + pill on `/match/[id]`, StatBlock's top gradient bar), never a general interactive color
+- **Gold accent**: `#fbbf24` — reserved for achievement/highlight only (winner badge ring + pill and notable-pick/ban ring on `/series/[seriesId]`, StatBlock's top gradient bar, winning score in `/log`'s list), never a general interactive color
 - **Delta colors**: `#4ade80` positive / `#f87171` negative, unchanged in spirit from the old green/red pair, just retuned to sit on the new dark navy
 - **Display font**: Russo One (real Google Fonts `<link>` in `app.html` now, with preconnect) — bold broadcast-graphic impact for headings and the big stat numbers
 - **Body font**: Chakra Petch — techy/angular, replaces Inter

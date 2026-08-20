@@ -9,7 +9,8 @@ SvelteKit — not Next.js. Less boilerplate, lighter runtime, no SSR/SEO need fo
 - `/` — Team Scouting (default landing, team selector drives everything below it)
 - `/team/[slug]` — deep-linkable Team Scouting for one team (e.g. `/team/srg`), so a view is shareable between analysts, not just usable in-session
 - `/league` — League Overview (cross-team HHI and presence comparison)
-- `/log` — Match Log (draft-by-draft record, filterable by team and stage)
+- `/log` — Match Log (series list — score, Bo count, team logos — filterable by team and stage)
+- `/series/[seriesId]` — one series' games as a collapsible accordion, each game's picks/bans against the league baseline (replaced `/match/[id]`'s one-route-per-game shape, 20 Aug 2026)
 
 Filtering by patch was previously listed here and has been removed — Liquipedia records no patch field (data-source.md).
 
@@ -48,7 +49,7 @@ No chart library in v1 (stack.md). uiux.md is tables-first by design; add one on
 
 ## Components
 
-- **One reusable data table** behind Team Scouting, League Overview, and Match Log. All three are variations of "rows of draft or metric data" — one implementation, three configurations, not three bespoke tables.
+- **`DataTable.svelte`** — originally one reusable table behind all three v1 screens. No longer referenced by any route as of the 20 Aug 2026 Match Log redesign (Team Scouting and League Overview moved to `StatBlock`-led sections earlier; Match Log's series list and per-game breakdown are bespoke card/accordion markup, not tabular). Component and its spec still exist; nothing currently renders it.
 - **Baseline annotation** as its own small component: raw value in mono, league baseline beside it, muted. This is the tool's core mechanic (planning.md) and the difference between insightful and misleading, so it must not drift between screens.
 - **Freshness indicator** — last-updated timestamp, shown consistently wherever data appears. With weekly rebuilds, an analyst needs to know whether they are reading this week's meta or last week's.
 - **Team tag** — colour swatch plus short code, needed once the dashboard covers all 8 teams (design-direction-v1.md).
