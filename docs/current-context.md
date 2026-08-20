@@ -1,6 +1,6 @@
 # Current Context
 
-_Last updated: 18 Aug 2026 (esports visual identity pivot — see below)_
+_Last updated: 20 Aug 2026 (hero icons — see below)_
 
 ## Where things stand
 
@@ -46,7 +46,7 @@ Also fixed 6 `svelte/no-navigation-without-resolve` eslint errors using SvelteKi
 5. `DataTable`'s sort indicator was a raw `^`/`v` text glyph — replaced with an inline SVG chevron (rotates 180° for desc), consistent with the "vector-only icon" rule.
 6. Added a global `prefers-reduced-motion` block in `layout.css` (low-impact — the only motion in the app is subtle opacity/color transitions, but it was missing entirely).
 
-`svelte-check` and `eslint` both clean, 28/28 frontend tests still passing (no new tests — pure polish, no new logic to cover). Verified live in-browser (Playwright): skip link focuses correctly, sort chevron renders and rotates, sparkline tooltip appears on Tab-focus with the correct date/value, and the RRQ Tora team filter survived a full Log → Match → Back navigation round trip. Not committed yet.
+`svelte-check` and `eslint` both clean, 28/28 frontend tests still passing (no new tests — pure polish, no new logic to cover). Verified live in-browser (Playwright): skip link focuses correctly, sort chevron renders and rotates, sparkline tooltip appears on Tab-focus with the correct date/value, and the RRQ Tora team filter survived a full Log → Match → Back navigation round trip. Committed together with the esports pivot below, `a597ef1`.
 
 **Esports visual identity pivot (18 Aug 2026):** direct feedback right after the audit pass above — "this is not redesign... does not look like a proper visual to share to people." Asked which direction (keep brand + add depth, vs. fresh esports identity, vs. see both first); user picked fresh identity outright. Investigating the "basic" complaint surfaced a real bug, not just a taste gap: **Syne/Inter/JetBrains Mono were never actually loaded** — no `@font-face`, no Google Fonts `<link>`, anywhere in the app. The whole typography identity had been silently degrading to system sans-serif since the project's first commit.
 
@@ -54,7 +54,11 @@ Replaced wholesale, documented in full in design-direction-v1.md's "Esports iden
 
 Along the way, every hardcoded hex Tailwind arbitrary-value class (`text-[#8a8478]`, `border-[#3a352c]`, `text-[--color-amber]`, etc. — scattered across all 4 route pages and all 6 shared components) was replaced with real Tailwind v4 `@theme` tokens (`text-muted`, `border-line`, `bg-surface`, `text-primary`, `text-gold`, `text-positive`/`text-negative`). Not just a coat of paint — this was the `color-semantic` anti-pattern the ui-ux-pro-max checklist itself flags (raw hex in components), now fixed everywhere, confirmed via `grep` finding zero remaining old hex/token references.
 
-`svelte-check` and `eslint` both clean, 28/28 frontend tests still passing (pure visual layer, no logic touched). Verified live in-browser (Playwright) on all 4 screens at desktop and 390px mobile — 0px horizontal overflow on every page, Google Fonts confirmed loading with real 200 responses (previously would have silently 404'd or never been requested at all, since there was no `<link>` to request them). Not committed yet.
+`svelte-check` and `eslint` both clean, 28/28 frontend tests still passing (pure visual layer, no logic touched). Verified live in-browser (Playwright) on all 4 screens at desktop and 390px mobile — 0px horizontal overflow on every page, Google Fonts confirmed loading with real 200 responses (previously would have silently 404'd or never been requested at all, since there was no `<link>` to request them). Committed alongside the a11y/nav pass above, one commit: `a597ef1`.
+
+**Hero icons next to hero names (20 Aug 2026):** direct follow-up question during the redesign pass — "will small hero icons next to the name be better?" Yes, same recognition-over-recall win `TeamTag.svelte` already gave team names; the open question was only where portraits would come from, since (unlike the 8 team logos) zero hero images existed anywhere in the repo. User picked Liquipedia as the source. Getting a usable filename per hero took real digging: hero pages' own `image=` infobox param is a tall (607×1080) splash-art crop, wrong shape for a small circle. The wiki's own hero-grid template (`{{HeroIconTable}}` on `Portal:Heroes`) turned out to route through `Module:CharacterIcon`, whose per-wiki `Module:CharacterIcon/Data` page holds a `hero → {file, startDate, endDate}` table already used for exactly this purpose elsewhere on the site — square, small, kept current across reworks/recolors. Parsed that Lua table for all 91 dataset heroes (91/91 resolved, 0 misses), fetched each file through the same throttled MediaWiki client pattern `fetcher.py` already uses (custom User-Agent, 2s interval), center-cropped to square and resized to 96×96 webp via a one-time `pip install pillow` script (not a project dependency — same "not a committed pipeline step" precedent as the team logos, which were hand-fetched too).
+
+New `frontend/src/lib/heroes.ts` (`heroSlug`/`heroIcon`) and `HeroTag.svelte` mirror `teams.ts`/`TeamTag.svelte` exactly — circle icon, `onerror` fallback drops to text-only rather than a broken-image glyph. Wired into the 6 spots that render bare hero-name text: Team Scouting's 3 hero tables, League Overview's top-10 and season-swing tables, Match Log detail's draft rows. No pipeline or dataset changes — this is a frontend/asset-only feature, hero identity was already fully resolved by the existing alias table. 28/28 frontend tests still passing (text stays in the DOM alongside the icon, so nothing broke). Browser-verified all three screens at desktop width, plus the fallback path specifically (renamed one `.webp` mid-session, confirmed clean text-only degrade, restored it). One commit, `eebd720`, pushed.
 
 ## What's actually blocking progress now
 
