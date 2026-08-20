@@ -9,9 +9,11 @@
 	let { value, baseline, format = defaultFormat }: Props = $props();
 </script>
 
-<span class="inline-flex items-baseline gap-2 font-mono">
-	<span class="text-base font-medium text-ink">{format(value)}</span>
-	<span class="rounded-full border border-line bg-surface-2 px-2 py-0.5 text-xs text-muted">
+<span class="inline-flex shrink-0 flex-wrap items-baseline gap-x-2 gap-y-1 font-mono">
+	<span class="whitespace-nowrap text-base font-medium text-ink">{format(value)}</span>
+	<span
+		class="whitespace-nowrap rounded-full border border-line bg-surface-2 px-2 py-0.5 text-xs text-muted"
+	>
 		<abbr title="Average across all 8 MPL Malaysia teams" class="no-underline">league avg</abbr>
 		{format(baseline)}
 	</span>

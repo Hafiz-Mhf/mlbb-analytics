@@ -48,7 +48,7 @@
 </script>
 
 <div class="space-y-6">
-	<div class="flex items-center justify-between">
+	<div class="flex flex-wrap items-center justify-between gap-3">
 		<h1 class="font-display text-2xl tracking-wide text-ink">Match Log</h1>
 		<FreshnessIndicator {generatedAt} />
 	</div>
@@ -88,17 +88,19 @@
 			{#each seriesRows as s (s.seriesId)}
 				<a
 					href={resolve('/series/[seriesId]', { seriesId: s.seriesId })}
-					class="flex flex-wrap items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-surface-2"
+					class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 px-4 py-3 transition-colors hover:bg-surface-2 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
 				>
 					<div class="flex items-center gap-2 font-mono text-sm text-ink">
 						<TeamTag name={s.team1} size={18} />
 						<span class="text-muted">vs</span>
 						<TeamTag name={s.team2} size={18} />
 					</div>
-					<div class="font-display text-lg tracking-wide text-ink">
-						{s.team1Wins} : {s.team2Wins}
+					<div class="justify-self-end font-display text-lg tracking-wide sm:justify-self-center">
+						<span class={s.team1Wins > s.team2Wins ? 'text-gold' : 'text-ink'}>{s.team1Wins}</span>
+						<span class="text-muted">:</span>
+						<span class={s.team2Wins > s.team1Wins ? 'text-gold' : 'text-ink'}>{s.team2Wins}</span>
 					</div>
-					<div class="text-right font-mono text-xs text-muted">
+					<div class="col-span-2 text-right font-mono text-xs text-muted sm:col-span-1">
 						<div>
 							{s.stage === 'playoffs' ? 'Playoffs' : 'Regular Season'} · S{s.season} · Bo{s.bestOf}
 						</div>
