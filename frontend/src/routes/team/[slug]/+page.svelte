@@ -47,10 +47,10 @@
 	);
 </script>
 
-<div class="space-y-6">
-	<div class="flex items-center justify-between">
-		<h1 class="flex items-center gap-3 font-[Syne] text-2xl">
-			<TeamTag name={team.canonicalName} />
+<div class="space-y-8">
+	<div class="flex flex-wrap items-center justify-between gap-3">
+		<h1 class="flex items-center gap-3 font-display text-2xl tracking-wide text-ink">
+			<TeamTag name={team.canonicalName} size={22} />
 			{team.canonicalName}
 		</h1>
 		<FreshnessIndicator {generatedAt} />
@@ -63,8 +63,10 @@
 		baseline={leagueHhi}
 	/>
 
-	<div>
-		<h2 class="mb-2 font-[Syne] text-lg">Predictability trend, last 10 games</h2>
+	<div class="card p-5">
+		<h2 class="mb-3 font-display text-lg tracking-wide text-ink">
+			Predictability trend, last 10 games
+		</h2>
 		<TrendChart
 			values={trend.map((p) => p.hhi)}
 			pointLabels={trend.map(
@@ -74,16 +76,16 @@
 		/>
 	</div>
 
-	<div>
-		<h2 class="mb-2 font-[Syne] text-lg">Season 17 vs Season 18, by hero</h2>
-		<p class="mb-3 font-mono text-sm text-[#8a8478]">
+	<div class="card p-5">
+		<h2 class="mb-1 font-display text-lg tracking-wide text-ink">Season 17 vs Season 18, by hero</h2>
+		<p class="mb-3 font-mono text-sm text-muted">
 			Draft predictability: {teamHhiS17.toFixed(3)} ({s17Games} games) → {teamHhiS18.toFixed(3)} ({s18Games}
 			games)
 		</p>
 		<div class="overflow-x-auto">
 			<table class="w-full border-collapse font-mono text-sm">
 				<thead>
-					<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
+					<tr class="border-b border-line text-left text-muted">
 						<th class="px-3 py-2 font-normal">Hero</th>
 						<th class="px-3 py-2 font-normal">S17</th>
 						<th class="px-3 py-2 font-normal">S18</th>
@@ -92,11 +94,11 @@
 				</thead>
 				<tbody>
 					{#each seasonDeltas as row (row.hero)}
-						<tr class="border-b border-[#2a2620] hover:bg-[#221f19]">
-							<td class="px-3 py-2">{row.hero}</td>
+						<tr class="border-b border-line/60 hover:bg-surface-2">
+							<td class="px-3 py-2 text-ink">{row.hero}</td>
 							<td class="px-3 py-2">{(row.before * 100).toFixed(1)}%</td>
 							<td class="px-3 py-2">{(row.after * 100).toFixed(1)}%</td>
-							<td class="px-3 py-2 {row.delta >= 0 ? 'text-[#8fbf8a]' : 'text-[#d98873]'}"
+							<td class="px-3 py-2 {row.delta >= 0 ? 'text-positive' : 'text-negative'}"
 								>{row.delta >= 0 ? '+' : ''}{(row.delta * 100).toFixed(1)}%</td
 							>
 						</tr>
@@ -108,12 +110,12 @@
 
 	{#snippet deltaTable(rows: { hero: string; delta: number; games: number }[])}
 		{#if rows.length === 0}
-			<p class="font-mono text-xs text-[#8a8478]">Not enough games yet.</p>
+			<p class="font-mono text-xs text-muted">Not enough games yet.</p>
 		{:else}
 			<div class="overflow-x-auto">
 				<table class="w-full border-collapse font-mono text-sm">
 					<thead>
-						<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
+						<tr class="border-b border-line text-left text-muted">
 							<th class="px-3 py-2 font-normal">Hero</th>
 							<th class="px-3 py-2 font-normal">Win rate vs. normal</th>
 							<th class="px-3 py-2 font-normal">Games</th>
@@ -121,9 +123,9 @@
 					</thead>
 					<tbody>
 						{#each rows as row (row.hero)}
-							<tr class="border-b border-[#2a2620] hover:bg-[#221f19]">
-								<td class="px-3 py-2">{row.hero}</td>
-								<td class="px-3 py-2 {row.delta >= 0 ? 'text-[#8fbf8a]' : 'text-[#d98873]'}"
+							<tr class="border-b border-line/60 hover:bg-surface-2">
+								<td class="px-3 py-2 text-ink">{row.hero}</td>
+								<td class="px-3 py-2 {row.delta >= 0 ? 'text-positive' : 'text-negative'}"
 									>{row.delta >= 0 ? '+' : ''}{(row.delta * 100).toFixed(1)}%</td
 								>
 								<td class="px-3 py-2">{row.games}</td>
@@ -135,35 +137,38 @@
 		{/if}
 	{/snippet}
 
-	<div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
-		<div>
-			<h2 class="mb-2 font-[Syne] text-lg">Picks that line up with winning</h2>
+	<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+		<div class="card p-5">
+			<h2 class="mb-3 font-display text-lg tracking-wide text-ink">Picks that line up with winning</h2>
 			{@render deltaTable(pickDeltas)}
 		</div>
-		<div>
-			<h2 class="mb-2 font-[Syne] text-lg">Bans that line up with winning</h2>
+		<div class="card p-5">
+			<h2 class="mb-3 font-display text-lg tracking-wide text-ink">Bans that line up with winning</h2>
 			{@render deltaTable(banDeltas)}
 		</div>
 	</div>
 
-	<div class="overflow-x-auto">
-		<table class="w-full border-collapse font-mono text-sm">
-			<thead>
-				<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
-					<th class="px-3 py-2 font-normal">Hero</th>
-					<th class="px-3 py-2 font-normal">Pick/ban rate (vs. league average)</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each rows as row (row.hero)}
-					<tr class="border-b border-[#2a2620] hover:bg-[#221f19]">
-						<td class="px-3 py-2">{row.hero}</td>
-						<td class="px-3 py-2">
-							<BaselineAnnotation value={row.value} baseline={row.baseline} />
-						</td>
+	<div class="card p-5">
+		<h2 class="mb-3 font-display text-lg tracking-wide text-ink">Pick/ban rate, top 15</h2>
+		<div class="overflow-x-auto">
+			<table class="w-full border-collapse font-mono text-sm">
+				<thead>
+					<tr class="border-b border-line text-left text-muted">
+						<th class="px-3 py-2 font-normal">Hero</th>
+						<th class="px-3 py-2 font-normal">Pick/ban rate (vs. league average)</th>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{#each rows as row (row.hero)}
+						<tr class="border-b border-line/60 hover:bg-surface-2">
+							<td class="px-3 py-2 text-ink">{row.hero}</td>
+							<td class="px-3 py-2">
+								<BaselineAnnotation value={row.value} baseline={row.baseline} />
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>

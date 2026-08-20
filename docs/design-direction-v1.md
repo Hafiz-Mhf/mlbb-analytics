@@ -1,8 +1,27 @@
 # Design Direction v1
 
-Extends the existing Audit Trail system (from the hafizfaruqi.my portfolio) rather than starting fresh.
+**Superseded 18 Aug 2026 — see "Esports identity pivot" below.** This doc originally extended the Audit Trail system (from the hafizfaruqi.my portfolio) rather than starting fresh. That's no longer the live identity; kept below for history.
 
-## Carried over from Audit Trail
+## Esports identity pivot (18 Aug 2026)
+
+Direct feedback: the Audit Trail-carryover look "looks very basic... does not look like a proper visual to share." Investigating turned up the actual root cause — **Syne/Inter/JetBrains Mono were never really loaded.** No `@font-face`, no Google Fonts `<link>`, anywhere in the codebase. The whole typography identity had been silently falling back to system sans-serif since the project started; the "carried over from Audit Trail" fonts below never rendered once.
+
+Replaced with a fresh, esports-native identity rather than re-wiring the old one (user's explicit choice over "keep brand, add depth" — see the redesign conversation):
+
+- **Background**: deep navy-black (`#05070d`), not warm charcoal — plus two faint radial gradients (blue top-left, gold top-right) behind the whole page for atmosphere
+- **Surface**: `#0c1120` card background, `#121a30` hover/elevated, `#1f2b45` borders — every table/stat block now sits in a bordered `.card` (`border-radius: 0.75rem`) instead of floating bare on the page background, which was most of what read as "basic"
+- **Text**: `#eef2f8` primary, `#7c8aa6` muted (contrast-checked: 5.9:1 muted-on-bg, primary ~14:1)
+- **Primary accent**: electric blue `#38bdf8` — links, active nav, focus rings, sort indicator, chart line/fill, filter dropdown text
+- **Gold accent**: `#fbbf24` — reserved for achievement/highlight only (winner badge ring + pill on `/match/[id]`, StatBlock's top gradient bar), never a general interactive color
+- **Delta colors**: `#4ade80` positive / `#f87171` negative, unchanged in spirit from the old green/red pair, just retuned to sit on the new dark navy
+- **Display font**: Russo One (real Google Fonts `<link>` in `app.html` now, with preconnect) — bold broadcast-graphic impact for headings and the big stat numbers
+- **Body font**: Chakra Petch — techy/angular, replaces Inter
+- **Data font**: JetBrains Mono, unchanged — draft rows, tables, HHI values still tabular mono
+
+All raw hex Tailwind arbitrary-value classes (`text-[#8a8478]`, `border-[#3a352c]`, etc.) that had accumulated across every component were replaced with real Tailwind v4 `@theme` tokens (`text-muted`, `border-line`, `bg-surface`, `text-primary`, `text-gold`, `text-positive`/`text-negative`) — fixes the `color-semantic` anti-pattern (raw hex in components) the ui-ux-pro-max checklist flags, not just a coat of paint.
+
+## Carried over from Audit Trail (historical — replaced above)
+
 - Base: warm charcoal (#1A1814)
 - Accent: amber (#C8A97E)
 - Display font: Syne

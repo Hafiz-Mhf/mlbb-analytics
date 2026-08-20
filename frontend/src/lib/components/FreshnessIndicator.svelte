@@ -6,4 +6,9 @@
 	const formatted = $derived(new Date(generatedAt).toLocaleString());
 </script>
 
-<span class="text-xs text-[#8a8478]">Updated {formatted}</span>
+<span
+	class="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface-2 px-3 py-1 font-mono text-xs text-muted"
+>
+	<span class="h-1.5 w-1.5 rounded-full bg-positive" aria-hidden="true"></span>
+	Updated {formatted}
+</span>

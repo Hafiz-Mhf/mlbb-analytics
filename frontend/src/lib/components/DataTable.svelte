@@ -41,13 +41,13 @@
 	});
 </script>
 
-<div class="overflow-x-auto">
+<div class="card overflow-x-auto">
 	<table class="w-full border-collapse font-mono text-sm">
 		<thead>
-			<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
+			<tr class="border-b border-line bg-surface-2 text-left text-muted">
 				{#each columns as col (col.key)}
 					<th
-						class="px-3 py-2 font-normal"
+						class="px-3 py-2 font-normal first:rounded-tl-xl last:rounded-tr-xl"
 						aria-sort={sortKey === col.key
 							? sortDir === 'asc'
 								? 'ascending'
@@ -57,11 +57,24 @@
 						<button
 							type="button"
 							onclick={() => toggleSort(col.key)}
-							class="flex items-center gap-1 font-mono text-inherit hover:text-[--color-amber]"
+							class="flex min-h-11 items-center gap-1 font-mono text-inherit hover:text-primary"
 						>
 							{col.label}
 							{#if sortKey === col.key}
-								<span class="text-[--color-amber]">{sortDir === 'asc' ? '^' : 'v'}</span>
+								<svg
+									width="10"
+									height="10"
+									viewBox="0 0 10 10"
+									fill="none"
+									stroke="var(--color-primary)"
+									stroke-width="1.5"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									aria-hidden="true"
+									class={sortDir === 'desc' ? 'rotate-180' : ''}
+								>
+									<path d="M2 6.5 5 3.5 8 6.5" />
+								</svg>
 							{/if}
 						</button>
 					</th>
@@ -71,19 +84,17 @@
 		<tbody>
 			{#if sortedRows.length === 0}
 				<tr>
-					<td class="px-3 py-6 text-center text-[#8a8478]" colspan={columns.length}>
+					<td class="px-3 py-6 text-center text-muted" colspan={columns.length}>
 						No rows match the current filters.
 					</td>
 				</tr>
 			{:else}
 				{#each sortedRows as row, i (i)}
-					<tr class="border-b border-[#2a2620] hover:bg-[#221f19]">
+					<tr class="border-b border-line/60 transition-colors hover:bg-surface-2">
 						{#each columns as col, ci (col.key)}
 							<td class="px-3 py-2">
 								{#if rowHref && ci === 0}
-									<a href={rowHref(row)} class="text-[--color-amber] hover:underline"
-										>{row[col.key]}</a
-									>
+									<a href={rowHref(row)} class="text-primary hover:underline">{row[col.key]}</a>
 								{:else}
 									{row[col.key]}
 								{/if}

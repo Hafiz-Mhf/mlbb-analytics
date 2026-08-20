@@ -22,9 +22,9 @@
 	const seasonDeltas = $derived(presenceDelta(mockDataset, '17', '18').slice(0, 15));
 </script>
 
-<div class="space-y-6">
-	<div class="flex items-center justify-between">
-		<h1 class="font-[Syne] text-2xl">League Overview</h1>
+<div class="space-y-8">
+	<div class="flex flex-wrap items-center justify-between gap-3">
+		<h1 class="font-display text-2xl tracking-wide text-ink">League Overview</h1>
 		<FreshnessIndicator {generatedAt} />
 	</div>
 
@@ -35,75 +35,84 @@
 		context={`${totalGames} games, all 8 teams`}
 	/>
 
-	<div class="overflow-x-auto">
-		<table class="w-full border-collapse font-mono text-sm">
-			<thead>
-				<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
-					<th class="px-3 py-2 font-normal">Team</th>
-					<th class="px-3 py-2 font-normal">Draft predictability</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each rows as row (row.team.id)}
-					<tr class="border-b border-[#2a2620] hover:bg-[#221f19]">
-						<td class="px-3 py-2"><TeamTag name={row.team.canonicalName} size={22} /></td>
-						<td class="px-3 py-2">{row.teamHhi.toFixed(3)}</td>
+	<div class="card p-5">
+		<h2 class="mb-3 font-display text-lg tracking-wide text-ink">Draft predictability by team</h2>
+		<div class="overflow-x-auto">
+			<table class="w-full border-collapse font-mono text-sm">
+				<thead>
+					<tr class="border-b border-line text-left text-muted">
+						<th class="px-3 py-2 font-normal">Team</th>
+						<th class="px-3 py-2 font-normal">Draft predictability</th>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{#each rows as row (row.team.id)}
+						<tr class="border-b border-line/60 hover:bg-surface-2">
+							<td class="px-3 py-2"><TeamTag name={row.team.canonicalName} size={22} /></td>
+							<td class="px-3 py-2 text-ink">{row.teamHhi.toFixed(3)}</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
 
-	<h2 class="pt-4 font-[Syne] text-lg">Most picked & banned heroes (top 10)</h2>
-	<div class="overflow-x-auto">
-		<table class="w-full border-collapse font-mono text-sm">
-			<thead>
-				<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
-					<th class="px-3 py-2 font-normal">Hero</th>
-					<th class="px-3 py-2 font-normal">Pick/ban rate</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each Object.entries(leaguePresence)
-					.sort(([, a], [, b]) => b - a)
-					.slice(0, 10) as [hero, rate] (hero)}
-					<tr class="border-b border-[#2a2620] hover:bg-[#221f19]">
-						<td class="px-3 py-2">{hero}</td>
-						<td class="px-3 py-2">{(rate * 100).toFixed(1)}%</td>
+	<div class="card p-5">
+		<h2 class="mb-3 font-display text-lg tracking-wide text-ink">Most picked & banned heroes (top 10)</h2>
+		<div class="overflow-x-auto">
+			<table class="w-full border-collapse font-mono text-sm">
+				<thead>
+					<tr class="border-b border-line text-left text-muted">
+						<th class="px-3 py-2 font-normal">Hero</th>
+						<th class="px-3 py-2 font-normal">Pick/ban rate</th>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{#each Object.entries(leaguePresence)
+						.sort(([, a], [, b]) => b - a)
+						.slice(0, 10) as [hero, rate] (hero)}
+						<tr class="border-b border-line/60 hover:bg-surface-2">
+							<td class="px-3 py-2 text-ink">{hero}</td>
+							<td class="px-3 py-2">{(rate * 100).toFixed(1)}%</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
 
-	<h2 class="pt-4 font-[Syne] text-lg">Season 17 vs Season 18, biggest swings</h2>
-	<p class="mb-3 font-mono text-sm text-[#8a8478]">
-		League draft predictability: {leagueHhiS17.toFixed(3)} ({s17Games} games) → {leagueHhiS18.toFixed(
-			3
-		)} ({s18Games} games)
-	</p>
-	<div class="overflow-x-auto">
-		<table class="w-full border-collapse font-mono text-sm">
-			<thead>
-				<tr class="border-b border-[#3a352c] text-left text-[#8a8478]">
-					<th class="px-3 py-2 font-normal">Hero</th>
-					<th class="px-3 py-2 font-normal">S17</th>
-					<th class="px-3 py-2 font-normal">S18</th>
-					<th class="px-3 py-2 font-normal">Change</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each seasonDeltas as row (row.hero)}
-					<tr class="border-b border-[#2a2620] hover:bg-[#221f19]">
-						<td class="px-3 py-2">{row.hero}</td>
-						<td class="px-3 py-2">{(row.before * 100).toFixed(1)}%</td>
-						<td class="px-3 py-2">{(row.after * 100).toFixed(1)}%</td>
-						<td class="px-3 py-2 {row.delta >= 0 ? 'text-[#8fbf8a]' : 'text-[#d98873]'}"
-							>{row.delta >= 0 ? '+' : ''}{(row.delta * 100).toFixed(1)}%</td
-						>
+	<div class="card p-5">
+		<h2 class="mb-1 font-display text-lg tracking-wide text-ink">
+			Season 17 vs Season 18, biggest swings
+		</h2>
+		<p class="mb-3 font-mono text-sm text-muted">
+			League draft predictability: {leagueHhiS17.toFixed(3)} ({s17Games} games) → {leagueHhiS18.toFixed(
+				3
+			)} ({s18Games} games)
+		</p>
+		<div class="overflow-x-auto">
+			<table class="w-full border-collapse font-mono text-sm">
+				<thead>
+					<tr class="border-b border-line text-left text-muted">
+						<th class="px-3 py-2 font-normal">Hero</th>
+						<th class="px-3 py-2 font-normal">S17</th>
+						<th class="px-3 py-2 font-normal">S18</th>
+						<th class="px-3 py-2 font-normal">Change</th>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{#each seasonDeltas as row (row.hero)}
+						<tr class="border-b border-line/60 hover:bg-surface-2">
+							<td class="px-3 py-2 text-ink">{row.hero}</td>
+							<td class="px-3 py-2">{(row.before * 100).toFixed(1)}%</td>
+							<td class="px-3 py-2">{(row.after * 100).toFixed(1)}%</td>
+							<td class="px-3 py-2 {row.delta >= 0 ? 'text-positive' : 'text-negative'}"
+								>{row.delta >= 0 ? '+' : ''}{(row.delta * 100).toFixed(1)}%</td
+							>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>

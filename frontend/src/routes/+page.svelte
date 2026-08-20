@@ -18,11 +18,9 @@
 </svelte:head>
 
 <noscript>
-	<p class="font-mono text-sm text-[#8a8478]">
+	<p class="font-mono text-sm text-muted">
 		This page needs JavaScript to redirect automatically.
-		<a href={resolve('/league')} class="text-[--color-amber] hover:underline"
-			>View League Overview</a
-		> instead.
+		<a href={resolve('/league')} class="text-primary hover:underline">View League Overview</a> instead.
 	</p>
 </noscript>
-<p class="font-mono text-sm text-[#8a8478]">Redirecting…</p>
+<p class="font-mono text-sm text-muted">Redirecting…</p>

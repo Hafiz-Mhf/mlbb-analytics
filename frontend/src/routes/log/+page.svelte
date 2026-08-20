@@ -3,9 +3,7 @@
 	import { resolve } from '$app/paths';
 	import DataTable from '$lib/components/DataTable.svelte';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
-
-	let teamFilter = $state('all');
-	let stageFilter = $state<'all' | 'regular_season' | 'playoffs'>('all');
+	import { logTeamFilter, logStageFilter } from '$lib/logFilters';
 
 	const teamName = new Map(mockDataset.teams.map((t) => [t.id, t.canonicalName]));
 
@@ -13,11 +11,11 @@
 		mockDataset.matches
 			.filter(
 				(m) =>
-					teamFilter === 'all' ||
-					m.team1Id === Number(teamFilter) ||
-					m.team2Id === Number(teamFilter)
+					$logTeamFilter === 'all' ||
+					m.team1Id === Number($logTeamFilter) ||
+					m.team2Id === Number($logTeamFilter)
 			)
-			.filter((m) => stageFilter === 'all' || m.stage === stageFilter)
+			.filter((m) => $logStageFilter === 'all' || m.stage === $logStageFilter)
 			.map((m) => ({
 				id: m.id,
 				series: m.seriesId,
@@ -33,23 +31,29 @@
 
 <div class="space-y-6">
 	<div class="flex items-center justify-between">
-		<h1 class="font-[Syne] text-2xl">Match Log</h1>
+		<h1 class="font-display text-2xl tracking-wide text-ink">Match Log</h1>
 		<FreshnessIndicator {generatedAt} />
 	</div>
 
-	<div class="flex gap-4 font-mono text-sm">
-		<label>
-			Team:
-			<select bind:value={teamFilter} class="ml-1 bg-transparent text-[--color-amber]">
+	<div class="flex flex-wrap gap-4 font-mono text-sm">
+		<label class="flex items-center gap-2">
+			<span class="text-muted">Team:</span>
+			<select
+				bind:value={$logTeamFilter}
+				class="min-h-11 rounded-full border border-line bg-surface px-3 py-1 text-primary focus-visible:border-primary"
+			>
 				<option value="all">All</option>
 				{#each mockDataset.teams as team (team.id)}
 					<option value={String(team.id)}>{team.canonicalName}</option>
 				{/each}
 			</select>
 		</label>
-		<label>
-			Stage:
-			<select bind:value={stageFilter} class="ml-1 bg-transparent text-[--color-amber]">
+		<label class="flex items-center gap-2">
+			<span class="text-muted">Stage:</span>
+			<select
+				bind:value={$logStageFilter}
+				class="min-h-11 rounded-full border border-line bg-surface px-3 py-1 text-primary focus-visible:border-primary"
+			>
 				<option value="all">All</option>
 				<option value="regular_season">Regular Season</option>
 				<option value="playoffs">Playoffs</option>

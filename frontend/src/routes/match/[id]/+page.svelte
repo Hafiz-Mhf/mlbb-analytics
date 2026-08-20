@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { mockDataset, generatedAt } from '$lib/data';
 	import { presence } from '$lib/metrics';
+	import { resolve } from '$app/paths';
 	import BaselineAnnotation from '$lib/components/BaselineAnnotation.svelte';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
 	import TeamTag from '$lib/components/TeamTag.svelte';
@@ -32,46 +33,64 @@
 	const team2Rows = $derived(sideRows(match.team2Id));
 </script>
 
+{#snippet sideCard(teamId: number, rows: ReturnType<typeof sideRows>)}
+	<div class="card p-5 {match.winnerId === teamId ? 'ring-1 ring-gold/60' : ''}">
+		<h2 class="mb-3 flex items-center justify-between gap-2 font-display text-lg tracking-wide text-ink">
+			<span class="flex items-center gap-2">
+				<TeamTag name={teamName.get(teamId)!} size={20} />
+				{teamName.get(teamId)}
+			</span>
+			{#if match.winnerId === teamId}
+				<span class="rounded-full bg-gold/15 px-2 py-0.5 font-mono text-xs text-gold">Winner</span>
+			{/if}
+		</h2>
+		{#each rows as row (row.kind + row.hero)}
+			<div class="flex items-center justify-between border-b border-line/60 py-2 font-mono text-sm">
+				<span class="flex items-center gap-2">
+					<span class={row.kind === 'Ban' ? 'text-negative' : 'text-positive'}>{row.kind}</span>
+					<span class="text-ink">{row.hero}</span>
+				</span>
+				<BaselineAnnotation value={row.value} baseline={row.baseline} />
+			</div>
+		{/each}
+	</div>
+{/snippet}
+
 <div class="space-y-6">
-	<div class="flex items-center justify-between">
-		<h1 class="font-[Syne] text-2xl">{match.seriesId} — Game {match.gameNumberInSeries}</h1>
+	<a
+		href={resolve('/log')}
+		class="inline-flex items-center gap-1 font-mono text-xs text-muted hover:text-primary"
+	>
+		<svg
+			width="10"
+			height="10"
+			viewBox="0 0 10 10"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="1.5"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			aria-hidden="true"
+		>
+			<path d="M6.5 2 3.5 5 6.5 8" />
+		</svg>
+		Back to Match Log
+	</a>
+	<div class="flex flex-wrap items-center justify-between gap-3">
+		<h1 class="font-display text-2xl tracking-wide text-ink">
+			{match.seriesId} — Game {match.gameNumberInSeries}
+		</h1>
 		<FreshnessIndicator {generatedAt} />
 	</div>
 
-	<div class="font-mono text-sm text-[#8a8478]">
+	<div class="font-mono text-sm text-muted">
 		{match.stage} · Season {match.season} · {match.gameLength} · winner {teamName.get(
 			match.winnerId
 		)}
 	</div>
 
-	<div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
-		<div>
-			<h2 class="mb-2 flex items-center gap-2 font-[Syne] text-lg">
-				<TeamTag name={teamName.get(match.team1Id)!} />
-				{teamName.get(match.team1Id)}
-			</h2>
-			{#each team1Rows as row (row.kind + row.hero)}
-				<div
-					class="flex items-center justify-between border-b border-[#2a2620] py-2 font-mono text-sm"
-				>
-					<span>{row.kind}: {row.hero}</span>
-					<BaselineAnnotation value={row.value} baseline={row.baseline} />
-				</div>
-			{/each}
-		</div>
-		<div>
-			<h2 class="mb-2 flex items-center gap-2 font-[Syne] text-lg">
-				<TeamTag name={teamName.get(match.team2Id)!} />
-				{teamName.get(match.team2Id)}
-			</h2>
-			{#each team2Rows as row (row.kind + row.hero)}
-				<div
-					class="flex items-center justify-between border-b border-[#2a2620] py-2 font-mono text-sm"
-				>
-					<span>{row.kind}: {row.hero}</span>
-					<BaselineAnnotation value={row.value} baseline={row.baseline} />
-				</div>
-			{/each}
-		</div>
+	<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+		{@render sideCard(match.team1Id, team1Rows)}
+		{@render sideCard(match.team2Id, team2Rows)}
 	</div>
 </div>
