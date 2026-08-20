@@ -2,7 +2,7 @@
 
 **Draft-prep scouting for MPL Malaysia — every number next to the league baseline that gives it meaning.**
 
-[![tests](https://img.shields.io/badge/tests-116%20passing-4CAF50)](#-testing)
+[![tests](https://img.shields.io/badge/tests-124%20passing-4CAF50)](#-testing)
 [![pipeline](https://img.shields.io/badge/pipeline-Python%203.12-3776AB?logo=python&logoColor=white)](pipeline)
 [![frontend](https://img.shields.io/badge/frontend-SvelteKit%20%2B%20Svelte%205-FF3E00?logo=svelte&logoColor=white)](frontend)
 [![data source](https://img.shields.io/badge/data-Liquipedia-orange)](docs/data-source.md)
@@ -31,7 +31,9 @@ This is a **draft** tool, permanently. Liquipedia's public data covers picks, ba
 | 🏠 **Team Scouting** | `/team/[slug]` | A team's pick/ban rates vs. league baseline, rolling draft-predictability trend, Season 17→18 swings, and per-pick/ban win-rate deltas |
 | 📊 **League Overview** | `/league` | League-wide presence and HHI (draft concentration) rankings across all 8 teams, with season-over-season swings |
 | 📜 **Match Log** | `/log` | Every game, sortable and filterable by team/stage |
-| 🔍 **Match Detail** | `/match/[id]` | One game's full draft, each pick/ban labeled against team history and league baseline |
+| 🔍 **Series Detail** | `/series/[seriesId]` | One series as a collapsible accordion — every game's picks/bans labeled against team history and league baseline, notable divergences highlighted |
+
+Plus five static info pages linked from the footer only — `/about`, `/contact`, `/privacy`, `/terms`, `/changelog` — no dataset dependency.
 
 ## 📐 Core metrics
 
@@ -107,14 +109,14 @@ uv run mlbb-gen-types        # regenerate frontend/src/lib/types.ts
 cd frontend
 npm install
 npm run dev                  # local dev server
-npm run test                 # 27+ Vitest tests
+npm run test                 # 35+ Vitest tests
 npm run check                # svelte-check
 npm run build                # static build for deploy
 ```
 
 ## 🧪 Testing
 
-116 tests passing — 89 pipeline (`pytest`) + 27 frontend (`vitest`). A build never ships without both green and the pipeline's regression guard passing.
+124 tests passing — 89 pipeline (`pytest`) + 35 frontend (`vitest`). A build never ships without both green and the pipeline's regression guard passing.
 
 ## 🗺️ Status & roadmap
 

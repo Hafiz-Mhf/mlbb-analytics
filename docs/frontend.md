@@ -11,6 +11,7 @@ SvelteKit — not Next.js. Less boilerplate, lighter runtime, no SSR/SEO need fo
 - `/league` — League Overview (cross-team HHI and presence comparison)
 - `/log` — Match Log (series list — score, Bo count, team logos — filterable by team and stage, grouped into per-season sections so S17/S18 never mix, ready for a future international-event section the same way)
 - `/series/[seriesId]` — one series' games as a collapsible accordion, each game's picks/bans against the league baseline (replaced `/match/[id]`'s one-route-per-game shape, 20 Aug 2026)
+- `/about`, `/contact`, `/privacy`, `/terms`, `/changelog` — static info/legal pages, linked from the footer only (20 Aug 2026). No pipeline data, no dynamic params — plain prose components that inherit the root layout's `prerender = true`.
 
 Filtering by patch was previously listed here and has been removed — Liquipedia records no patch field (data-source.md).
 
@@ -43,7 +44,7 @@ Swapping to real data is deleting `src/lib/mock/` and pointing the same function
 
 ## Styling
 
-Tailwind CSS, configured with the Audit Trail tokens from design-direction-v1.md — charcoal base, amber accent, Syne / Inter / JetBrains Mono. This continues the existing hafizfaruqi.my convention rather than starting a new one.
+Tailwind CSS v4, `@theme` tokens in `layout.css`. Superseded the original Audit Trail direction (charcoal base, amber accent, Syne/Inter) with the 18 Aug 2026 esports identity pivot (current-context.md): deep navy-black background (`--color-bg: #05070d`), electric-blue primary accent (`#38bdf8`), gold reserved for achievement/highlight only (`#fbbf24`), Russo One (display) + Chakra Petch (body) + JetBrains Mono (data), loaded for real via a Google Fonts `<link>` in `app.html`.
 
 No chart library in v1 (stack.md). uiux.md is tables-first by design; add one only when a specific table demonstrably fails.
 
@@ -51,7 +52,7 @@ No chart library in v1 (stack.md). uiux.md is tables-first by design; add one on
 
 - **`DataTable.svelte`** — originally one reusable table behind all three v1 screens. No longer referenced by any route as of the 20 Aug 2026 Match Log redesign (Team Scouting and League Overview moved to `StatBlock`-led sections earlier; Match Log's series list and per-game breakdown are bespoke card/accordion markup, not tabular). Component and its spec still exist; nothing currently renders it.
 - **Baseline annotation** as its own small component: raw value in mono, league baseline beside it, muted. This is the tool's core mechanic (planning.md) and the difference between insightful and misleading, so it must not drift between screens.
-- **Freshness indicator** — last-updated timestamp, shown consistently wherever data appears. With weekly rebuilds, an analyst needs to know whether they are reading this week's meta or last week's.
+- **Freshness indicator** — last-updated timestamp, shown consistently wherever data appears (each screen's own header, plus the global footer's Data column). With weekly rebuilds, an analyst needs to know whether they are reading this week's meta or last week's. Deliberately not duplicated in the site header too — an early draft of the 20 Aug 2026 footer redesign put one there, but every screen already renders its own copy right under the page heading, so a global-header copy was pure duplication and got pulled back out.
 - **Team tag** — colour swatch plus short code, needed once the dashboard covers all 8 teams (design-direction-v1.md).
 
 Expect one refactor of the data table after all three screens exist. Its configuration surface is not knowable until three screens have pulled on it.
