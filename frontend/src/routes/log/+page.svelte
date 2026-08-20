@@ -1,32 +1,50 @@
 <script lang="ts">
 	import { mockDataset, generatedAt } from '$lib/data';
 	import { resolve } from '$app/paths';
-	import DataTable from '$lib/components/DataTable.svelte';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
+	import TeamTag from '$lib/components/TeamTag.svelte';
 	import { logTeamFilter, logStageFilter } from '$lib/logFilters';
 
 	const teamName = new Map(mockDataset.teams.map((t) => [t.id, t.canonicalName]));
 
-	const rows = $derived(
-		mockDataset.matches
+	const seriesRows = $derived.by(() => {
+		const filtered = mockDataset.matches
 			.filter(
 				(m) =>
 					$logTeamFilter === 'all' ||
 					m.team1Id === Number($logTeamFilter) ||
 					m.team2Id === Number($logTeamFilter)
 			)
-			.filter((m) => $logStageFilter === 'all' || m.stage === $logStageFilter)
-			.map((m) => ({
-				id: m.id,
-				series: m.seriesId,
-				season: m.season,
-				stage: m.stage,
-				team1: teamName.get(m.team1Id),
-				team2: teamName.get(m.team2Id),
-				winner: teamName.get(m.winnerId),
-				length: m.gameLength
-			}))
-	);
+			.filter((m) => $logStageFilter === 'all' || m.stage === $logStageFilter);
+
+		const bySeries = new Map<string, typeof filtered>();
+		for (const m of filtered) {
+			const games = bySeries.get(m.seriesId) ?? [];
+			games.push(m);
+			bySeries.set(m.seriesId, games);
+		}
+
+		return [...bySeries.values()]
+			.map((games) => {
+				games.sort((a, b) => a.gameNumberInSeries - b.gameNumberInSeries);
+				const first = games[0];
+				const team1Wins = games.filter((g) => g.winnerId === first.team1Id).length;
+				const team2Wins = games.filter((g) => g.winnerId === first.team2Id).length;
+				return {
+					seriesId: first.seriesId,
+					season: first.season,
+					stage: first.stage,
+					team1: teamName.get(first.team1Id)!,
+					team2: teamName.get(first.team2Id)!,
+					team1Wins,
+					team2Wins,
+					bestOf: 2 * Math.max(team1Wins, team2Wins) - 1,
+					date: first.playedAt?.split(' - ')[0] ?? null,
+					minId: Math.min(...games.map((g) => g.id))
+				};
+			})
+			.sort((a, b) => a.minId - b.minId);
+	});
 </script>
 
 <div class="space-y-6">
@@ -61,17 +79,35 @@
 		</label>
 	</div>
 
-	<DataTable
-		columns={[
-			{ key: 'series', label: 'Series' },
-			{ key: 'season', label: 'Season' },
-			{ key: 'stage', label: 'Stage' },
-			{ key: 'team1', label: 'Team 1' },
-			{ key: 'team2', label: 'Team 2' },
-			{ key: 'winner', label: 'Winner' },
-			{ key: 'length', label: 'Length' }
-		]}
-		{rows}
-		rowHref={(row) => resolve('/match/[id]', { id: String(row.id) })}
-	/>
+	<div class="card divide-y divide-line/60">
+		{#if seriesRows.length === 0}
+			<p class="px-4 py-6 text-center font-mono text-sm text-muted">
+				No series match the current filters.
+			</p>
+		{:else}
+			{#each seriesRows as s (s.seriesId)}
+				<a
+					href={resolve('/series/[seriesId]', { seriesId: s.seriesId })}
+					class="flex flex-wrap items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-surface-2"
+				>
+					<div class="flex items-center gap-2 font-mono text-sm text-ink">
+						<TeamTag name={s.team1} size={18} />
+						<span class="text-muted">vs</span>
+						<TeamTag name={s.team2} size={18} />
+					</div>
+					<div class="font-display text-lg tracking-wide text-ink">
+						{s.team1Wins} : {s.team2Wins}
+					</div>
+					<div class="text-right font-mono text-xs text-muted">
+						<div>
+							{s.stage === 'playoffs' ? 'Playoffs' : 'Regular Season'} · S{s.season} · Bo{s.bestOf}
+						</div>
+						{#if s.date}
+							<div>{s.date}</div>
+						{/if}
+					</div>
+				</a>
+			{/each}
+		{/if}
+	</div>
 </div>

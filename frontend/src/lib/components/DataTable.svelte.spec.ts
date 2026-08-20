@@ -27,11 +27,11 @@ describe('DataTable', () => {
 				{ key: 'winner', label: 'Winner' }
 			],
 			rows: [{ series: 'M1', winner: 'SRG' }],
-			rowHref: (row: Record<string, unknown>) => `/match/${row.series}`
+			rowHref: (row: Record<string, unknown>) => `/series/${row.series}`
 		});
 		const link = page.getByRole('link', { name: 'M1' });
 		await expect.element(link).toBeInTheDocument();
-		await expect.element(link).toHaveAttribute('href', '/match/M1');
+		await expect.element(link).toHaveAttribute('href', '/series/M1');
 	});
 
 	it('sorts rows numerically when a column header is clicked, and reverses on a second click', async () => {
