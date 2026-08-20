@@ -80,3 +80,10 @@
 		{@render children()}
 	</main>
 </div>
+
+<footer class="mx-auto max-w-6xl px-6 py-8">
+	<p class="font-mono text-xs text-muted">
+		Unofficial fan project. Not affiliated with or endorsed by MPL, Moonton, or the teams shown.
+		Logos and hero art are property of their respective owners.
+	</p>
+</footer>
