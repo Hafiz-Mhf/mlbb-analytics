@@ -45,6 +45,17 @@
 			})
 			.sort((a, b) => a.minId - b.minId);
 	});
+
+	// Grouped by season so S17/S18 (and future international events) never mix in one list.
+	const seasonGroups = $derived.by(() => {
+		const bySeason = new Map<string, (typeof seriesRows)[number][]>();
+		for (const s of seriesRows) {
+			const rows = bySeason.get(s.season) ?? [];
+			rows.push(s);
+			bySeason.set(s.season, rows);
+		}
+		return [...bySeason.entries()].sort((a, b) => b[0].localeCompare(a[0], undefined, { numeric: true }));
+	});
 </script>
 
 <div class="space-y-6">
@@ -79,37 +90,42 @@
 		</label>
 	</div>
 
-	<div class="card divide-y divide-line/60">
-		{#if seriesRows.length === 0}
-			<p class="px-4 py-6 text-center font-mono text-sm text-muted">
-				No series match the current filters.
-			</p>
-		{:else}
-			{#each seriesRows as s (s.seriesId)}
-				<a
-					href={resolve('/series/[seriesId]', { seriesId: s.seriesId })}
-					class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 px-4 py-3 transition-colors hover:bg-surface-2 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
-				>
-					<div class="flex items-center gap-2 font-mono text-sm text-ink">
-						<TeamTag name={s.team1} size={18} />
-						<span class="text-muted">vs</span>
-						<TeamTag name={s.team2} size={18} />
-					</div>
-					<div class="justify-self-end font-display text-lg tracking-wide sm:justify-self-center">
-						<span class={s.team1Wins > s.team2Wins ? 'text-gold' : 'text-ink'}>{s.team1Wins}</span>
-						<span class="text-muted">:</span>
-						<span class={s.team2Wins > s.team1Wins ? 'text-gold' : 'text-ink'}>{s.team2Wins}</span>
-					</div>
-					<div class="col-span-2 text-right font-mono text-xs text-muted sm:col-span-1">
-						<div>
-							{s.stage === 'playoffs' ? 'Playoffs' : 'Regular Season'} · S{s.season} · Bo{s.bestOf}
-						</div>
-						{#if s.date}
-							<div>{s.date}</div>
-						{/if}
-					</div>
-				</a>
-			{/each}
-		{/if}
-	</div>
+	{#if seriesRows.length === 0}
+		<p class="card px-4 py-6 text-center font-mono text-sm text-muted">
+			No series match the current filters.
+		</p>
+	{:else}
+		{#each seasonGroups as [season, rows] (season)}
+			<div class="space-y-2">
+				<h2 class="font-display text-lg tracking-wide text-ink">Season {season}</h2>
+				<div class="card divide-y divide-line/60">
+					{#each rows as s (s.seriesId)}
+						<a
+							href={resolve('/series/[seriesId]', { seriesId: s.seriesId })}
+							class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 px-4 py-3 transition-colors hover:bg-surface-2 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
+						>
+							<div class="flex items-center gap-2 font-mono text-sm text-ink">
+								<TeamTag name={s.team1} size={18} />
+								<span class="text-muted">vs</span>
+								<TeamTag name={s.team2} size={18} />
+							</div>
+							<div class="justify-self-end font-display text-lg tracking-wide sm:justify-self-center">
+								<span class={s.team1Wins > s.team2Wins ? 'text-gold' : 'text-ink'}>{s.team1Wins}</span>
+								<span class="text-muted">:</span>
+								<span class={s.team2Wins > s.team1Wins ? 'text-gold' : 'text-ink'}>{s.team2Wins}</span>
+							</div>
+							<div class="col-span-2 text-right font-mono text-xs text-muted sm:col-span-1">
+								<div>
+									{s.stage === 'playoffs' ? 'Playoffs' : 'Regular Season'} · Bo{s.bestOf}
+								</div>
+								{#if s.date}
+									<div>{s.date}</div>
+								{/if}
+							</div>
+						</a>
+					{/each}
+				</div>
+			</div>
+		{/each}
+	{/if}
 </div>

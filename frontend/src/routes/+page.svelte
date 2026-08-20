@@ -25,7 +25,7 @@
 				class="card flex flex-col items-center gap-3 border-t-4 p-5 text-center transition-colors hover:bg-surface-2"
 				style={`border-top-color:${TEAM_COLORS[team.name] ?? 'transparent'}`}
 			>
-				<img src={teamLogo(team.name)} alt="" width={40} height={40} class="object-contain" />
+				<img src={teamLogo(team.name)} alt="" width={40} height={40} class="h-10 w-10 object-contain" />
 				<span class="font-display text-sm tracking-wide text-ink">{team.name}</span>
 			</a>
 		{/each}

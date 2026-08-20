@@ -61,16 +61,18 @@
 					{link.label}
 				</a>
 			{/each}
-			<select
-				aria-label="Switch scouted team"
-				value={$selectedTeam}
-				onchange={onTeamChange}
-				class="min-h-11 max-w-full rounded-full border border-line bg-surface px-3 py-1 font-mono text-xs text-ink focus-visible:border-primary"
-			>
-				{#each teamOptions as team (team.slug)}
-					<option value={team.slug}>{team.name}</option>
-				{/each}
-			</select>
+			{#if page.url.pathname.startsWith('/team')}
+				<select
+					aria-label="Switch scouted team"
+					value={$selectedTeam}
+					onchange={onTeamChange}
+					class="min-h-11 max-w-full rounded-full border border-line bg-surface px-3 py-1 font-mono text-xs text-ink focus-visible:border-primary"
+				>
+					{#each teamOptions as team (team.slug)}
+						<option value={team.slug}>{team.name}</option>
+					{/each}
+				</select>
+			{/if}
 		</nav>
 	</div>
 </header>
