@@ -1,6 +1,6 @@
 # Current Context
 
-_Last updated: 20 Aug 2026 (Match Log redesign — see below)_
+_Last updated: 20 Aug 2026 (TrendChart fixed-width bug — see below)_
 
 ## Where things stand
 
@@ -67,6 +67,10 @@ New `frontend/src/lib/heroes.ts` (`heroSlug`/`heroIcon`) and `HeroTag.svelte` mi
 Browser-verified (Playwright) at desktop and 375px turned up three real layout bugs, all fixed in `7a15ba2`: (1) the list's score (`3:2`) sat in the leftover gap of a `flex justify-between` row, so it drifted left/right per row depending on team-name width instead of forming a straight column — rebuilt as a `grid` (`[1fr_auto]` on mobile, `[1fr_auto_1fr]` at `sm:`) so the score column is fixed and centered regardless of row content; (2) the mobile detail rows let hero names and the `league avg X%` pill wrap mid-word (`yu\nzhong`, `league\navg 2.2%`) — added `whitespace-nowrap` to both and made the row itself `flex-wrap` so the whole baseline-annotation block drops to its own line instead of breaking internally; (3) the collapsed-game bans row (`team1 bans · "BANS" · team2 bans`) had no explicit mobile layout and produced uneven gaps under default flex-wrap — restructured to the same `flex-col` → `sm:flex-row` stack the picks row above it already used. 35/35 frontend tests still passing (pure layout, no new logic).
 
 Doc sync from this pass: frontend.md's route list and `DataTable` bullet, roadmap.md's post-game-review checkbox, and design-direction-v1.md's gold-accent bullet all still named `/match/[id]` or claimed Match Log used the shared `DataTable` — both stale as of this redesign, now corrected.
+
+**TrendChart fixed-width bug (20 Aug 2026):** direct report, screenshot of `/team/vms` showing the "Predictability trend" sparkline as a short flat blue segment stuck in the top-left of an otherwise-empty card. Root cause: `TrendChart.svelte`'s `<svg>` carried a literal `width={160}` HTML attribute (the component's own default), so it always rendered at 160 physical pixels regardless of how wide the card actually was — invisible as a bug on the narrower cards elsewhere in the app, obvious on Team Scouting's full-width card. Fixed by wrapping the chart in a `bind:clientWidth` div and driving both the `viewBox` and every point's x-coordinate off the measured width, so it fills the card at any size. Considered `preserveAspectRatio="none"` first (stretch the fixed 160-wide viewBox) but rejected it — non-uniform scaling would turn the 6px-radius point circles into horizontally-stretched ellipses; measuring real width and computing coordinates in true pixel space keeps circles round.
+
+Fixing the width exposed a second, smaller issue in the same card: the heading read "Predictability trend, last 10 games" but the chart plots `rollingHhi`'s 10-game _rolling average_ across the team's entire game history (~55 points for a team that's played that many), not the last 10 games in isolation — a label nobody could have caught while the chart was rendering as an unreadable 160px sliver. Relabeled to "10-game rolling average" to match what's actually drawn; no change to the underlying metric. 35/35 frontend tests still passing. One commit, `a3e9199`, pushed.
 
 ## What's actually blocking progress now
 
