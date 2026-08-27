@@ -531,7 +531,28 @@ describe('evaluateSideDraft', () => {
 		expect(evaluation.missingRoles.length).toBe(0);
 		expect(evaluation.draftHhi).toBeGreaterThanOrEqual(0);
 	});
+
+	it('automatically flexes a multi-role hero to an unfilled lane to maximize lane coverage', () => {
+		const data = fixture();
+		// In fixture, freya was picked in slot 2 (Jungle) in game 1 and slot 5 (Roam) in game 2
+		// If we pick sora (EXP:1), freya (JGL:2/ROAM:5), zhuxin (MID:3), granger (GOLD:4), chou (ROAM:5)
+		// Since chou takes ROAM (5), freya should automatically flex to JGL (2) to achieve 5/5 coverage!
+		const evaluation = evaluateSideDraft(data, 1, ['sora', 'freya', 'zhuxin', 'granger', 'chou'], []);
+		expect(evaluation.isComplete).toBe(true);
+		expect(evaluation.missingRoles.length).toBe(0);
+		const freyaPick = evaluation.picks.find((p) => p.hero === 'freya');
+		expect(freyaPick?.role).toBe(2); // Auto-flexed to Jungle
+	});
+
+	it('respects manual role override when provided by coach', () => {
+		const data = fixture();
+		// Manually override freya (index 1) to slot 5 (Roam)
+		const evaluation = evaluateSideDraft(data, 1, ['sora', 'freya', 'zhuxin', 'granger', 'chou'], [], {}, [null, 5, null, null, null]);
+		const freyaPick = evaluation.picks.find((p) => p.hero === 'freya');
+		expect(freyaPick?.role).toBe(5);
+	});
 });
+
 
 
 

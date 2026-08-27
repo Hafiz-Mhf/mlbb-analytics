@@ -1001,8 +1001,16 @@ export function draftRecommendations(
 	return recommendations.sort((a, b) => b.score - a.score || b.leaguePresence - a.leaguePresence);
 }
 
+export interface PickDetail {
+	hero: string;
+	role: Role;
+	roleName: string;
+	isFlex: boolean;
+	availableRoles: Role[];
+}
+
 export interface SideEvaluation {
-	picks: { hero: string; role: Role; roleName: string }[];
+	picks: PickDetail[];
 	bans: string[];
 	filledRoles: Set<Role>;
 	missingRoles: Role[];
@@ -1017,7 +1025,8 @@ export function evaluateSideDraft(
 	teamId: number,
 	picks: string[],
 	bans: string[],
-	opts: ScopeOptions = {}
+	opts: ScopeOptions = {},
+	manualRoleOverrides?: (Role | null)[]
 ): SideEvaluation {
 	const heroSlotCounts = new Map<number, Map<number, number>>();
 	const heroByName = new Map(data.heroes.map((h) => [h.canonicalName, h]));
@@ -1033,40 +1042,124 @@ export function evaluateSideDraft(
 	}
 
 	const teamPicks = pickRate(data, { ...opts, teamId });
-	const pickDetails: { hero: string; role: Role; roleName: string }[] = [];
-	const filledRoles = new Set<Role>();
-	let sigCount = 0;
-	const rawPickRates: number[] = [];
+	const N = picks.length;
 
-	for (const heroName of picks) {
-		const h = heroByName.get(heroName);
-		let role: Role = 1;
+	interface HeroRoleProfile {
+		heroName: string;
+		heroId?: number;
+		modalRole: Role;
+		availableRoles: Role[];
+		manualOverride?: Role | null;
+	}
+
+	const profiles: HeroRoleProfile[] = picks.map((name, i) => {
+		const h = heroByName.get(name);
+		let modal: Role = 1;
+		const avail: Role[] = [];
 		if (h) {
 			const m = heroSlotCounts.get(h.id);
 			if (m) {
 				let bestCount = -1;
 				for (const [slot, count] of m.entries()) {
-					if (count > bestCount && slot >= 1 && slot <= 5) {
-						bestCount = count;
-						role = slot as Role;
+					if (slot >= 1 && slot <= 5) {
+						avail.push(slot as Role);
+						if (count > bestCount) {
+							bestCount = count;
+							modal = slot as Role;
+						}
 					}
 				}
 			}
 		}
+		if (avail.length === 0) avail.push(1, 2, 3, 4, 5);
+		return {
+			heroName: name,
+			heroId: h?.id,
+			modalRole: modal,
+			availableRoles: avail,
+			manualOverride: manualRoleOverrides && manualRoleOverrides[i] ? manualRoleOverrides[i] : null
+		};
+	});
 
-		filledRoles.add(role);
+	// Generate all combinations of assigning roles [1..5] to N picks
+	const allRoles: Role[] = [1, 2, 3, 4, 5];
+	let bestAssignment: Role[] = profiles.map((p) => p.manualOverride ?? p.modalRole);
+	let bestScore = -Infinity;
+
+	function evaluateCandidate(assigned: Role[]) {
+		const distinctCount = new Set(assigned).size;
+		let score = distinctCount * 100000;
+
+		for (let i = 0; i < N; i++) {
+			const p = profiles[i];
+			const r = assigned[i];
+			const hId = p.heroId;
+			const count = hId ? (heroSlotCounts.get(hId)?.get(r) ?? 0) : 0;
+			const isModal = r === p.modalRole;
+
+			if (count > 0) {
+				score += 2000 + count * 10;
+			}
+			if (isModal) {
+				score += 500;
+			}
+		}
+
+		if (score > bestScore) {
+			bestScore = score;
+			bestAssignment = assigned.slice();
+		}
+	}
+
+	function search(idx: number, current: Role[]) {
+		if (idx === N) {
+			evaluateCandidate(current);
+			return;
+		}
+
+		const p = profiles[idx];
+		if (p.manualOverride) {
+			current.push(p.manualOverride);
+			search(idx + 1, current);
+			current.pop();
+			return;
+		}
+
+		// Try all 5 roles for optimal flex matching
+		for (const r of allRoles) {
+			current.push(r);
+			search(idx + 1, current);
+			current.pop();
+		}
+	}
+
+	if (N > 0) {
+		search(0, []);
+	}
+
+	const pickDetails: PickDetail[] = [];
+	const filledRoles = new Set<Role>();
+	let sigCount = 0;
+	const rawPickRates: number[] = [];
+
+	for (let i = 0; i < N; i++) {
+		const p = profiles[i];
+		const assignedRole = bestAssignment[i] ?? p.modalRole;
+		filledRoles.add(assignedRole);
+
 		pickDetails.push({
-			hero: heroName,
-			role,
-			roleName: ROLE_NAMES[role]
+			hero: p.heroName,
+			role: assignedRole,
+			roleName: ROLE_NAMES[assignedRole],
+			isFlex: assignedRole !== p.modalRole,
+			availableRoles: p.availableRoles
 		});
 
-		const pRate = teamPicks[heroName] ?? 0;
+		const pRate = teamPicks[p.heroName] ?? 0;
 		rawPickRates.push(pRate);
 		if (pRate >= 0.15) sigCount++;
 	}
 
-	const allRoles: Role[] = [1, 2, 3, 4, 5];
 	const missingRoles = allRoles.filter((r) => !filledRoles.has(r));
 
 	// Compute draft HHI
@@ -1086,7 +1179,7 @@ export function evaluateSideDraft(
 		bans,
 		filledRoles,
 		missingRoles,
-		isComplete: picks.length === 5,
+		isComplete: picks.length === 5 && missingRoles.length === 0,
 		draftHhi,
 		hhiClassification,
 		signatureCount: sigCount

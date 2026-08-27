@@ -13,6 +13,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [2026-08-27]
 
 ### Added
+- **Draft Sandbox Smart Auto-Flex Engine & Interactive Role Selector (`/sandbox`)**:
+  - Automatically matches multi-role flex heroes (e.g. Paquito EXP $\rightarrow$ JGL) to open team lanes to complete 5-lane coverage (`5/5`).
+  - Added golden `FLEX` badges on auto-flexed draft picks.
+  - Interactive lane select dropdown (`EXP`, `JGL`, `MID`, `GOLD`, `ROAM`) allowing coaches to manually change assigned lane for any hero with instant recalculation of lane role coverage.
 - **Interactive Draft Sandbox (`/sandbox`)**:
   - Full 20-step official MPL tournament pick/ban sequence state machine.
   - Dual control modes: `👥 Dual Coach (Manual)` and `👤 Vs Simulated AI`.

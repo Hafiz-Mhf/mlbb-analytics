@@ -38,6 +38,8 @@
 	let redBans = $state<string[]>([]);
 	let bluePicks = $state<string[]>([]);
 	let redPicks = $state<string[]>([]);
+	let blueRoleOverrides = $state<(Role | null)[]>([null, null, null, null, null]);
+	let redRoleOverrides = $state<(Role | null)[]>([null, null, null, null, null]);
 
 	let searchQuery = $state('');
 	let selectedRoleFilter = $state<Role | 0>(0);
@@ -76,10 +78,10 @@
 	);
 
 	const blueEvaluation = $derived(
-		evaluateSideDraft(mockDataset, blueTeamId, bluePicks, blueBans)
+		evaluateSideDraft(mockDataset, blueTeamId, bluePicks, blueBans, {}, blueRoleOverrides)
 	);
 	const redEvaluation = $derived(
-		evaluateSideDraft(mockDataset, redTeamId, redPicks, redBans)
+		evaluateSideDraft(mockDataset, redTeamId, redPicks, redBans, {}, redRoleOverrides)
 	);
 
 	const recommendations = $derived(
@@ -182,8 +184,13 @@
 			if (last.side === 'blue') blueBans = blueBans.filter((h) => h !== last.hero);
 			else redBans = redBans.filter((h) => h !== last.hero);
 		} else {
-			if (last.side === 'blue') bluePicks = bluePicks.filter((h) => h !== last.hero);
-			else redPicks = redPicks.filter((h) => h !== last.hero);
+			if (last.side === 'blue') {
+				blueRoleOverrides[bluePicks.length - 1] = null;
+				bluePicks = bluePicks.filter((h) => h !== last.hero);
+			} else {
+				redRoleOverrides[redPicks.length - 1] = null;
+				redPicks = redPicks.filter((h) => h !== last.hero);
+			}
 		}
 	}
 
@@ -194,6 +201,8 @@
 		redBans = [];
 		bluePicks = [];
 		redPicks = [];
+		blueRoleOverrides = [null, null, null, null, null];
+		redRoleOverrides = [null, null, null, null, null];
 	}
 
 	function swapSides() {
@@ -398,8 +407,39 @@ Red Side (${redTeam?.name}):
 							</div>
 							<div>
 								{#if pickName}
-									<p class="font-display text-xs tracking-wide text-ink">{pickName}</p>
-									<span class="font-mono text-[10px] text-primary">{detail?.roleName ?? 'Flex'}</span>
+									<div class="flex items-center gap-1.5">
+										<p class="font-display text-xs tracking-wide text-ink">{pickName}</p>
+										{#if detail?.isFlex}
+											<span class="rounded bg-gold/20 border border-gold/40 px-1 py-0.2 font-mono text-[9px] font-bold text-gold" title="Auto-flexed to balance team composition">
+												FLEX
+											</span>
+										{/if}
+									</div>
+									<div class="mt-0.5 flex items-center gap-1">
+										<select
+											value={detail?.role ?? 1}
+											onchange={(e) => {
+												const val = parseInt((e.target as HTMLSelectElement).value, 10) as Role;
+												blueRoleOverrides[i] = val;
+											}}
+											class="cursor-pointer rounded border border-line/70 bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-primary transition-colors hover:border-primary focus-visible:border-primary"
+											title="Change assigned lane"
+										>
+											{#each ([1, 2, 3, 4, 5] as Role[]) as r}
+												<option value={r}>{ROLE_NAMES[r]}</option>
+											{/each}
+										</select>
+										{#if blueRoleOverrides[i] !== null}
+											<button
+												type="button"
+												onclick={() => (blueRoleOverrides[i] = null)}
+												class="font-mono text-[10px] text-muted hover:text-ink"
+												title="Reset to auto-detected lane"
+											>
+												↺
+											</button>
+										{/if}
+									</div>
 								{:else}
 									<p class="font-mono text-xs text-muted/50">Awaiting pick...</p>
 								{/if}
@@ -558,8 +598,39 @@ Red Side (${redTeam?.name}):
 							</div>
 							<div>
 								{#if pickName}
-									<p class="font-display text-xs tracking-wide text-ink">{pickName}</p>
-									<span class="font-mono text-[10px] text-rose-400">{detail?.roleName ?? 'Flex'}</span>
+									<div class="flex items-center gap-1.5">
+										<p class="font-display text-xs tracking-wide text-ink">{pickName}</p>
+										{#if detail?.isFlex}
+											<span class="rounded bg-gold/20 border border-gold/40 px-1 py-0.2 font-mono text-[9px] font-bold text-gold" title="Auto-flexed to balance team composition">
+												FLEX
+											</span>
+										{/if}
+									</div>
+									<div class="mt-0.5 flex items-center gap-1">
+										<select
+											value={detail?.role ?? 1}
+											onchange={(e) => {
+												const val = parseInt((e.target as HTMLSelectElement).value, 10) as Role;
+												redRoleOverrides[i] = val;
+											}}
+											class="cursor-pointer rounded border border-line/70 bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-rose-400 transition-colors hover:border-rose-400 focus-visible:border-rose-400"
+											title="Change assigned lane"
+										>
+											{#each ([1, 2, 3, 4, 5] as Role[]) as r}
+												<option value={r}>{ROLE_NAMES[r]}</option>
+											{/each}
+										</select>
+										{#if redRoleOverrides[i] !== null}
+											<button
+												type="button"
+												onclick={() => (redRoleOverrides[i] = null)}
+												class="font-mono text-[10px] text-muted hover:text-ink"
+												title="Reset to auto-detected lane"
+											>
+												↺
+											</button>
+										{/if}
+									</div>
 								{:else}
 									<p class="font-mono text-xs text-muted/50">Awaiting pick...</p>
 								{/if}
