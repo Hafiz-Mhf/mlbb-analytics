@@ -94,14 +94,15 @@ Browser-verifying the click caught a real a11y bug, not just a cosmetic one: cli
 
 **Per-Role & Flex Scouting (27 Aug 2026):** implemented per-role draft filtering and multi-lane flex hero scouting across the app. (1) New pure functions in `frontend/src/lib/metrics.ts`: `flexHeroes` (finds heroes drafted across $\ge 2$ roles in scope, computes primary/secondary role shares and flex rate) and `rolePredictabilityMatrix` (computes HHI across all 5 roles for each of the 8 teams plus league baseline). (2) New components: `RoleFilter.svelte` (accessible pill tab switcher) and `RoleDistributionBar.svelte` (segmented horizontal distribution bar). (3) Integrated into `/team/[slug]`: role filter above main hero table showing lane-specific predictability (*e.g., "SRG Jungle Predictability: 0.078 vs League 0.045"*), plus a new "Flex Picks" card. (4) Integrated into `/league`: role filter on Meta Draft tables. (5) New `/roles` route added to nav bar, featuring an 8-team Role Predictability Matrix and a Tournament Flex Picks table with season filter. 40 frontend tests passing (up from 35) — 129 total (89 pipeline + 40 frontend). Plan: `docs/superpowers/plans/2026-08-27-per-role-flex-scouting.md`.
 
+**Head-to-Head Matchup Tool (27 Aug 2026):** implemented a dedicated Head-to-Head comparison screen at `/matchup` for comparing any two MPL teams across draft tendencies, contested hero priority, side preferences, and direct match history. (1) Four new pure functions in `frontend/src/lib/metrics.ts`: `headToHeadSummary` (direct series score, game record, direct match IDs, average game duration in seconds), `sidePerformance` (games, wins, and win rates on Blue side first-pick vs Red side counter-pick), `heroClash` (categorizes heroes into Contested battlegrounds, Team 1 signatures, and Team 2 signatures with primary lane detection), and `matchupRoleComparison` (5-lane HHI comparison and top comfort picks per team). (2) New `/matchup` route with reactive team selectors, quick "⇄ Swap" controls, season filter pills (`All Seasons`, `Season 18`, `Season 17`), direct series score banner, Blue vs Red performance cards, 3-way draft clash tables, 5-lane role comparison, and expandable series draft accordions linking to `/series/[seriesId]`. (3) Integrated "Head-to-Head Matchup" tab in main header nav and a quick compare shortcut button on Team Scouting (`/team/[slug]`). 47 frontend tests passing (up from 40) — 136 total (89 pipeline + 47 frontend). Spec: `docs/superpowers/specs/2026-08-27-head-to-head-matchup-design.md`. Plan: `docs/superpowers/plans/2026-08-27-head-to-head-matchup.md`.
+
 ## What's actually blocking progress now
 
 Not a technical gap — every roadmap.md "Now" and "Next" item is done or checked. The gap is that nobody has confirmed wanting this yet. Before adding more features (Later phase or otherwise), the honest next move is distribution/outreach: get it in front of at least one real MPL MY analyst or scene-follower and see if it survives contact. Building further without that risks a well-engineered tool nobody asked for — see planning.md's own framing of this exact risk.
 
 **Next queued roadmap items:**
-1. Head-to-Head Matchup Tool (select two teams, compare draft tendencies, contested hero priority, side pick preferences, head-to-head history).
-2. Side Priority Analysis (Blue vs Red side draft tendencies and win rates).
-3. Interactive Draft Sandbox (client-side mock draft tool).
+1. Side Priority Analysis (Blue vs Red side draft tendencies and win rates).
+2. Interactive Draft Sandbox (client-side mock draft tool).
 
 **Still open, deferred:** the standings-based build-halting invariant (needs a standings-page parser that doesn't exist yet).
 

@@ -13,6 +13,7 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { browser } from '$app/environment';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
 	import TeamTag from '$lib/components/TeamTag.svelte';
 	import HeroTag from '$lib/components/HeroTag.svelte';
@@ -26,22 +27,14 @@
 		.map((t) => ({ slug: teamSlug(t.canonicalName), id: t.id, name: t.canonicalName, shortCode: t.shortCode }))
 		.sort((a, b) => a.name.localeCompare(b.name));
 
-	// Search params or sensible defaults (SRG vs Team Flash / next distinct team)
-	const initialT1 = page.url.searchParams.get('t1') ?? 'srg';
-	let defaultT2 = 'fl';
-	if (initialT1 === defaultT2) {
-		defaultT2 = teamOptions.find((t) => t.slug !== initialT1)?.slug ?? 'vms';
-	}
-	const initialT2 = page.url.searchParams.get('t2') ?? defaultT2;
-	const initialSeason = page.url.searchParams.get('season') ?? 'all';
-
-	let team1Slug = $state(initialT1);
-	let team2Slug = $state(initialT2);
-	let selectedSeason = $state(initialSeason);
+	let team1Slug = $state('srg');
+	let team2Slug = $state('fl');
+	let selectedSeason = $state('all');
 	let clashTab = $state<ClashCategory>('contested');
 
-	// Sync state when URL params change
+	// Sync state from URL params in browser
 	$effect(() => {
+		if (!browser) return;
 		const paramT1 = page.url.searchParams.get('t1');
 		const paramT2 = page.url.searchParams.get('t2');
 		const paramSeason = page.url.searchParams.get('season');
