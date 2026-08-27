@@ -41,6 +41,7 @@
 	let blueRoleOverrides = $state<(Role | null)[]>([null, null, null, null, null]);
 	let redRoleOverrides = $state<(Role | null)[]>([null, null, null, null, null]);
 
+	let selectedSeason = $state<'18' | 'all' | '17'>('18');
 	let searchQuery = $state('');
 	let selectedRoleFilter = $state<Role | 0>(0);
 	let toastMessage = $state<string | null>(null);
@@ -61,6 +62,8 @@
 		}
 	});
 
+	const scopeOpts = $derived(selectedSeason === 'all' ? {} : { season: selectedSeason });
+
 	const isComplete = $derived(currentStepIndex >= OFFICIAL_DRAFT_SEQUENCE.length);
 	const currentStep = $derived(
 		isComplete ? null : OFFICIAL_DRAFT_SEQUENCE[currentStepIndex]
@@ -78,10 +81,10 @@
 	);
 
 	const blueEvaluation = $derived(
-		evaluateSideDraft(mockDataset, blueTeamId, bluePicks, blueBans, {}, blueRoleOverrides)
+		evaluateSideDraft(mockDataset, blueTeamId, bluePicks, blueBans, scopeOpts, blueRoleOverrides)
 	);
 	const redEvaluation = $derived(
-		evaluateSideDraft(mockDataset, redTeamId, redPicks, redBans, {}, redRoleOverrides)
+		evaluateSideDraft(mockDataset, redTeamId, redPicks, redBans, scopeOpts, redRoleOverrides)
 	);
 
 	const recommendations = $derived(
@@ -94,7 +97,8 @@
 					unavailableHeroes,
 					currentStep.side === 'blue'
 						? blueEvaluation.filledRoles
-						: redEvaluation.filledRoles
+						: redEvaluation.filledRoles,
+					scopeOpts
 				).slice(0, 5)
 			: []
 	);
@@ -247,6 +251,37 @@ Red Side (${redTeam?.name}):
 		</div>
 
 		<div class="flex flex-wrap items-center gap-3">
+			<!-- Season Scope Filter -->
+			<div class="flex items-center gap-1 rounded-full border border-line bg-surface p-1">
+				<button
+					type="button"
+					onclick={() => (selectedSeason = '18')}
+					class={selectedSeason === '18'
+						? 'rounded-full bg-primary/20 border border-primary/40 px-3 py-1 font-display text-xs tracking-wide text-primary'
+						: 'rounded-full px-3 py-1 font-display text-xs tracking-wide text-muted hover:text-ink'}
+				>
+					🔥 Season 18
+				</button>
+				<button
+					type="button"
+					onclick={() => (selectedSeason = 'all')}
+					class={selectedSeason === 'all'
+						? 'rounded-full bg-surface-2 px-3 py-1 font-display text-xs tracking-wide text-primary'
+						: 'rounded-full px-3 py-1 font-display text-xs tracking-wide text-muted hover:text-ink'}
+				>
+					⚖️ All Time
+				</button>
+				<button
+					type="button"
+					onclick={() => (selectedSeason = '17')}
+					class={selectedSeason === '17'
+						? 'rounded-full bg-surface-2 px-3 py-1 font-display text-xs tracking-wide text-primary'
+						: 'rounded-full px-3 py-1 font-display text-xs tracking-wide text-muted hover:text-ink'}
+				>
+					📜 Season 17
+				</button>
+			</div>
+
 			<!-- Mode Toggle -->
 			<div class="flex items-center gap-1 rounded-full border border-line bg-surface p-1">
 				<button

@@ -921,21 +921,31 @@ export function draftRecommendations(
 	teamFilledRoles: Set<Role>,
 	opts: ScopeOptions = {}
 ): DraftRecommendation[] {
-	// Build modal slot lookup
+	const matchSeason = new Map(data.matches.map((m) => [m.id, m.season]));
 	const heroSlotCounts = new Map<number, Map<number, number>>();
+
 	for (const d of data.drafts) {
 		if (d.isBan || d.slot === null) continue;
+		const s = matchSeason.get(d.matchId);
+		if (opts.season && s !== opts.season) continue;
 		let m = heroSlotCounts.get(d.heroId);
 		if (!m) {
 			m = new Map();
 			heroSlotCounts.set(d.heroId, m);
 		}
-		m.set(d.slot, (m.get(d.slot) ?? 0) + 1);
+		// Weight Season 18 3x higher when aggregating across all seasons
+		const weight = !opts.season && s === '18' ? 3 : 1;
+		m.set(d.slot, (m.get(d.slot) ?? 0) + weight);
 	}
 
 	const teamPicks = pickRate(data, { ...opts, teamId });
 	const teamBans = banRate(data, { ...opts, teamId });
 	const lgPres = presence(data, opts);
+
+	// Check latest Season 18 presence for recency boost
+	const lgPresS18 = presence(data, { ...opts, season: '18' });
+	const teamPicksS18 = pickRate(data, { ...opts, teamId, season: '18' });
+	const teamBansS18 = banRate(data, { ...opts, teamId, season: '18' });
 
 	const recommendations: DraftRecommendation[] = [];
 
@@ -955,17 +965,26 @@ export function draftRecommendations(
 			}
 		}
 
+		const s18Pick = teamPicksS18[h.canonicalName] ?? 0;
+		const s18Ban = teamBansS18[h.canonicalName] ?? 0;
+		const s18Pres = lgPresS18[h.canonicalName] ?? 0;
+
 		const tPick = teamPicks[h.canonicalName] ?? 0;
 		const tBan = teamBans[h.canonicalName] ?? 0;
 		const pres = lgPres[h.canonicalName] ?? 0;
 
+		const effectivePick = opts.season === '18' ? tPick : s18Pick * 0.7 + tPick * 0.3;
+		const effectiveBan = opts.season === '18' ? tBan : s18Ban * 0.7 + tBan * 0.3;
+		const effectivePres = opts.season === '18' ? pres : s18Pres * 0.7 + pres * 0.3;
+
 		if (action === 'ban') {
 			let tag = 'Meta Ban';
-			if (tBan > 0.25) tag = 'Frequent Team Ban';
-			else if (pres > 0.5) tag = 'Meta Must-Ban';
-			else if (tPick > 0.2) tag = 'Opponent Signature';
+			if (s18Pres > 0.4 || s18Ban > 0.3) tag = 'S18 Priority Ban';
+			else if (effectiveBan > 0.25) tag = 'Frequent Team Ban';
+			else if (effectivePres > 0.5) tag = 'Meta Must-Ban';
+			else if (effectivePick > 0.2) tag = 'Opponent Signature';
 
-			const score = tBan * 2.5 + pres * 1.5 + tPick * 1.0;
+			const score = effectiveBan * 2.8 + effectivePres * 1.8 + effectivePick * 1.2;
 			recommendations.push({
 				hero: h.canonicalName,
 				role: primaryRole,
@@ -979,12 +998,14 @@ export function draftRecommendations(
 		} else {
 			const fillsOpen = !teamFilledRoles.has(primaryRole);
 			let tag = 'Meta Pick';
-			if (tPick > 0.2 && fillsOpen) tag = `Fills Open ${ROLE_NAMES[primaryRole]}`;
-			else if (tPick > 0.2) tag = 'Team Comfort';
+			if (s18Pres > 0.35 && fillsOpen) tag = `S18 Priority ${ROLE_NAMES[primaryRole]}`;
+			else if (s18Pres > 0.35) tag = 'S18 Meta Pick';
+			else if (effectivePick > 0.2 && fillsOpen) tag = `Fills Open ${ROLE_NAMES[primaryRole]}`;
+			else if (effectivePick > 0.2) tag = 'Team Comfort';
 			else if (fillsOpen) tag = `Open ${ROLE_NAMES[primaryRole]} Pick`;
-			else if (pres > 0.4) tag = 'Meta Power Pick';
+			else if (effectivePres > 0.4) tag = 'Meta Power Pick';
 
-			const score = tPick * 3.0 + pres * 1.2 + (fillsOpen ? 1.8 : 0);
+			const score = effectivePick * 3.2 + effectivePres * 1.5 + (fillsOpen ? 2.0 : 0);
 			recommendations.push({
 				hero: h.canonicalName,
 				role: primaryRole,
@@ -1028,17 +1049,21 @@ export function evaluateSideDraft(
 	opts: ScopeOptions = {},
 	manualRoleOverrides?: (Role | null)[]
 ): SideEvaluation {
+	const matchSeason = new Map(data.matches.map((m) => [m.id, m.season]));
 	const heroSlotCounts = new Map<number, Map<number, number>>();
 	const heroByName = new Map(data.heroes.map((h) => [h.canonicalName, h]));
 
 	for (const d of data.drafts) {
 		if (d.isBan || d.slot === null) continue;
+		const s = matchSeason.get(d.matchId);
+		if (opts.season && s !== opts.season) continue;
 		let m = heroSlotCounts.get(d.heroId);
 		if (!m) {
 			m = new Map();
 			heroSlotCounts.set(d.heroId, m);
 		}
-		m.set(d.slot, (m.get(d.slot) ?? 0) + 1);
+		const weight = !opts.season && s === '18' ? 3 : 1;
+		m.set(d.slot, (m.get(d.slot) ?? 0) + weight);
 	}
 
 	const teamPicks = pickRate(data, { ...opts, teamId });

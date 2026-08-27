@@ -13,6 +13,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [2026-08-27]
 
 ### Added
+- **Draft Sandbox Season 18 Recency Prioritization & Scope Switcher (`/sandbox`)**:
+  - Season 18 matches now weighted $3\times$ higher in draft AI recommendations and lane slot detection so current meta trends (e.g. S18 priority picks & lane shifts) dominate over historical volume.
+  - Added dedicated Season Scope filter switcher in the header (`🔥 Season 18 (Latest)`, `⚖️ All Time`, `📜 Season 17`).
 - **Draft Sandbox Smart Auto-Flex Engine & Interactive Role Selector (`/sandbox`)**:
   - Automatically matches multi-role flex heroes (e.g. Paquito EXP $\rightarrow$ JGL) to open team lanes to complete 5-lane coverage (`5/5`).
   - Added golden `FLEX` badges on auto-flexed draft picks.

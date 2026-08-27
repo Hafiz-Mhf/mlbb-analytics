@@ -3,6 +3,7 @@
 		{
 			date: '2026-08-27',
 			items: [
+				'Draft Sandbox (/sandbox) Season 18 Recency Prioritization: 3x weighting on S18 matches for AI suggestions and lane slot detection, plus header Season Scope switcher (Season 18, All Time, Season 17)',
 				'Draft Sandbox (/sandbox) Smart Auto-Flex Engine & Interactive Role Selector: automatic multi-role assignment for flex picks (e.g. Paquito EXP→JGL flex) to maximize 5-lane coverage, plus coach role dropdown overrides',
 				'Interactive Draft Sandbox (/sandbox) launched with 20-step official tournament draft simulator, Dual Coach and Solo vs AI modes, real-time scouting recommendations, and live role coverage checklist',
 				'Side Priority Analysis (/sides) dashboard launched with Blue vs Red tournament win rates, 8-team asymmetry matrix, and First-Pick vs Counter-Pick hero priorities',

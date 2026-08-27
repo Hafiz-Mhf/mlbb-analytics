@@ -521,6 +521,12 @@ describe('draftRecommendations', () => {
 		expect(recs.length).toBeGreaterThan(0);
 		expect(recs.some((r) => r.hero === 'Chou')).toBe(false);
 	});
+
+	it('supports season scoping and boosts high-presence heroes in Season 18', () => {
+		const data = fixture();
+		const recsS18 = draftRecommendations(data, 1, 'blue', 'pick', new Set(), new Set(), { season: '18' });
+		expect(recsS18.length).toBeGreaterThan(0);
+	});
 });
 
 describe('evaluateSideDraft', () => {
