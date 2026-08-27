@@ -98,7 +98,12 @@ Browser-verifying the click caught a real a11y bug, not just a cosmetic one: cli
 
 Not a technical gap — every roadmap.md "Now" and "Next" item is done or checked. The gap is that nobody has confirmed wanting this yet. Before adding more features (Later phase or otherwise), the honest next move is distribution/outreach: get it in front of at least one real MPL MY analyst or scene-follower and see if it survives contact. Building further without that risks a well-engineered tool nobody asked for — see planning.md's own framing of this exact risk.
 
-**Still open, all previously deferred, none blocking:** the standings-based build-halting invariant (needs a standings-page parser that doesn't exist yet).
+**Next queued roadmap items:**
+1. Head-to-Head Matchup Tool (select two teams, compare draft tendencies, contested hero priority, side pick preferences, head-to-head history).
+2. Side Priority Analysis (Blue vs Red side draft tendencies and win rates).
+3. Interactive Draft Sandbox (client-side mock draft tool).
+
+**Still open, deferred:** the standings-based build-halting invariant (needs a standings-page parser that doesn't exist yet).
 
 Everything below this paragraph describes earlier state.
 
