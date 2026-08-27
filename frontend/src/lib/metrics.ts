@@ -899,6 +899,8 @@ export const OFFICIAL_DRAFT_SEQUENCE: DraftStep[] = [
 	{ stepIndex: 19, phase: 2, action: 'pick', side: 'red',  slotIndex: 4, label: 'Red Pick 5 (Counter-Pick)' }
 ];
 
+export type Role = 1 | 2 | 3 | 4 | 5;
+
 export interface DraftRecommendation {
 	hero: string;
 	role: Role;
@@ -931,6 +933,10 @@ export function draftRecommendations(
 		m.set(d.slot, (m.get(d.slot) ?? 0) + 1);
 	}
 
+	const teamPicks = pickRate(data, { ...opts, teamId });
+	const teamBans = banRate(data, { ...opts, teamId });
+	const lgPres = presence(data, opts);
+
 	const recommendations: DraftRecommendation[] = [];
 
 	for (const h of data.heroes) {
@@ -949,17 +955,17 @@ export function draftRecommendations(
 			}
 		}
 
-		const tPick = pickRate(data, h.canonicalName, { ...opts, teamId });
-		const tBan = banRate(data, h.canonicalName, { ...opts, teamId });
-		const lgPres = presence(data, h.canonicalName, opts);
+		const tPick = teamPicks[h.canonicalName] ?? 0;
+		const tBan = teamBans[h.canonicalName] ?? 0;
+		const pres = lgPres[h.canonicalName] ?? 0;
 
 		if (action === 'ban') {
 			let tag = 'Meta Ban';
 			if (tBan > 0.25) tag = 'Frequent Team Ban';
-			else if (lgPres > 0.5) tag = 'Meta Must-Ban';
+			else if (pres > 0.5) tag = 'Meta Must-Ban';
 			else if (tPick > 0.2) tag = 'Opponent Signature';
 
-			const score = tBan * 2.5 + lgPres * 1.5 + tPick * 1.0;
+			const score = tBan * 2.5 + pres * 1.5 + tPick * 1.0;
 			recommendations.push({
 				hero: h.canonicalName,
 				role: primaryRole,
@@ -967,7 +973,7 @@ export function draftRecommendations(
 				score,
 				teamPickRate: tPick,
 				teamBanRate: tBan,
-				leaguePresence: lgPres,
+				leaguePresence: pres,
 				tag
 			});
 		} else {
@@ -976,9 +982,9 @@ export function draftRecommendations(
 			if (tPick > 0.2 && fillsOpen) tag = `Fills Open ${ROLE_NAMES[primaryRole]}`;
 			else if (tPick > 0.2) tag = 'Team Comfort';
 			else if (fillsOpen) tag = `Open ${ROLE_NAMES[primaryRole]} Pick`;
-			else if (lgPres > 0.4) tag = 'Meta Power Pick';
+			else if (pres > 0.4) tag = 'Meta Power Pick';
 
-			const score = tPick * 3.0 + lgPres * 1.2 + (fillsOpen ? 1.8 : 0);
+			const score = tPick * 3.0 + pres * 1.2 + (fillsOpen ? 1.8 : 0);
 			recommendations.push({
 				hero: h.canonicalName,
 				role: primaryRole,
@@ -986,7 +992,7 @@ export function draftRecommendations(
 				score,
 				teamPickRate: tPick,
 				teamBanRate: tBan,
-				leaguePresence: lgPres,
+				leaguePresence: pres,
 				tag
 			});
 		}
@@ -1026,6 +1032,7 @@ export function evaluateSideDraft(
 		m.set(d.slot, (m.get(d.slot) ?? 0) + 1);
 	}
 
+	const teamPicks = pickRate(data, { ...opts, teamId });
 	const pickDetails: { hero: string; role: Role; roleName: string }[] = [];
 	const filledRoles = new Set<Role>();
 	let sigCount = 0;
@@ -1054,7 +1061,7 @@ export function evaluateSideDraft(
 			roleName: ROLE_NAMES[role]
 		});
 
-		const pRate = pickRate(data, heroName, { ...opts, teamId });
+		const pRate = teamPicks[heroName] ?? 0;
 		rawPickRates.push(pRate);
 		if (pRate >= 0.15) sigCount++;
 	}
