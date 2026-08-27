@@ -47,3 +47,8 @@ Now → Next → Later: draft/pick-ban prep first, post-game review second (draf
 
 ## Design/tech decisions
 See design.md, design-direction-v1.md, database.md and frontend.md for the reasoning — don't propose a from-scratch stack or visual identity without reading those first.
+
+## Changelog Policy
+**Always update the changelog on every feature release and major update:**
+1. Update root `CHANGELOG.md` with structured release notes.
+2. Update the in-app changelog entries in `frontend/src/routes/changelog/+page.svelte`.
