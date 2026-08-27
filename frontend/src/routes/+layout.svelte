@@ -73,26 +73,26 @@
 			>
 		</a>
 
-		<nav class="hidden items-center gap-1 sm:flex" aria-label="Primary">
+		<nav class="hidden items-center gap-1 xl:flex" aria-label="Primary">
 			{#each navLinks as link (link.href)}
 				<a
 					href={link.href}
 					class={page.url.pathname === link.href
-						? 'rounded-full bg-surface-2 px-3 py-1.5 font-display text-xs tracking-wide text-primary uppercase'
-						: 'rounded-full px-3 py-1.5 font-display text-xs tracking-wide text-muted uppercase transition-colors hover:text-ink'}
+						? 'shrink-0 whitespace-nowrap rounded-full bg-surface-2 px-3 py-1.5 font-display text-xs tracking-wide text-primary uppercase'
+						: 'shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 font-display text-xs tracking-wide text-muted uppercase transition-colors hover:text-ink'}
 				>
 					{link.label}
 				</a>
 			{/each}
 		</nav>
 
-		<div class="flex items-center gap-3">
+		<div class="flex shrink-0 items-center gap-3">
 			{#if page.url.pathname.startsWith('/team')}
 				<select
 					aria-label="Switch scouted team"
 					value={$selectedTeam}
 					onchange={onTeamChange}
-					class="min-h-11 max-w-full rounded-full border border-line bg-surface px-3 py-1 font-mono text-xs text-ink focus-visible:border-primary"
+					class="min-h-11 shrink-0 rounded-full border border-line bg-surface px-3 py-1 font-mono text-xs text-ink focus-visible:border-primary"
 				>
 					{#each teamOptions as team (team.slug)}
 						<option value={team.slug}>{team.name}</option>
@@ -103,15 +103,15 @@
 	</div>
 
 	<nav
-		class="flex items-center gap-1 overflow-x-auto border-t border-line px-6 py-2 sm:hidden"
+		class="flex items-center gap-1 overflow-x-auto border-t border-line px-6 py-2 xl:hidden"
 		aria-label="Primary"
 	>
 		{#each navLinks as link (link.href)}
 			<a
 				href={link.href}
 				class={page.url.pathname === link.href
-					? 'shrink-0 rounded-full bg-surface-2 px-3 py-1.5 font-display text-xs tracking-wide text-primary uppercase'
-					: 'shrink-0 rounded-full px-3 py-1.5 font-display text-xs tracking-wide text-muted uppercase transition-colors hover:text-ink'}
+					? 'shrink-0 whitespace-nowrap rounded-full bg-surface-2 px-3 py-1.5 font-display text-xs tracking-wide text-primary uppercase'
+					: 'shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 font-display text-xs tracking-wide text-muted uppercase transition-colors hover:text-ink'}
 			>
 				{link.label}
 			</a>
