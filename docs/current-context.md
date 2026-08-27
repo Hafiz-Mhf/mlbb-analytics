@@ -92,11 +92,13 @@ Scroll-to-top button checks `prefers-reduced-motion` before choosing `smooth` vs
 
 Browser-verifying the click caught a real a11y bug, not just a cosmetic one: clicking left the button focused, then the scroll-triggered `aria-hidden="true"` landed on a still-focused element — a WAI-ARIA spec violation (focus must never be hidden from assistive tech), flagged by the browser's own console warning. Fixed by blurring the button on click. `svelte-check` clean, no new tests needed (pure layout, no new logic).
 
+**Per-Role & Flex Scouting (27 Aug 2026):** implemented per-role draft filtering and multi-lane flex hero scouting across the app. (1) New pure functions in `frontend/src/lib/metrics.ts`: `flexHeroes` (finds heroes drafted across $\ge 2$ roles in scope, computes primary/secondary role shares and flex rate) and `rolePredictabilityMatrix` (computes HHI across all 5 roles for each of the 8 teams plus league baseline). (2) New components: `RoleFilter.svelte` (accessible pill tab switcher) and `RoleDistributionBar.svelte` (segmented horizontal distribution bar). (3) Integrated into `/team/[slug]`: role filter above main hero table showing lane-specific predictability (*e.g., "SRG Jungle Predictability: 0.078 vs League 0.045"*), plus a new "Flex Picks" card. (4) Integrated into `/league`: role filter on Meta Draft tables. (5) New `/roles` route added to nav bar, featuring an 8-team Role Predictability Matrix and a Tournament Flex Picks table with season filter. 40 frontend tests passing (up from 35) — 129 total (89 pipeline + 40 frontend). Plan: `docs/superpowers/plans/2026-08-27-per-role-flex-scouting.md`.
+
 ## What's actually blocking progress now
 
 Not a technical gap — every roadmap.md "Now" and "Next" item is done or checked. The gap is that nobody has confirmed wanting this yet. Before adding more features (Later phase or otherwise), the honest next move is distribution/outreach: get it in front of at least one real MPL MY analyst or scene-follower and see if it survives contact. Building further without that risks a well-engineered tool nobody asked for — see planning.md's own framing of this exact risk.
 
-**Still open, all previously deferred, none blocking:** flex-rate UI, per-role breakdowns wired into the Team Scouting screen, the standings-based build-halting invariant (needs a standings-page parser that doesn't exist yet).
+**Still open, all previously deferred, none blocking:** the standings-based build-halting invariant (needs a standings-page parser that doesn't exist yet).
 
 Everything below this paragraph describes earlier state.
 
