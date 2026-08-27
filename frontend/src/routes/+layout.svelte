@@ -25,6 +25,7 @@
 
 	const navLinks = $derived([
 		{ href: resolve('/team/[slug]', { slug: $selectedTeam }), label: 'Team Scouting' },
+		{ href: resolve('/matchup'), label: 'Matchup' },
 		{ href: resolve('/league'), label: 'League Overview' },
 		{ href: resolve('/roles'), label: 'Roles & Flex' },
 		{ href: resolve('/log'), label: 'Match Log' }

@@ -21,6 +21,7 @@
 	import TrendChart from '$lib/components/TrendChart.svelte';
 	import { selectedTeam } from '$lib/teamSelection';
 	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 
 	let { data } = $props();
 	const team = $derived(data.team);
@@ -85,7 +86,16 @@
 			<TeamTag name={team.canonicalName} size={22} />
 			{team.canonicalName}
 		</h1>
-		<FreshnessIndicator {generatedAt} />
+		<div class="flex items-center gap-3">
+			<a
+				href="{resolve('/matchup')}?t1={page.params.slug}"
+				class="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 font-mono text-xs text-primary transition-colors hover:border-primary hover:bg-surface-2"
+			>
+				<span>⇄</span>
+				<span>Head-to-Head Matchup</span>
+			</a>
+			<FreshnessIndicator {generatedAt} />
+		</div>
 	</div>
 
 	<StatBlock
