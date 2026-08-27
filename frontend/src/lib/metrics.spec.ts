@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
 	banRate,
+	draftRecommendations,
+	evaluateSideDraft,
 	flexHeroes,
 	headToHeadSummary,
 	heroClash,
@@ -9,6 +11,7 @@ import {
 	hhiByRole,
 	leagueSidePerformance,
 	matchupRoleComparison,
+	OFFICIAL_DRAFT_SEQUENCE,
 	pickRate,
 	pickRateByRole,
 	pickWinRateDelta,
@@ -499,6 +502,37 @@ describe('heroSidePriorities', () => {
 		expect(priorities.winRateSwings).toBeDefined();
 	});
 });
+
+describe('OFFICIAL_DRAFT_SEQUENCE', () => {
+	it('contains exactly 20 official tournament steps', () => {
+		expect(OFFICIAL_DRAFT_SEQUENCE.length).toBe(20);
+		expect(OFFICIAL_DRAFT_SEQUENCE[0].action).toBe('ban');
+		expect(OFFICIAL_DRAFT_SEQUENCE[6].action).toBe('pick');
+		expect(OFFICIAL_DRAFT_SEQUENCE[6].side).toBe('blue');
+		expect(OFFICIAL_DRAFT_SEQUENCE[19].action).toBe('pick');
+		expect(OFFICIAL_DRAFT_SEQUENCE[19].side).toBe('red');
+	});
+});
+
+describe('draftRecommendations', () => {
+	it('provides ranked recommendations excluding unavailable heroes and prioritizing open roles', () => {
+		const data = fixture();
+		const recs = draftRecommendations(data, 1, 'blue', 'pick', new Set(['Chou']), new Set([1]));
+		expect(recs.length).toBeGreaterThan(0);
+		expect(recs.some((r) => r.hero === 'Chou')).toBe(false);
+	});
+});
+
+describe('evaluateSideDraft', () => {
+	it('computes 5-lane completion and draft HHI score', () => {
+		const data = fixture();
+		const evaluation = evaluateSideDraft(data, 1, ['sora', 'guinevere', 'zhuxin', 'granger', 'chou'], ['fanny']);
+		expect(evaluation.isComplete).toBe(true);
+		expect(evaluation.missingRoles.length).toBe(0);
+		expect(evaluation.draftHhi).toBeGreaterThanOrEqual(0);
+	});
+});
+
 
 
 

@@ -867,5 +867,225 @@ export function heroSidePriorities(
 	};
 }
 
+export interface DraftStep {
+	stepIndex: number;
+	phase: 1 | 2;
+	action: 'ban' | 'pick';
+	side: 'blue' | 'red';
+	slotIndex: number;
+	label: string;
+}
+
+export const OFFICIAL_DRAFT_SEQUENCE: DraftStep[] = [
+	{ stepIndex: 0, phase: 1, action: 'ban', side: 'blue', slotIndex: 0, label: 'Blue Ban 1' },
+	{ stepIndex: 1, phase: 1, action: 'ban', side: 'red',  slotIndex: 0, label: 'Red Ban 1' },
+	{ stepIndex: 2, phase: 1, action: 'ban', side: 'blue', slotIndex: 1, label: 'Blue Ban 2' },
+	{ stepIndex: 3, phase: 1, action: 'ban', side: 'red',  slotIndex: 1, label: 'Red Ban 2' },
+	{ stepIndex: 4, phase: 1, action: 'ban', side: 'blue', slotIndex: 2, label: 'Blue Ban 3' },
+	{ stepIndex: 5, phase: 1, action: 'ban', side: 'red',  slotIndex: 2, label: 'Red Ban 3' },
+	{ stepIndex: 6, phase: 1, action: 'pick', side: 'blue', slotIndex: 0, label: 'Blue Pick 1 (First Pick)' },
+	{ stepIndex: 7, phase: 1, action: 'pick', side: 'red',  slotIndex: 0, label: 'Red Pick 1' },
+	{ stepIndex: 8, phase: 1, action: 'pick', side: 'red',  slotIndex: 1, label: 'Red Pick 2' },
+	{ stepIndex: 9, phase: 1, action: 'pick', side: 'blue', slotIndex: 1, label: 'Blue Pick 2' },
+	{ stepIndex: 10, phase: 1, action: 'pick', side: 'blue', slotIndex: 2, label: 'Blue Pick 3' },
+	{ stepIndex: 11, phase: 1, action: 'pick', side: 'red',  slotIndex: 2, label: 'Red Pick 3' },
+	{ stepIndex: 12, phase: 2, action: 'ban', side: 'red',  slotIndex: 3, label: 'Red Ban 4' },
+	{ stepIndex: 13, phase: 2, action: 'ban', side: 'blue', slotIndex: 3, label: 'Blue Ban 4' },
+	{ stepIndex: 14, phase: 2, action: 'ban', side: 'red',  slotIndex: 4, label: 'Red Ban 5' },
+	{ stepIndex: 15, phase: 2, action: 'ban', side: 'blue', slotIndex: 4, label: 'Blue Ban 5' },
+	{ stepIndex: 16, phase: 2, action: 'pick', side: 'red',  slotIndex: 3, label: 'Red Pick 4' },
+	{ stepIndex: 17, phase: 2, action: 'pick', side: 'blue', slotIndex: 3, label: 'Blue Pick 4' },
+	{ stepIndex: 18, phase: 2, action: 'pick', side: 'blue', slotIndex: 4, label: 'Blue Pick 5' },
+	{ stepIndex: 19, phase: 2, action: 'pick', side: 'red',  slotIndex: 4, label: 'Red Pick 5 (Counter-Pick)' }
+];
+
+export interface DraftRecommendation {
+	hero: string;
+	role: Role;
+	roleName: string;
+	score: number;
+	teamPickRate: number;
+	teamBanRate: number;
+	leaguePresence: number;
+	tag: string;
+}
+
+export function draftRecommendations(
+	data: Dataset,
+	teamId: number,
+	side: 'blue' | 'red',
+	action: 'ban' | 'pick',
+	unavailableHeroNames: Set<string>,
+	teamFilledRoles: Set<Role>,
+	opts: ScopeOptions = {}
+): DraftRecommendation[] {
+	// Build modal slot lookup
+	const heroSlotCounts = new Map<number, Map<number, number>>();
+	for (const d of data.drafts) {
+		if (d.isBan || d.slot === null) continue;
+		let m = heroSlotCounts.get(d.heroId);
+		if (!m) {
+			m = new Map();
+			heroSlotCounts.set(d.heroId, m);
+		}
+		m.set(d.slot, (m.get(d.slot) ?? 0) + 1);
+	}
+
+	const recommendations: DraftRecommendation[] = [];
+
+	for (const h of data.heroes) {
+		if (unavailableHeroNames.has(h.canonicalName)) continue;
+
+		// Modal role determination
+		const m = heroSlotCounts.get(h.id);
+		let primaryRole: Role = 1;
+		if (m) {
+			let bestCount = -1;
+			for (const [slot, count] of m.entries()) {
+				if (count > bestCount && slot >= 1 && slot <= 5) {
+					bestCount = count;
+					primaryRole = slot as Role;
+				}
+			}
+		}
+
+		const tPick = pickRate(data, h.canonicalName, { ...opts, teamId });
+		const tBan = banRate(data, h.canonicalName, { ...opts, teamId });
+		const lgPres = presence(data, h.canonicalName, opts);
+
+		if (action === 'ban') {
+			let tag = 'Meta Ban';
+			if (tBan > 0.25) tag = 'Frequent Team Ban';
+			else if (lgPres > 0.5) tag = 'Meta Must-Ban';
+			else if (tPick > 0.2) tag = 'Opponent Signature';
+
+			const score = tBan * 2.5 + lgPres * 1.5 + tPick * 1.0;
+			recommendations.push({
+				hero: h.canonicalName,
+				role: primaryRole,
+				roleName: ROLE_NAMES[primaryRole],
+				score,
+				teamPickRate: tPick,
+				teamBanRate: tBan,
+				leaguePresence: lgPres,
+				tag
+			});
+		} else {
+			const fillsOpen = !teamFilledRoles.has(primaryRole);
+			let tag = 'Meta Pick';
+			if (tPick > 0.2 && fillsOpen) tag = `Fills Open ${ROLE_NAMES[primaryRole]}`;
+			else if (tPick > 0.2) tag = 'Team Comfort';
+			else if (fillsOpen) tag = `Open ${ROLE_NAMES[primaryRole]} Pick`;
+			else if (lgPres > 0.4) tag = 'Meta Power Pick';
+
+			const score = tPick * 3.0 + lgPres * 1.2 + (fillsOpen ? 1.8 : 0);
+			recommendations.push({
+				hero: h.canonicalName,
+				role: primaryRole,
+				roleName: ROLE_NAMES[primaryRole],
+				score,
+				teamPickRate: tPick,
+				teamBanRate: tBan,
+				leaguePresence: lgPres,
+				tag
+			});
+		}
+	}
+
+	return recommendations.sort((a, b) => b.score - a.score || b.leaguePresence - a.leaguePresence);
+}
+
+export interface SideEvaluation {
+	picks: { hero: string; role: Role; roleName: string }[];
+	bans: string[];
+	filledRoles: Set<Role>;
+	missingRoles: Role[];
+	isComplete: boolean;
+	draftHhi: number;
+	hhiClassification: string;
+	signatureCount: number;
+}
+
+export function evaluateSideDraft(
+	data: Dataset,
+	teamId: number,
+	picks: string[],
+	bans: string[],
+	opts: ScopeOptions = {}
+): SideEvaluation {
+	const heroSlotCounts = new Map<number, Map<number, number>>();
+	const heroByName = new Map(data.heroes.map((h) => [h.canonicalName, h]));
+
+	for (const d of data.drafts) {
+		if (d.isBan || d.slot === null) continue;
+		let m = heroSlotCounts.get(d.heroId);
+		if (!m) {
+			m = new Map();
+			heroSlotCounts.set(d.heroId, m);
+		}
+		m.set(d.slot, (m.get(d.slot) ?? 0) + 1);
+	}
+
+	const pickDetails: { hero: string; role: Role; roleName: string }[] = [];
+	const filledRoles = new Set<Role>();
+	let sigCount = 0;
+	const rawPickRates: number[] = [];
+
+	for (const heroName of picks) {
+		const h = heroByName.get(heroName);
+		let role: Role = 1;
+		if (h) {
+			const m = heroSlotCounts.get(h.id);
+			if (m) {
+				let bestCount = -1;
+				for (const [slot, count] of m.entries()) {
+					if (count > bestCount && slot >= 1 && slot <= 5) {
+						bestCount = count;
+						role = slot as Role;
+					}
+				}
+			}
+		}
+
+		filledRoles.add(role);
+		pickDetails.push({
+			hero: heroName,
+			role,
+			roleName: ROLE_NAMES[role]
+		});
+
+		const pRate = pickRate(data, heroName, { ...opts, teamId });
+		rawPickRates.push(pRate);
+		if (pRate >= 0.15) sigCount++;
+	}
+
+	const allRoles: Role[] = [1, 2, 3, 4, 5];
+	const missingRoles = allRoles.filter((r) => !filledRoles.has(r));
+
+	// Compute draft HHI
+	let draftHhi = 0;
+	const sumRates = rawPickRates.reduce((a, b) => a + b, 0);
+	if (sumRates > 0) {
+		const shares = rawPickRates.map((r) => r / sumRates);
+		draftHhi = shares.reduce((acc, s) => acc + s * s, 0);
+	}
+
+	let hhiClassification = 'Balanced Draft';
+	if (draftHhi < 0.22) hhiClassification = 'Versatile Draft';
+	else if (draftHhi > 0.32) hhiClassification = 'High Predictability';
+
+	return {
+		picks: pickDetails,
+		bans,
+		filledRoles,
+		missingRoles,
+		isComplete: picks.length === 5,
+		draftHhi,
+		hhiClassification,
+		signatureCount: sigCount
+	};
+}
+
+
 
 
