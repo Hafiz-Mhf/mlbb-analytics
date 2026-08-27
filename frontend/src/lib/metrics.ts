@@ -316,3 +316,306 @@ export function rolePredictabilityMatrix(
 	return { teams, league };
 }
 
+export interface HeadToHeadSummary {
+	team1Wins: number;
+	team2Wins: number;
+	totalGames: number;
+	team1SeriesWins: number;
+	team2SeriesWins: number;
+	totalSeries: number;
+	directMatchIds: number[];
+	avgGameLengthSeconds: number;
+}
+
+export function headToHeadSummary(
+	data: Dataset,
+	team1Id: number,
+	team2Id: number,
+	opts: ScopeOptions = {}
+): HeadToHeadSummary {
+	const directMatches = data.matches.filter((m) => {
+		if (opts.season !== undefined && m.season !== opts.season) return false;
+		return (
+			(m.team1Id === team1Id && m.team2Id === team2Id) ||
+			(m.team1Id === team2Id && m.team2Id === team1Id)
+		);
+	});
+
+	if (directMatches.length === 0) {
+		return {
+			team1Wins: 0,
+			team2Wins: 0,
+			totalGames: 0,
+			team1SeriesWins: 0,
+			team2SeriesWins: 0,
+			totalSeries: 0,
+			directMatchIds: [],
+			avgGameLengthSeconds: 0
+		};
+	}
+
+	let team1Wins = 0;
+	let team2Wins = 0;
+	let totalSeconds = 0;
+	let durationCount = 0;
+
+	for (const m of directMatches) {
+		if (m.winnerId === team1Id) team1Wins++;
+		else if (m.winnerId === team2Id) team2Wins++;
+
+		if (m.gameLength) {
+			const parts = m.gameLength.split(':').map((p) => parseInt(p, 10));
+			if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+				totalSeconds += parts[0] * 60 + parts[1];
+				durationCount++;
+			}
+		}
+	}
+
+	// Series score
+	const seriesMap = new Map<string, { t1Wins: number; t2Wins: number }>();
+	for (const m of directMatches) {
+		if (!seriesMap.has(m.seriesId)) {
+			seriesMap.set(m.seriesId, { t1Wins: 0, t2Wins: 0 });
+		}
+		const s = seriesMap.get(m.seriesId)!;
+		if (m.winnerId === team1Id) s.t1Wins++;
+		else if (m.winnerId === team2Id) s.t2Wins++;
+	}
+
+	let team1SeriesWins = 0;
+	let team2SeriesWins = 0;
+	for (const s of seriesMap.values()) {
+		if (s.t1Wins > s.t2Wins) team1SeriesWins++;
+		else if (s.t2Wins > s.t1Wins) team2SeriesWins++;
+	}
+
+	return {
+		team1Wins,
+		team2Wins,
+		totalGames: directMatches.length,
+		team1SeriesWins,
+		team2SeriesWins,
+		totalSeries: seriesMap.size,
+		directMatchIds: directMatches.map((m) => m.id),
+		avgGameLengthSeconds: durationCount > 0 ? Math.round(totalSeconds / durationCount) : 0
+	};
+}
+
+export interface SideStats {
+	blueGames: number;
+	blueWins: number;
+	blueWinRate: number;
+	redGames: number;
+	redWins: number;
+	redWinRate: number;
+}
+
+export function sidePerformance(
+	data: Dataset,
+	teamId: number,
+	opts: ScopeOptions = {}
+): SideStats {
+	const teamMatches = data.matches.filter((m) => {
+		if (opts.season !== undefined && m.season !== opts.season) return false;
+		return m.team1Id === teamId || m.team2Id === teamId;
+	});
+
+	let blueGames = 0;
+	let blueWins = 0;
+	let redGames = 0;
+	let redWins = 0;
+
+	for (const m of teamMatches) {
+		const isTeam1 = m.team1Id === teamId;
+		const teamSide = isTeam1 ? m.team1Side : m.team1Side === 'blue' ? 'red' : 'blue';
+		const won = m.winnerId === teamId;
+
+		if (teamSide === 'blue') {
+			blueGames++;
+			if (won) blueWins++;
+		} else {
+			redGames++;
+			if (won) redWins++;
+		}
+	}
+
+	return {
+		blueGames,
+		blueWins,
+		blueWinRate: blueGames > 0 ? blueWins / blueGames : 0,
+		redGames,
+		redWins,
+		redWinRate: redGames > 0 ? redWins / redGames : 0
+	};
+}
+
+export type ClashCategory = 'contested' | 'team1_priority' | 'team2_priority';
+
+export interface HeroClashItem {
+	hero: string;
+	team1Rate: number;
+	team2Rate: number;
+	leagueRate: number;
+	team1PickRate: number;
+	team1BanRate: number;
+	team2PickRate: number;
+	team2BanRate: number;
+	category: ClashCategory;
+	primaryRole?: number;
+}
+
+export interface HeroClashResult {
+	contested: HeroClashItem[];
+	team1Priority: HeroClashItem[];
+	team2Priority: HeroClashItem[];
+}
+
+export function heroClash(
+	data: Dataset,
+	team1Id: number,
+	team2Id: number,
+	opts: ScopeOptions = {}
+): HeroClashResult {
+	const t1Pres = presence(data, { ...opts, teamId: team1Id });
+	const t1Picks = pickRate(data, { ...opts, teamId: team1Id });
+	const t1Bans = banRate(data, { ...opts, teamId: team1Id });
+
+	const t2Pres = presence(data, { ...opts, teamId: team2Id });
+	const t2Picks = pickRate(data, { ...opts, teamId: team2Id });
+	const t2Bans = banRate(data, { ...opts, teamId: team2Id });
+
+	const leaguePres = presence(data, opts);
+
+	// Find primary role for each hero
+	const heroPrimaryRole = new Map<string, number>();
+	const heroNameMap = new Map(data.heroes.map((h) => [h.id, h.canonicalName]));
+	const heroRolePicks = new Map<string, Map<number, number>>();
+
+	for (const d of data.drafts) {
+		if (d.isBan) continue;
+		const name = heroNameMap.get(d.heroId)!;
+		if (!heroRolePicks.has(name)) heroRolePicks.set(name, new Map());
+		const rMap = heroRolePicks.get(name)!;
+		rMap.set(d.slot, (rMap.get(d.slot) ?? 0) + 1);
+	}
+
+	for (const [name, rMap] of heroRolePicks.entries()) {
+		let bestRole = 1;
+		let maxPicks = -1;
+		for (const [r, cnt] of rMap.entries()) {
+			if (cnt > maxPicks) {
+				maxPicks = cnt;
+				bestRole = r;
+			}
+		}
+		heroPrimaryRole.set(name, bestRole);
+	}
+
+	const allHeroes = new Set([...Object.keys(t1Pres), ...Object.keys(t2Pres)]);
+	const items: HeroClashItem[] = [];
+
+	for (const hero of allHeroes) {
+		const t1 = t1Pres[hero] ?? 0;
+		const t2 = t2Pres[hero] ?? 0;
+		const lg = leaguePres[hero] ?? 0;
+
+		let category: ClashCategory | null = null;
+		if (t1 >= 0.25 && t2 >= 0.25) {
+			category = 'contested';
+		} else if (t1 >= 0.25 && t2 < 0.2) {
+			category = 'team1_priority';
+		} else if (t2 >= 0.25 && t1 < 0.2) {
+			category = 'team2_priority';
+		} else if (t1 + t2 >= 0.4) {
+			category = 'contested';
+		}
+
+		if (category) {
+			items.push({
+				hero,
+				team1Rate: t1,
+				team2Rate: t2,
+				leagueRate: lg,
+				team1PickRate: t1Picks[hero] ?? 0,
+				team1BanRate: t1Bans[hero] ?? 0,
+				team2PickRate: t2Picks[hero] ?? 0,
+				team2BanRate: t2Bans[hero] ?? 0,
+				category,
+				primaryRole: heroPrimaryRole.get(hero)
+			});
+		}
+	}
+
+	return {
+		contested: items
+			.filter((i) => i.category === 'contested')
+			.sort((a, b) => b.team1Rate + b.team2Rate - (a.team1Rate + a.team2Rate)),
+		team1Priority: items
+			.filter((i) => i.category === 'team1_priority')
+			.sort((a, b) => b.team1Rate - a.team1Rate),
+		team2Priority: items
+			.filter((i) => i.category === 'team2_priority')
+			.sort((a, b) => b.team2Rate - a.team2Rate)
+	};
+}
+
+export interface RoleMatchupItem {
+	role: number;
+	roleName: string;
+	team1Hhi: number;
+	team2Hhi: number;
+	leagueHhi: number;
+	team1TopPicks: Array<{ hero: string; rate: number; picks: number }>;
+	team2TopPicks: Array<{ hero: string; rate: number; picks: number }>;
+}
+
+export function matchupRoleComparison(
+	data: Dataset,
+	team1Id: number,
+	team2Id: number,
+	opts: ScopeOptions = {}
+): RoleMatchupItem[] {
+	const result: RoleMatchupItem[] = [];
+
+	for (let role = 1; role <= 5; role++) {
+		const t1Hhi = hhiByRole(data, role, { ...opts, teamId: team1Id });
+		const t2Hhi = hhiByRole(data, role, { ...opts, teamId: team2Id });
+		const lgHhi = hhiByRole(data, role, opts);
+
+		const t1PicksMap = pickRateByRole(data, role, { ...opts, teamId: team1Id });
+		const t2PicksMap = pickRateByRole(data, role, { ...opts, teamId: team2Id });
+
+		const t1TopPicks = Object.entries(t1PicksMap)
+			.map(([hero, rate]) => ({
+				hero,
+				rate,
+				picks: Math.round(rate * instanceCount(data, { ...opts, teamId: team1Id }))
+			}))
+			.sort((a, b) => b.rate - a.rate)
+			.slice(0, 3);
+
+		const t2TopPicks = Object.entries(t2PicksMap)
+			.map(([hero, rate]) => ({
+				hero,
+				rate,
+				picks: Math.round(rate * instanceCount(data, { ...opts, teamId: team2Id }))
+			}))
+			.sort((a, b) => b.rate - a.rate)
+			.slice(0, 3);
+
+		result.push({
+			role,
+			roleName: ROLE_NAMES[role],
+			team1Hhi: t1Hhi,
+			team2Hhi: t2Hhi,
+			leagueHhi: lgHhi,
+			team1TopPicks: t1TopPicks,
+			team2TopPicks: t2TopPicks
+		});
+	}
+
+	return result;
+}
+
+

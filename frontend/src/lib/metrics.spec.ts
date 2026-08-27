@@ -2,8 +2,11 @@ import { describe, it, expect } from 'vitest';
 import {
 	banRate,
 	flexHeroes,
+	headToHeadSummary,
+	heroClash,
 	hhi,
 	hhiByRole,
+	matchupRoleComparison,
 	pickRate,
 	pickRateByRole,
 	pickWinRateDelta,
@@ -11,7 +14,8 @@ import {
 	presenceDelta,
 	ROLE_NAMES,
 	rolePredictabilityMatrix,
-	rollingHhi
+	rollingHhi,
+	sidePerformance
 } from './metrics';
 import type { Dataset } from './types';
 
@@ -390,4 +394,73 @@ describe('rolePredictabilityMatrix', () => {
 		expect(matrix.league[1]).toBeGreaterThanOrEqual(0);
 	});
 });
+
+describe('headToHeadSummary', () => {
+	it('calculates direct series, game scores, and average game length', () => {
+		const data = fixture(); // 2 games between team 1 and 2 in series M1, game 1 won by T1 (10:00), game 2 won by T2 (12:00)
+		const summary = headToHeadSummary(data, 1, 2);
+		expect(summary.totalGames).toBe(2);
+		expect(summary.team1Wins).toBe(1);
+		expect(summary.team2Wins).toBe(1);
+		expect(summary.totalSeries).toBe(1);
+		expect(summary.avgGameLengthSeconds).toBe(660); // (600 + 720) / 2
+		expect(summary.directMatchIds).toEqual([1, 2]);
+	});
+
+	it('returns 0s when no direct games were played', () => {
+		const data = fixture();
+		const summary = headToHeadSummary(data, 1, 999);
+		expect(summary.totalGames).toBe(0);
+		expect(summary.team1Wins).toBe(0);
+		expect(summary.team2Wins).toBe(0);
+		expect(summary.totalSeries).toBe(0);
+		expect(summary.avgGameLengthSeconds).toBe(0);
+		expect(summary.directMatchIds).toEqual([]);
+	});
+});
+
+describe('sidePerformance', () => {
+	it('computes Blue and Red side games, wins, and win rates accurately', () => {
+		const data = fixture(); // Game 1: T1 on Blue (wins); Game 2: T1 on Red (loses)
+		const t1Side = sidePerformance(data, 1);
+		expect(t1Side.blueGames).toBe(1);
+		expect(t1Side.blueWins).toBe(1);
+		expect(t1Side.blueWinRate).toBe(1.0);
+		expect(t1Side.redGames).toBe(1);
+		expect(t1Side.redWins).toBe(0);
+		expect(t1Side.redWinRate).toBe(0.0);
+
+		const t2Side = sidePerformance(data, 2);
+		expect(t2Side.blueGames).toBe(1);
+		expect(t2Side.blueWins).toBe(1);
+		expect(t2Side.blueWinRate).toBe(1.0);
+		expect(t2Side.redGames).toBe(1);
+		expect(t2Side.redWins).toBe(0);
+		expect(t2Side.redWinRate).toBe(0.0);
+	});
+});
+
+describe('heroClash', () => {
+	it('categorizes heroes into contested vs team signature priorities', () => {
+		const data = fixture();
+		const clash = heroClash(data, 1, 2);
+		expect(clash.contested).toBeDefined();
+		expect(clash.team1Priority).toBeDefined();
+		expect(clash.team2Priority).toBeDefined();
+		expect(Array.isArray(clash.contested)).toBe(true);
+	});
+});
+
+describe('matchupRoleComparison', () => {
+	it('returns 5 lane comparisons with team HHI and top picks', () => {
+		const data = fixture();
+		const roles = matchupRoleComparison(data, 1, 2);
+		expect(roles.length).toBe(5);
+		expect(roles[0].roleName).toBe('EXP');
+		expect(roles[0].team1Hhi).toBeGreaterThanOrEqual(0);
+		expect(roles[0].team2Hhi).toBeGreaterThanOrEqual(0);
+		expect(roles[0].team1TopPicks.length).toBeGreaterThanOrEqual(1);
+	});
+});
+
 
