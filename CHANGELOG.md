@@ -13,6 +13,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [2026-08-27]
 
 ### Added
+- **Interactive Draft Sandbox (`/sandbox`)**:
+  - Full 20-step official MPL tournament pick/ban sequence state machine.
+  - Dual control modes: `👥 Dual Coach (Manual)` and `👤 Vs Simulated AI`.
+  - Turn-by-turn AI recommendations drawer matching team signatures and unfilled lane roles.
+  - Live 5-lane role coverage checklist (`EXP`, `JGL`, `MID`, `GOLD`, `ROAM`) and dynamic HHI draft predictability scoring.
+  - Searchable Hero Selection Pool with filter pills, undo/redo history, and copy draft summary export.
 - **Side Priority Analysis (`/sides`)**:
   - Tournament-wide Blue vs Red win rate split banner with duration breakdowns and first-pick advantage margins.
   - 8-team side asymmetry matrix tracking Blue and Red records, side delta, and reliance classifications (`Blue-Reliant`, `Balanced`, `Red-Reliant`).

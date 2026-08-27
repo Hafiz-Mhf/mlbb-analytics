@@ -3,6 +3,7 @@
 		{
 			date: '2026-08-27',
 			items: [
+				'Interactive Draft Sandbox (/sandbox) launched with 20-step official tournament draft simulator, Dual Coach and Solo vs AI modes, real-time scouting recommendations, and live role coverage checklist',
 				'Side Priority Analysis (/sides) dashboard launched with Blue vs Red tournament win rates, 8-team asymmetry matrix, and First-Pick vs Counter-Pick hero priorities',
 				'Head-to-Head Matchup Tool (/matchup) with dual-team selectors, direct series scores, draft clash categorization, and lane comfort pick comparisons',
 				'Per-Role & Flex Scouting (/roles) dashboard with 8-team lane predictability matrix and tournament flex pick intelligence',
