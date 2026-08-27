@@ -45,7 +45,7 @@
 
 	let selectedSeason = $state<'18' | 'all' | '17'>('18');
 	let searchQuery = $state('');
-	let selectedRoleFilter = $state<Role | 0>(0);
+	let selectedRoleFilter = $state<Role | 0 | -1>(0);
 	let toastMessage = $state<string | null>(null);
 	let isSimulating = $state(false);
 
@@ -105,19 +105,81 @@
 			: []
 	);
 
-	// Filtered hero catalog
+	// Hero role and flex status mapping
+	const heroRoleMap = $derived.by(() => {
+		const matchSeason = new Map(mockDataset.matches.map((m) => [m.id, m.season]));
+		const map = new Map<number, { primaryRole: Role; availableRoles: Role[]; isFlex: boolean }>();
+		const slotCounts = new Map<number, Map<number, number>>();
+
+		for (const d of mockDataset.drafts) {
+			if (d.isBan || d.slot === null) continue;
+			const s = matchSeason.get(d.matchId);
+			if (selectedSeason !== 'all' && s !== selectedSeason) continue;
+			let m = slotCounts.get(d.heroId);
+			if (!m) {
+				m = new Map();
+				slotCounts.set(d.heroId, m);
+			}
+			const weight = selectedSeason === 'all' && s === '18' ? 3 : 1;
+			m.set(d.slot, (m.get(d.slot) ?? 0) + weight);
+		}
+
+		for (const h of mockDataset.heroes) {
+			const m = slotCounts.get(h.id);
+			let primary: Role = 1;
+			const avail: Role[] = [];
+			if (m) {
+				let bestCount = -1;
+				for (const [slot, count] of m.entries()) {
+					if (slot >= 1 && slot <= 5) {
+						avail.push(slot as Role);
+						if (count > bestCount) {
+							bestCount = count;
+							primary = slot as Role;
+						}
+					}
+				}
+			}
+			if (avail.length === 0) avail.push(1);
+			map.set(h.id, {
+				primaryRole: primary,
+				availableRoles: avail,
+				isFlex: avail.length >= 2
+			});
+		}
+		return map;
+	});
+
+	// Filtered hero catalog with roles and flex info
 	const heroCatalog = $derived.by(() => {
 		const q = searchQuery.trim().toLowerCase();
 		return mockDataset.heroes
-			.map((h) => ({
-				id: h.id,
-				name: h.canonicalName,
-				isUnavailable: unavailableHeroes.has(h.canonicalName),
-				isBanned: blueBans.includes(h.canonicalName) || redBans.includes(h.canonicalName),
-				isPicked: bluePicks.includes(h.canonicalName) || redPicks.includes(h.canonicalName)
-			}))
+			.map((h) => {
+				const roleInfo = heroRoleMap.get(h.id) ?? {
+					primaryRole: 1 as Role,
+					availableRoles: [1 as Role],
+					isFlex: false
+				};
+				return {
+					id: h.id,
+					name: h.canonicalName,
+					primaryRole: roleInfo.primaryRole,
+					primaryRoleName: ROLE_NAMES[roleInfo.primaryRole],
+					availableRoles: roleInfo.availableRoles,
+					isFlex: roleInfo.isFlex,
+					isUnavailable: unavailableHeroes.has(h.canonicalName),
+					isBanned: blueBans.includes(h.canonicalName) || redBans.includes(h.canonicalName),
+					isPicked: bluePicks.includes(h.canonicalName) || redPicks.includes(h.canonicalName)
+				};
+			})
 			.filter((h) => {
 				if (q && !h.name.toLowerCase().includes(q)) return false;
+				if (selectedRoleFilter === -1) {
+					return h.isFlex;
+				}
+				if (selectedRoleFilter > 0) {
+					return h.availableRoles.includes(selectedRoleFilter as Role);
+				}
 				return true;
 			})
 			.sort((a, b) => {
@@ -802,7 +864,7 @@ Red Side (${redTeam?.name}):
 
 	<!-- Hero Selection Pool (Bottom Grid) -->
 	<div class="card p-5 sm:p-6 space-y-4">
-		<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+		<div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 			<div>
 				<h2 class="font-display text-lg tracking-wide text-ink">Hero Selection Pool</h2>
 				<p class="font-mono text-xs text-muted">
@@ -810,13 +872,47 @@ Red Side (${redTeam?.name}):
 				</p>
 			</div>
 
-			<!-- Search & Filter Controls -->
+			<!-- Search & Role Filter Controls -->
 			<div class="flex flex-wrap items-center gap-2">
+				<!-- Role Filter Pills -->
+				<div class="flex flex-wrap items-center gap-1 rounded-xl border border-line bg-surface p-1">
+					<button
+						type="button"
+						onclick={() => (selectedRoleFilter = 0)}
+						class={selectedRoleFilter === 0
+							? 'rounded-lg bg-primary px-2.5 py-1 font-mono text-xs font-bold text-black'
+							: 'rounded-lg px-2.5 py-1 font-mono text-xs text-muted hover:bg-surface-2 hover:text-ink'}
+					>
+						All Roles
+					</button>
+					{#each ([1, 2, 3, 4, 5] as Role[]) as r}
+						<button
+							type="button"
+							onclick={() => (selectedRoleFilter = r)}
+							class={selectedRoleFilter === r
+								? 'rounded-lg bg-primary px-2.5 py-1 font-mono text-xs font-bold text-black'
+								: 'rounded-lg px-2.5 py-1 font-mono text-xs text-muted hover:bg-surface-2 hover:text-ink'}
+						>
+							{ROLE_NAMES[r]}
+						</button>
+					{/each}
+					<button
+						type="button"
+						onclick={() => (selectedRoleFilter = -1)}
+						class={selectedRoleFilter === -1
+							? 'rounded-lg bg-gold px-2.5 py-1 font-mono text-xs font-bold text-black'
+							: 'rounded-lg px-2.5 py-1 font-mono text-xs text-gold/80 hover:bg-gold/15 hover:text-gold'}
+						title="Filter flex heroes that can play multiple lanes"
+					>
+						⇄ Flex Picks
+					</button>
+				</div>
+
 				<input
 					type="text"
 					bind:value={searchQuery}
 					placeholder="Search hero..."
-					class="rounded-lg border border-line bg-surface px-3 py-1.5 font-mono text-xs text-ink placeholder:text-muted focus-visible:border-primary"
+					class="rounded-xl border border-line bg-surface px-3 py-1.5 font-mono text-xs text-ink placeholder:text-muted focus-visible:border-primary w-36 sm:w-44"
 				/>
 			</div>
 		</div>
@@ -845,6 +941,16 @@ Red Side (${redTeam?.name}):
 					<span class="mt-1.5 font-display text-[11px] tracking-wide text-ink group-hover:text-primary line-clamp-1">
 						{hero.name}
 					</span>
+					<div class="mt-0.5 flex items-center gap-1">
+						<span class="rounded bg-surface-2/90 border border-line/70 px-1.5 py-0.2 font-mono text-[9px] font-semibold text-muted group-hover:text-primary group-hover:border-primary/40">
+							{hero.primaryRoleName}
+						</span>
+						{#if hero.isFlex}
+							<span class="rounded bg-gold/15 border border-gold/40 px-1 py-0.2 font-mono text-[8px] font-bold text-gold" title="Flex pick ({hero.availableRoles.map(r => ROLE_NAMES[r]).join(', ')})">
+								⇄
+							</span>
+						{/if}
+					</div>
 				</button>
 			{/each}
 		</div>

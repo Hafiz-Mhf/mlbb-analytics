@@ -13,6 +13,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [2026-08-27]
 
 ### Added
+- **Draft Sandbox Hero Selection Pool Role Filters & Role Badges (`/sandbox`)**:
+  - Added role filter pill bar (`All Roles`, `EXP`, `JGL`, `MID`, `GOLD`, `ROAM`, `⇄ Flex Picks`) to the Hero Selection Pool for instant role-specific drafting.
+  - Added primary role badges and `⇄` flex indicators to every hero card in the selection pool grid.
 - **Draft Sandbox Post-Draft Win Predictability & Composition Analysis (`/sandbox`)**:
   - Live post-draft executive analysis card rendered upon completion in the center HUD.
   - Visual Blue vs Red simulated win probability meter driven by side priority baselines, team hero comfort deltas, and tournament hero meta strength.

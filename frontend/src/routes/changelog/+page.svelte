@@ -3,6 +3,7 @@
 		{
 			date: '2026-08-27',
 			items: [
+				'Draft Sandbox (/sandbox) Hero Selection Pool Role Filtering: filter hero pool by lane (EXP, JGL, MID, GOLD, ROAM, and Flex Picks) plus role badges on hero cards',
 				'Draft Sandbox (/sandbox) Post-Draft Win Predictability & Composition Analysis: live outcome probability meter, strategic key advantages, 5-lane head-to-head edges, and clipboard export integration upon draft completion',
 				'Draft Sandbox (/sandbox) Season 18 Recency Prioritization: 3x weighting on S18 matches for AI suggestions and lane slot detection, plus header Season Scope switcher (Season 18, All Time, Season 17)',
 				'Draft Sandbox (/sandbox) Smart Auto-Flex Engine & Interactive Role Selector: automatic multi-role assignment for flex picks (e.g. Paquito EXP→JGL flex) to maximize 5-lane coverage, plus coach role dropdown overrides',
