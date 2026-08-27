@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { mockDataset, generatedAt } from '$lib/data';
-	import { banRate, hhi, pickRate, presenceDelta } from '$lib/metrics';
+	import { banRate, hhi, pickRate, pickRateByRole, presenceDelta, ROLE_NAMES } from '$lib/metrics';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
 	import HeroTag from '$lib/components/HeroTag.svelte';
+	import RoleFilter from '$lib/components/RoleFilter.svelte';
 	import StatBlock from '$lib/components/StatBlock.svelte';
 	import TeamTag from '$lib/components/TeamTag.svelte';
+
+	let selectedRole = $state<number | null>(null);
 
 	const leagueHhiValue = $derived(hhi(mockDataset));
 
@@ -27,9 +30,17 @@
 	const totalGames = $derived(mockDataset.matches.length);
 	const seasonDeltas = $derived(presenceDelta(mockDataset, '17', '18').slice(0, 15));
 
-	const s17Picks = $derived(topN(pickRate(mockDataset, { season: '17' })));
+	const s17Picks = $derived(
+		selectedRole === null
+			? topN(pickRate(mockDataset, { season: '17' }))
+			: topN(pickRateByRole(mockDataset, selectedRole, { season: '17' }))
+	);
 	const s17Bans = $derived(topN(banRate(mockDataset, { season: '17' })));
-	const s18Picks = $derived(topN(pickRate(mockDataset, { season: '18' })));
+	const s18Picks = $derived(
+		selectedRole === null
+			? topN(pickRate(mockDataset, { season: '18' }))
+			: topN(pickRateByRole(mockDataset, selectedRole, { season: '18' }))
+	);
 	const s18Bans = $derived(topN(banRate(mockDataset, { season: '18' })));
 </script>
 
@@ -85,20 +96,27 @@
 	{/snippet}
 
 	<div class="card p-5">
-		<h2 class="mb-3 font-display text-lg tracking-wide text-ink">Meta Draft (top 10)</h2>
+		<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+			<h2 class="font-display text-lg tracking-wide text-ink">
+				{selectedRole === null
+					? 'Meta Draft (top 10)'
+					: `${ROLE_NAMES[selectedRole]} Meta (top 10)`}
+			</h2>
+			<RoleFilter selected={selectedRole} onchange={(r) => (selectedRole = r)} />
+		</div>
 		<div class="grid gap-6 md:grid-cols-2">
 			<div>
 				<p class="mb-3 font-mono text-sm text-muted">Season 17 ({s17Games} games)</p>
 				<div class="grid gap-4 sm:grid-cols-2">
-					{@render rateTable('Most picked', s17Picks)}
-					{@render rateTable('Most banned', s17Bans)}
+					{@render rateTable(selectedRole === null ? 'Most picked' : `Most picked ${ROLE_NAMES[selectedRole]}`, s17Picks)}
+					{@render rateTable('Most banned (all)', s17Bans)}
 				</div>
 			</div>
 			<div>
 				<p class="mb-3 font-mono text-sm text-muted">Season 18, to date ({s18Games} games)</p>
 				<div class="grid gap-4 sm:grid-cols-2">
-					{@render rateTable('Most picked', s18Picks)}
-					{@render rateTable('Most banned', s18Bans)}
+					{@render rateTable(selectedRole === null ? 'Most picked' : `Most picked ${ROLE_NAMES[selectedRole]}`, s18Picks)}
+					{@render rateTable('Most banned (all)', s18Bans)}
 				</div>
 			</div>
 		</div>
