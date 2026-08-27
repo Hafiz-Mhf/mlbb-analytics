@@ -13,6 +13,9 @@ from mlbb_pipeline.aliases import (
 def test_resolve_hero_normalizes_full_name_casing():
     assert resolve_hero("Guinevere") == "guinevere"
     assert resolve_hero("Hanzo") == "hanzo"
+    assert resolve_hero("Aurora") == "aurora"
+    assert resolve_hero("Cecilion") == "cecilion"
+    assert resolve_hero("Minotaur") == "minotaur"
 
 
 def test_resolve_hero_normalizes_documented_short_forms():
