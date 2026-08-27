@@ -5,7 +5,8 @@
 			items: [
 				'Side Priority Analysis (/sides) dashboard launched with Blue vs Red tournament win rates, 8-team asymmetry matrix, and First-Pick vs Counter-Pick hero priorities',
 				'Head-to-Head Matchup Tool (/matchup) with dual-team selectors, direct series scores, draft clash categorization, and lane comfort pick comparisons',
-				'Per-Role & Flex Scouting (/roles) dashboard with 8-team lane predictability matrix and tournament flex pick intelligence'
+				'Per-Role & Flex Scouting (/roles) dashboard with 8-team lane predictability matrix and tournament flex pick intelligence',
+				'Fixed header navigation text wrapping and tuned responsive breakpoints across desktop and tablet viewports'
 			]
 		},
 		{

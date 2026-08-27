@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 - Navigation updated to include `Matchup`, `Side Priority`, and `Roles & Flex` tabs.
+- Header navigation polished with `whitespace-nowrap` and tuned `xl` responsive breakpoints to prevent multi-line text wrapping on all viewports.
 - Test coverage expanded to 141 tests (89 pipeline pytest + 52 frontend vitest).
 
 ---
