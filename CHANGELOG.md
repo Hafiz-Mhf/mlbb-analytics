@@ -13,6 +13,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [2026-08-27]
 
 ### Added
+- **Draft Sandbox Viewport Layout & UX Polish (`/sandbox`)**:
+  - Full-width post-draft outcome prediction and 5-lane analysis card rendered below the 3-column arena for visual balance.
+  - Added global keyboard accelerators (`/` to focus hero search, `Escape` to blur/clear, `Ctrl+Z` to undo last pick/ban, `Space` / `Enter` to auto-pick).
+  - Search input clear button (`✕`) and visual keyboard hint badges on action buttons.
+  - Aligned hero pool role filter pills with dark-charcoal design tokens and subtle border contrast.
+  - Added descriptive `aria-label`s and tooltips on ban slots and draft predictability (HHI) metrics.
 - **Draft Sandbox Hero Selection Pool Role Filters & Role Badges (`/sandbox`)**:
   - Added role filter pill bar (`All Roles`, `EXP`, `JGL`, `MID`, `GOLD`, `ROAM`, `⇄ Flex Picks`) to the Hero Selection Pool for instant role-specific drafting.
   - Added primary role badges and `⇄` flex indicators to every hero card in the selection pool grid.

@@ -21,4 +21,18 @@ describe('SandboxPage', () => {
 		// Should advance to turn 2
 		await expect.element(page.getByText(/Turn 2\/20/i)).toBeInTheDocument();
 	});
+
+	it('shows full-width post-draft outcome prediction section when all 20 steps are completed', async () => {
+		render(SandboxPage);
+		const autoPickBtn = page.getByRole('button', { name: /Auto-Pick Turn/i });
+		// Complete all 20 draft turns
+		for (let i = 0; i < 20; i++) {
+			await autoPickBtn.click();
+		}
+
+		await expect.element(page.getByText(/Draft Complete/i)).toBeInTheDocument();
+		await expect.element(page.getByRole('heading', { level: 2, name: /Post-Draft Win Predictability/i })).toBeInTheDocument();
+		await expect.element(page.getByText(/5-Lane Head-to-Head Edges/i)).toBeInTheDocument();
+		await expect.element(page.getByText(/Key Strategic Advantages/i)).toBeInTheDocument();
+	});
 });

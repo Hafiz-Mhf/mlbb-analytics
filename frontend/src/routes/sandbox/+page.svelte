@@ -45,6 +45,7 @@
 
 	let selectedSeason = $state<'18' | 'all' | '17'>('18');
 	let searchQuery = $state('');
+	let searchInputEl = $state<HTMLInputElement | null>(null);
 	let selectedRoleFilter = $state<Role | 0 | -1>(0);
 	let toastMessage = $state<string | null>(null);
 	let isSimulating = $state(false);
@@ -320,7 +321,52 @@ Red Side (${redTeam?.name}):
 			}, 3000);
 		}
 	}
+
+	function handleKeyDown(e: KeyboardEvent) {
+		const activeEl = document.activeElement;
+		const isInputFocused =
+			activeEl &&
+			(activeEl.tagName === 'INPUT' ||
+				activeEl.tagName === 'SELECT' ||
+				activeEl.tagName === 'TEXTAREA');
+
+		// "/" focuses hero search input
+		if (e.key === '/' && !isInputFocused) {
+			e.preventDefault();
+			searchInputEl?.focus();
+			return;
+		}
+
+		// Escape clears search and blurs
+		if (e.key === 'Escape' && isInputFocused) {
+			searchQuery = '';
+			(activeEl as HTMLElement)?.blur();
+			return;
+		}
+
+		// Ctrl+Z / Cmd+Z to undo last step
+		if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !isInputFocused) {
+			e.preventDefault();
+			undoLast();
+			return;
+		}
+
+		// Space or Enter triggers auto-pick if available
+		if (
+			(e.key === ' ' || e.key === 'Enter') &&
+			!isInputFocused &&
+			!isComplete &&
+			!isSimulating &&
+			recommendations.length > 0
+		) {
+			e.preventDefault();
+			autoPickTurn();
+			return;
+		}
+	}
 </script>
+
+<svelte:window onkeydown={handleKeyDown} />
 
 <svelte:head>
 	<title>Interactive Draft Sandbox — MLBB Analytics</title>
@@ -436,23 +482,27 @@ Red Side (${redTeam?.name}):
 			</div>
 		</div>
 
-		<!-- Action Buttons -->
+		<!-- Action Buttons with Hotkey Hints -->
 		<div class="flex flex-wrap items-center gap-2">
 			<button
 				type="button"
 				onclick={undoLast}
 				disabled={history.length === 0}
-				class="rounded-lg border border-line bg-surface px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:text-ink disabled:opacity-40"
+				class="inline-flex items-center gap-1.5 rounded-lg border border-line bg-surface px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:text-ink disabled:opacity-40"
+				title="Undo last draft step (Ctrl+Z)"
 			>
-				↶ Undo
+				<span>↶ Undo</span>
+				<kbd class="hidden rounded border border-line/60 bg-surface-2 px-1 py-0.2 text-[9px] text-muted/80 sm:inline-block">Ctrl+Z</kbd>
 			</button>
 			<button
 				type="button"
 				onclick={autoPickTurn}
 				disabled={isComplete || recommendations.length === 0 || isSimulating}
-				class="rounded-lg border border-primary/40 bg-primary/10 px-3 py-1.5 font-mono text-xs font-semibold text-primary transition-colors hover:bg-primary/20 disabled:opacity-40"
+				class="inline-flex items-center gap-1.5 rounded-lg border border-primary/40 bg-primary/10 px-3 py-1.5 font-mono text-xs font-semibold text-primary transition-colors hover:bg-primary/20 disabled:opacity-40"
+				title="Auto-pick top AI recommendation (Space)"
 			>
-				⚡ Auto-Pick Turn
+				<span>⚡ Auto-Pick Turn</span>
+				<kbd class="hidden rounded border border-primary/30 bg-primary/20 px-1 py-0.2 text-[9px] text-primary sm:inline-block">Space</kbd>
 			</button>
 			<button
 				type="button"
@@ -479,7 +529,7 @@ Red Side (${redTeam?.name}):
 	{/if}
 
 	<!-- Main Draft Arena (Blue Board | Center Turn HUD | Red Board) -->
-	<div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+	<div class="grid grid-cols-1 gap-6 lg:grid-cols-12 items-start">
 		<!-- BLUE SIDE (Left Column - 4 cols) -->
 		<div class="card p-5 lg:col-span-4 {currentStep?.side === 'blue' ? 'border-sky-400/60 shadow-lg shadow-sky-500/10' : ''}">
 			<!-- Header -->
@@ -500,7 +550,11 @@ Red Side (${redTeam?.name}):
 				<p class="font-display text-[10px] tracking-wide text-muted uppercase">Bans (5 Max)</p>
 				<div class="mt-1.5 flex gap-1.5">
 					{#each [0, 1, 2, 3, 4] as i}
-						<div class="flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-surface-2 overflow-hidden {currentStep?.side === 'blue' && currentStep?.action === 'ban' && currentStep?.slotIndex === i ? 'border-sky-400 ring-2 ring-sky-400/40' : ''}">
+						<div
+							class="flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-surface-2 overflow-hidden transition-all {currentStep?.side === 'blue' && currentStep?.action === 'ban' && currentStep?.slotIndex === i ? 'border-sky-400 ring-2 ring-sky-400/40' : ''}"
+							title={blueBans[i] ? `Blue Ban ${i + 1}: ${blueBans[i]}` : `Empty Ban Slot B${i + 1}`}
+							aria-label={blueBans[i] ? `Blue Ban ${i + 1}: ${blueBans[i]}` : `Empty Ban Slot B${i + 1}`}
+						>
 							{#if blueBans[i]}
 								<HeroTag name={blueBans[i]} size={36} showName={false} />
 							{:else}
@@ -517,7 +571,10 @@ Red Side (${redTeam?.name}):
 				{#each [0, 1, 2, 3, 4] as i}
 					{@const pickName = bluePicks[i]}
 					{@const detail = blueEvaluation.picks[i]}
-					<div class="flex items-center justify-between rounded-xl border border-line bg-surface p-2.5 transition-all {currentStep?.side === 'blue' && currentStep?.action === 'pick' && currentStep?.slotIndex === i ? 'border-sky-400 ring-2 ring-sky-400/40 bg-sky-950/20' : ''}">
+					<div
+						class="flex items-center justify-between rounded-xl border border-line bg-surface p-2.5 transition-all {currentStep?.side === 'blue' && currentStep?.action === 'pick' && currentStep?.slotIndex === i ? 'border-sky-400 ring-2 ring-sky-400/40 bg-sky-950/20' : ''}"
+						aria-label={pickName ? `Blue Pick ${i + 1}: ${pickName}` : `Blue Pick slot ${i + 1} awaiting selection`}
+					>
 						<div class="flex items-center gap-3">
 							<div class="flex h-9 w-9 items-center justify-center rounded-lg border border-line bg-surface-2 font-mono text-xs font-bold text-muted overflow-hidden">
 								{#if pickName}
@@ -585,33 +642,57 @@ Red Side (${redTeam?.name}):
 				</div>
 
 				<div class="flex items-center justify-between font-mono text-xs">
-					<span class="text-muted">Draft Predictability:</span>
+					<div class="flex items-center gap-1">
+						<span class="text-muted">Draft Predictability:</span>
+						<span
+							class="cursor-help text-[10px] text-muted/60 hover:text-muted"
+							title="Herfindahl-Hirschman Index (HHI) measures pick diversity and predictability based on historical team tendencies: Specialized (>0.30), Balanced (0.18-0.30), Adaptable (<0.18)"
+						>
+							ℹ️
+						</span>
+					</div>
 					<span class="font-bold text-sky-400">{blueEvaluation.draftHhi.toFixed(3)} ({blueEvaluation.hhiClassification})</span>
 				</div>
 			</div>
 		</div>
 
 		<!-- CENTER TURN HUD (Center Column - 4 cols) -->
-		<div class="card flex flex-col justify-between p-5 lg:col-span-4">
-			<!-- Turn Status Card / Post-Draft Analysis -->
+		<div class="card flex flex-col justify-between p-5 lg:col-span-4 min-h-[380px]">
+			<!-- Turn Status Card -->
 			<div>
 				<div class="rounded-xl border border-line bg-surface p-4 text-center">
 					{#if isComplete}
-						<div class="space-y-1">
-							<span class="inline-block rounded-full bg-positive/20 px-3 py-1 font-display text-xs tracking-wide text-positive">
+						<div class="space-y-2 py-2">
+							<span class="inline-block rounded-full bg-positive/20 border border-positive/40 px-3 py-1 font-display text-xs tracking-wide text-positive">
 								✓ Draft Complete
 							</span>
-							<p class="font-mono text-xs text-muted">All 20 picks and bans locked.</p>
+							<p class="font-mono text-xs text-muted">All 20 tournament picks and bans locked.</p>
+							<div class="flex items-center justify-center gap-2 pt-2">
+								<button
+									type="button"
+									onclick={copyDraftSummary}
+									class="rounded-lg border border-gold/40 bg-gold/10 px-3 py-1.5 font-mono text-xs font-semibold text-gold transition-colors hover:bg-gold/20"
+								>
+									📋 Copy Summary
+								</button>
+								<button
+									type="button"
+									onclick={resetDraft}
+									class="rounded-lg border border-line bg-surface-2 px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:text-rose-400"
+								>
+									🔄 New Draft
+								</button>
+							</div>
 						</div>
 					{:else if isSimulating}
-						<div class="space-y-1">
-							<span class="inline-block rounded-full bg-surface-2 px-3 py-1 font-display text-xs tracking-wide text-primary animate-pulse">
+						<div class="space-y-1.5 py-2">
+							<span class="inline-block rounded-full bg-surface-2 border border-primary/40 px-3 py-1 font-display text-xs tracking-wide text-primary animate-pulse">
 								🤖 Simulating Opponent Turn...
 							</span>
 							<p class="font-mono text-xs text-muted">Calculating historical pick probability.</p>
 						</div>
 					{:else if currentStep}
-						<div class="space-y-1">
+						<div class="space-y-1.5">
 							<span class="inline-block rounded-full px-3 py-1 font-display text-xs tracking-wide {currentStep.side === 'blue' ? 'bg-sky-950/80 border border-sky-800 text-sky-400' : 'bg-rose-950/80 border border-rose-800 text-rose-400'}">
 								Turn {currentStep.stepIndex + 1}/20: {currentStep.label}
 							</span>
@@ -622,91 +703,12 @@ Red Side (${redTeam?.name}):
 					{/if}
 				</div>
 
-				<!-- Post-Draft Win Predictability & Analysis -->
-				{#if isComplete && outcomePrediction}
-					<div class="mt-4 space-y-4">
-						<!-- Win Prob Meter -->
-						<div class="space-y-2 rounded-xl border border-line bg-surface p-3.5">
-							<div class="flex items-center justify-between font-mono text-xs">
-								<span class="font-bold text-sky-400">
-									{blueTeam?.shortCode ?? 'BLU'} {(outcomePrediction.blueWinProb * 100).toFixed(1)}%
-								</span>
-								<span class="rounded bg-surface-2 px-2 py-0.5 text-[10px] font-bold text-primary">
-									{outcomePrediction.edgeDescription}
-								</span>
-								<span class="font-bold text-rose-400">
-									{(outcomePrediction.redWinProb * 100).toFixed(1)}% {redTeam?.shortCode ?? 'RED'}
-								</span>
-							</div>
-
-							<!-- Split Bar -->
-							<div class="flex h-3 w-full overflow-hidden rounded-full border border-line/60 bg-surface-2">
-								<div
-									class="bg-sky-500 transition-all duration-500"
-									style="width: {outcomePrediction.blueWinProb * 100}%"
-									title="Blue Side Win Probability: {(outcomePrediction.blueWinProb * 100).toFixed(1)}%"
-								></div>
-								<div
-									class="bg-rose-500 transition-all duration-500"
-									style="width: {outcomePrediction.redWinProb * 100}%"
-									title="Red Side Win Probability: {(outcomePrediction.redWinProb * 100).toFixed(1)}%"
-								></div>
-							</div>
-						</div>
-
-						<!-- Strategic Advantages -->
-						<div class="space-y-2">
-							<p class="font-display text-[10px] tracking-wide text-muted uppercase">Key Strategic Advantages</p>
-							<div class="space-y-1.5 font-mono text-[11px]">
-								<div class="rounded-lg border border-sky-900/50 bg-sky-950/20 p-2 text-sky-300">
-									<span class="font-bold text-sky-400">🟦 Blue Edge:</span> {outcomePrediction.blueKeyAdvantage}
-								</div>
-								<div class="rounded-lg border border-rose-900/50 bg-rose-950/20 p-2 text-rose-300">
-									<span class="font-bold text-rose-400">🟥 Red Edge:</span> {outcomePrediction.redKeyAdvantage}
-								</div>
-							</div>
-						</div>
-
-						<!-- 5-Lane Matchup Breakdown -->
-						<div class="space-y-1.5">
-							<p class="font-display text-[10px] tracking-wide text-muted uppercase">5-Lane Head-to-Head Edges</p>
-							<div class="space-y-1 rounded-xl border border-line bg-surface p-2">
-								{#each outcomePrediction.laneMatchups as lane}
-									<div class="flex items-center justify-between rounded-lg bg-surface-2/60 px-2.5 py-1 font-mono text-[11px]">
-										<div class="flex items-center gap-2">
-											<span class="font-bold text-primary">{lane.roleName}:</span>
-											<span class="text-ink">{lane.blueHero}</span>
-											<span class="text-muted/60 text-[9px]">vs</span>
-											<span class="text-ink">{lane.redHero}</span>
-										</div>
-										<div>
-											{#if lane.edge === 'blue'}
-												<span class="rounded bg-sky-950/60 border border-sky-600/40 px-1.5 py-0.2 text-[9px] font-bold text-sky-400">
-													BLU Edge
-												</span>
-											{:else if lane.edge === 'red'}
-												<span class="rounded bg-rose-950/60 border border-rose-600/40 px-1.5 py-0.2 text-[9px] font-bold text-rose-400">
-													RED Edge
-												</span>
-											{:else}
-												<span class="rounded bg-surface-2 border border-line px-1.5 py-0.2 text-[9px] font-bold text-muted">
-													Even
-												</span>
-											{/if}
-										</div>
-									</div>
-								{/each}
-							</div>
-						</div>
-					</div>
-				{/if}
-
-				<!-- AI Recommendations Box -->
+				<!-- AI Recommendations Box (Active Draft Mode) -->
 				{#if !isComplete && currentStep}
 					<div class="mt-4 space-y-2">
 						<div class="flex items-center justify-between">
 							<p class="font-display text-xs tracking-wide text-ink">💡 AI Scouting Recommendations</p>
-							<span class="font-mono text-[10px] text-muted">Top Historical Matches</span>
+							<span class="font-mono text-[10px] text-muted">Historical Matches</span>
 						</div>
 
 						<div class="space-y-1.5">
@@ -725,7 +727,7 @@ Red Side (${redTeam?.name}):
 									<button
 										type="button"
 										onclick={() => lockHero(rec.hero)}
-										class="rounded-lg border border-primary/40 bg-primary/10 px-2.5 py-1 font-mono text-xs font-semibold text-primary hover:bg-primary hover:text-bg transition-colors"
+										class="rounded-lg border border-primary/40 bg-primary/10 px-2.5 py-1 font-mono text-xs font-semibold text-primary hover:bg-primary hover:text-black transition-colors"
 									>
 										Lock In
 									</button>
@@ -742,9 +744,9 @@ Red Side (${redTeam?.name}):
 					<button
 						type="button"
 						onclick={autoPickTurn}
-						class="w-full rounded-xl border border-line bg-surface py-2.5 font-display text-xs tracking-wide text-muted hover:text-ink transition-colors"
+						class="w-full rounded-xl border border-line bg-surface py-2.5 font-display text-xs tracking-wide text-muted hover:text-ink hover:border-primary/50 transition-colors"
 					>
-						⚡ Quick Auto-Lock Top Choice
+						⚡ Quick Auto-Lock Top Choice (Space)
 					</button>
 				</div>
 			{/if}
@@ -770,7 +772,11 @@ Red Side (${redTeam?.name}):
 				<p class="font-display text-[10px] tracking-wide text-muted uppercase">Bans (5 Max)</p>
 				<div class="mt-1.5 flex gap-1.5">
 					{#each [0, 1, 2, 3, 4] as i}
-						<div class="flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-surface-2 overflow-hidden {currentStep?.side === 'red' && currentStep?.action === 'ban' && currentStep?.slotIndex === i ? 'border-rose-400 ring-2 ring-rose-400/40' : ''}">
+						<div
+							class="flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-surface-2 overflow-hidden transition-all {currentStep?.side === 'red' && currentStep?.action === 'ban' && currentStep?.slotIndex === i ? 'border-rose-400 ring-2 ring-rose-400/40' : ''}"
+							title={redBans[i] ? `Red Ban ${i + 1}: ${redBans[i]}` : `Empty Ban Slot B${i + 1}`}
+							aria-label={redBans[i] ? `Red Ban ${i + 1}: ${redBans[i]}` : `Empty Ban Slot B${i + 1}`}
+						>
 							{#if redBans[i]}
 								<HeroTag name={redBans[i]} size={36} showName={false} />
 							{:else}
@@ -787,7 +793,10 @@ Red Side (${redTeam?.name}):
 				{#each [0, 1, 2, 3, 4] as i}
 					{@const pickName = redPicks[i]}
 					{@const detail = redEvaluation.picks[i]}
-					<div class="flex items-center justify-between rounded-xl border border-line bg-surface p-2.5 transition-all {currentStep?.side === 'red' && currentStep?.action === 'pick' && currentStep?.slotIndex === i ? 'border-rose-400 ring-2 ring-rose-400/40 bg-rose-950/20' : ''}">
+					<div
+						class="flex items-center justify-between rounded-xl border border-line bg-surface p-2.5 transition-all {currentStep?.side === 'red' && currentStep?.action === 'pick' && currentStep?.slotIndex === i ? 'border-rose-400 ring-2 ring-rose-400/40 bg-rose-950/20' : ''}"
+						aria-label={pickName ? `Red Pick ${i + 1}: ${pickName}` : `Red Pick slot ${i + 1} awaiting selection`}
+					>
 						<div class="flex items-center gap-3">
 							<div class="flex h-9 w-9 items-center justify-center rounded-lg border border-line bg-surface-2 font-mono text-xs font-bold text-muted overflow-hidden">
 								{#if pickName}
@@ -855,12 +864,132 @@ Red Side (${redTeam?.name}):
 				</div>
 
 				<div class="flex items-center justify-between font-mono text-xs">
-					<span class="text-muted">Draft Predictability:</span>
+					<div class="flex items-center gap-1">
+						<span class="text-muted">Draft Predictability:</span>
+						<span
+							class="cursor-help text-[10px] text-muted/60 hover:text-muted"
+							title="Herfindahl-Hirschman Index (HHI) measures pick diversity and predictability based on historical team tendencies: Specialized (>0.30), Balanced (0.18-0.30), Adaptable (<0.18)"
+						>
+							ℹ️
+						</span>
+					</div>
 					<span class="font-bold text-rose-400">{redEvaluation.draftHhi.toFixed(3)} ({redEvaluation.hhiClassification})</span>
 				</div>
 			</div>
 		</div>
 	</div>
+
+	<!-- Dedicated Post-Draft Win Predictability & Strategic Analysis Section (Full Width) -->
+	{#if isComplete && outcomePrediction}
+		<div class="card p-5 sm:p-6 space-y-5 border-primary/30">
+			<!-- Header & Action -->
+			<div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-line pb-4">
+				<div>
+					<div class="flex items-center gap-2">
+						<span class="inline-block h-2.5 w-2.5 rounded-full bg-primary animate-pulse"></span>
+						<h2 class="font-display text-lg tracking-wide text-ink">Post-Draft Win Predictability & Composition Analysis</h2>
+					</div>
+					<p class="font-mono text-xs text-muted">
+						Monte-Carlo simulation and lane matchup matrix evaluated across {selectedSeason === 'all' ? 'all seasons' : `Season ${selectedSeason}`}.
+					</p>
+				</div>
+				<button
+					type="button"
+					onclick={copyDraftSummary}
+					class="self-start sm:self-auto rounded-lg border border-gold/40 bg-gold/10 px-3 py-1.5 font-mono text-xs font-semibold text-gold transition-colors hover:bg-gold/20"
+				>
+					📋 Copy Complete Summary
+				</button>
+			</div>
+
+			<!-- Outcome Predictability Split Meter -->
+			<div class="space-y-2.5 rounded-xl border border-line bg-surface p-4">
+				<div class="flex items-center justify-between font-mono text-xs">
+					<span class="font-bold text-sky-400 text-sm">
+						{blueTeam?.name} ({blueTeam?.shortCode ?? 'BLU'}): {(outcomePrediction.blueWinProb * 100).toFixed(1)}%
+					</span>
+					<span class="rounded-full bg-surface-2 border border-line px-3 py-1 text-xs font-bold text-primary">
+						{outcomePrediction.edgeDescription}
+					</span>
+					<span class="font-bold text-rose-400 text-sm">
+						{(outcomePrediction.redWinProb * 100).toFixed(1)}% ({redTeam?.shortCode ?? 'RED'}) {redTeam?.name}
+					</span>
+				</div>
+
+				<!-- Split Bar with Percentages -->
+				<div class="flex h-4 w-full overflow-hidden rounded-full border border-line/60 bg-surface-2 p-0.5">
+					<div
+						class="bg-sky-500 rounded-l-full transition-all duration-700 ease-out flex items-center justify-start pl-2"
+						style="width: {outcomePrediction.blueWinProb * 100}%"
+						title="Blue Side Win Probability: {(outcomePrediction.blueWinProb * 100).toFixed(1)}%"
+					>
+						{#if outcomePrediction.blueWinProb >= 0.15}
+							<span class="font-mono text-[10px] font-bold text-black drop-shadow">{(outcomePrediction.blueWinProb * 100).toFixed(0)}%</span>
+						{/if}
+					</div>
+					<div
+						class="bg-rose-500 rounded-r-full transition-all duration-700 ease-out flex items-center justify-end pr-2"
+						style="width: {outcomePrediction.redWinProb * 100}%"
+						title="Red Side Win Probability: {(outcomePrediction.redWinProb * 100).toFixed(1)}%"
+					>
+						{#if outcomePrediction.redWinProb >= 0.15}
+							<span class="font-mono text-[10px] font-bold text-white drop-shadow">{(outcomePrediction.redWinProb * 100).toFixed(0)}%</span>
+						{/if}
+					</div>
+				</div>
+			</div>
+
+			<!-- 2-Column Grid: Strategic Advantages (Left) & 5-Lane Breakdown (Right) -->
+			<div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+				<!-- Strategic Advantages -->
+				<div class="space-y-3 rounded-xl border border-line bg-surface p-4">
+					<p class="font-display text-xs tracking-wide text-muted uppercase">Key Strategic Advantages</p>
+					<div class="space-y-2 font-mono text-xs">
+						<div class="rounded-lg border border-sky-900/50 bg-sky-950/30 p-3 text-sky-200">
+							<span class="font-bold text-sky-400">🟦 Blue ({blueTeam?.shortCode ?? 'BLU'}) Edge:</span>
+							<p class="mt-1 text-sky-300/90 leading-relaxed">{outcomePrediction.blueKeyAdvantage}</p>
+						</div>
+						<div class="rounded-lg border border-rose-900/50 bg-rose-950/30 p-3 text-rose-200">
+							<span class="font-bold text-rose-400">🟥 Red ({redTeam?.shortCode ?? 'RED'}) Edge:</span>
+							<p class="mt-1 text-rose-300/90 leading-relaxed">{outcomePrediction.redKeyAdvantage}</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- 5-Lane Matchup Breakdown -->
+				<div class="space-y-3 rounded-xl border border-line bg-surface p-4">
+					<p class="font-display text-xs tracking-wide text-muted uppercase">5-Lane Head-to-Head Edges</p>
+					<div class="space-y-1.5">
+						{#each outcomePrediction.laneMatchups as lane}
+							<div class="flex items-center justify-between rounded-lg bg-surface-2 px-3 py-2 font-mono text-xs">
+								<div class="flex items-center gap-2">
+									<span class="font-bold text-primary w-12">{lane.roleName}</span>
+									<span class="text-ink font-medium">{lane.blueHero}</span>
+									<span class="text-muted/60 text-[10px]">vs</span>
+									<span class="text-ink font-medium">{lane.redHero}</span>
+								</div>
+								<div>
+									{#if lane.edge === 'blue'}
+										<span class="rounded bg-sky-950/80 border border-sky-600/50 px-2 py-0.5 text-[10px] font-bold text-sky-400">
+											{blueTeam?.shortCode ?? 'BLU'} Edge
+										</span>
+									{:else if lane.edge === 'red'}
+										<span class="rounded bg-rose-950/80 border border-rose-600/50 px-2 py-0.5 text-[10px] font-bold text-rose-400">
+											{redTeam?.shortCode ?? 'RED'} Edge
+										</span>
+									{:else}
+										<span class="rounded bg-surface border border-line px-2 py-0.5 text-[10px] font-bold text-muted">
+											Even
+										</span>
+									{/if}
+								</div>
+							</div>
+						{/each}
+					</div>
+				</div>
+			</div>
+		</div>
+	{/if}
 
 	<!-- Hero Selection Pool (Bottom Grid) -->
 	<div class="card p-5 sm:p-6 space-y-4">
@@ -868,7 +997,7 @@ Red Side (${redTeam?.name}):
 			<div>
 				<h2 class="font-display text-lg tracking-wide text-ink">Hero Selection Pool</h2>
 				<p class="font-mono text-xs text-muted">
-					Click any available hero to lock into the current draft slot.
+					Click any available hero to lock into the current draft slot. Press <kbd class="rounded border border-line bg-surface-2 px-1 py-0.2 text-[10px] text-muted">/</kbd> to search.
 				</p>
 			</div>
 
@@ -879,9 +1008,9 @@ Red Side (${redTeam?.name}):
 					<button
 						type="button"
 						onclick={() => (selectedRoleFilter = 0)}
-						class={selectedRoleFilter === 0
-							? 'rounded-lg bg-primary px-2.5 py-1 font-mono text-xs font-bold text-black'
-							: 'rounded-lg px-2.5 py-1 font-mono text-xs text-muted hover:bg-surface-2 hover:text-ink'}
+						class="rounded-lg border px-2.5 py-1 font-mono text-xs font-semibold transition-colors {selectedRoleFilter === 0
+							? 'border-primary/60 bg-surface-2 text-primary shadow-sm'
+							: 'border-transparent text-muted hover:bg-surface-2 hover:text-ink'}"
 					>
 						All Roles
 					</button>
@@ -889,9 +1018,9 @@ Red Side (${redTeam?.name}):
 						<button
 							type="button"
 							onclick={() => (selectedRoleFilter = r)}
-							class={selectedRoleFilter === r
-								? 'rounded-lg bg-primary px-2.5 py-1 font-mono text-xs font-bold text-black'
-								: 'rounded-lg px-2.5 py-1 font-mono text-xs text-muted hover:bg-surface-2 hover:text-ink'}
+							class="rounded-lg border px-2.5 py-1 font-mono text-xs font-semibold transition-colors {selectedRoleFilter === r
+								? 'border-primary/60 bg-surface-2 text-primary shadow-sm'
+								: 'border-transparent text-muted hover:bg-surface-2 hover:text-ink'}"
 						>
 							{ROLE_NAMES[r]}
 						</button>
@@ -899,26 +1028,44 @@ Red Side (${redTeam?.name}):
 					<button
 						type="button"
 						onclick={() => (selectedRoleFilter = -1)}
-						class={selectedRoleFilter === -1
-							? 'rounded-lg bg-gold px-2.5 py-1 font-mono text-xs font-bold text-black'
-							: 'rounded-lg px-2.5 py-1 font-mono text-xs text-gold/80 hover:bg-gold/15 hover:text-gold'}
+						class="rounded-lg border px-2.5 py-1 font-mono text-xs font-semibold transition-colors {selectedRoleFilter === -1
+							? 'border-gold/60 bg-gold/15 text-gold shadow-sm'
+							: 'border-transparent text-gold/70 hover:bg-gold/10 hover:text-gold'}"
 						title="Filter flex heroes that can play multiple lanes"
 					>
 						⇄ Flex Picks
 					</button>
 				</div>
 
-				<input
-					type="text"
-					bind:value={searchQuery}
-					placeholder="Search hero..."
-					class="rounded-xl border border-line bg-surface px-3 py-1.5 font-mono text-xs text-ink placeholder:text-muted focus-visible:border-primary w-36 sm:w-44"
-				/>
+				<!-- Search Input with Clear Button & Shortcut Badge -->
+				<div class="relative">
+					<input
+						type="text"
+						bind:this={searchInputEl}
+						bind:value={searchQuery}
+						placeholder="Search hero..."
+						class="rounded-xl border border-line bg-surface pl-3 pr-8 py-1.5 font-mono text-xs text-ink placeholder:text-muted focus-visible:border-primary w-36 sm:w-48"
+					/>
+					{#if searchQuery}
+						<button
+							type="button"
+							onclick={() => (searchQuery = '')}
+							class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted hover:text-ink"
+							title="Clear search"
+						>
+							✕
+						</button>
+					{:else}
+						<kbd class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 rounded border border-line/60 bg-surface-2 px-1 py-0.2 font-mono text-[9px] text-muted">
+							/
+						</kbd>
+					{/if}
+				</div>
 			</div>
 		</div>
 
-		<!-- Hero Cards Grid -->
-		<div class="grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 max-h-96 overflow-y-auto pr-1">
+		<!-- Hero Cards Grid with Constrained Scroll Container -->
+		<div class="grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 max-h-96 sm:max-h-[420px] overflow-y-auto pr-1">
 			{#each heroCatalog as hero (hero.id)}
 				<button
 					type="button"
