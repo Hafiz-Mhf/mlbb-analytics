@@ -4,8 +4,10 @@
 		OFFICIAL_DRAFT_SEQUENCE,
 		draftRecommendations,
 		evaluateSideDraft,
+		predictDraftOutcome,
 		ROLE_NAMES,
-		type Role
+		type Role,
+		type DraftOutcomePrediction
 	} from '$lib/metrics';
 	import { teamSlug } from '$lib/teams';
 	import { page } from '$app/state';
@@ -16,7 +18,7 @@
 
 	// Team options
 	const teamOptions = mockDataset.teams
-		.map((t) => ({ id: t.id, name: t.canonicalName, slug: teamSlug(t.canonicalName) }))
+		.map((t) => ({ id: t.id, name: t.canonicalName, shortCode: t.shortCode, slug: teamSlug(t.canonicalName) }))
 		.sort((a, b) => a.name.localeCompare(b.name));
 
 	let blueTeamId = $state(teamOptions[0]?.id ?? 1);
@@ -216,8 +218,23 @@
 		resetDraft();
 	}
 
+	const outcomePrediction = $derived(
+		isComplete
+			? predictDraftOutcome(
+					mockDataset,
+					blueTeamId,
+					redTeamId,
+					bluePicks,
+					redPicks,
+					blueRoleOverrides,
+					redRoleOverrides,
+					scopeOpts
+				)
+			: null
+	);
+
 	function copyDraftSummary() {
-		const text = `MLBB Draft Sandbox:
+		let text = `MLBB Draft Sandbox:
 Blue Side (${blueTeam?.name}):
 - Bans: ${blueBans.join(', ') || 'None'}
 - Picks: ${bluePicks.join(', ') || 'None'} (${blueEvaluation.hhiClassification}, HHI: ${blueEvaluation.draftHhi.toFixed(3)})
@@ -225,6 +242,13 @@ Blue Side (${blueTeam?.name}):
 Red Side (${redTeam?.name}):
 - Bans: ${redBans.join(', ') || 'None'}
 - Picks: ${redPicks.join(', ') || 'None'} (${redEvaluation.hhiClassification}, HHI: ${redEvaluation.draftHhi.toFixed(3)})`;
+
+		if (outcomePrediction) {
+			text += `\n\nSimulated Outcome Prediction:
+- Blue (${blueTeam?.name}): ${(outcomePrediction.blueWinProb * 100).toFixed(1)}%
+- Red (${redTeam?.name}): ${(outcomePrediction.redWinProb * 100).toFixed(1)}%
+- Verdict: ${outcomePrediction.edgeDescription}`;
+		}
 
 		if (browser && navigator.clipboard) {
 			navigator.clipboard.writeText(text);
@@ -507,7 +531,7 @@ Red Side (${redTeam?.name}):
 
 		<!-- CENTER TURN HUD (Center Column - 4 cols) -->
 		<div class="card flex flex-col justify-between p-5 lg:col-span-4">
-			<!-- Turn Status Card -->
+			<!-- Turn Status Card / Post-Draft Analysis -->
 			<div>
 				<div class="rounded-xl border border-line bg-surface p-4 text-center">
 					{#if isComplete}
@@ -535,6 +559,85 @@ Red Side (${redTeam?.name}):
 						</div>
 					{/if}
 				</div>
+
+				<!-- Post-Draft Win Predictability & Analysis -->
+				{#if isComplete && outcomePrediction}
+					<div class="mt-4 space-y-4">
+						<!-- Win Prob Meter -->
+						<div class="space-y-2 rounded-xl border border-line bg-surface p-3.5">
+							<div class="flex items-center justify-between font-mono text-xs">
+								<span class="font-bold text-sky-400">
+									{blueTeam?.shortCode ?? 'BLU'} {(outcomePrediction.blueWinProb * 100).toFixed(1)}%
+								</span>
+								<span class="rounded bg-surface-2 px-2 py-0.5 text-[10px] font-bold text-primary">
+									{outcomePrediction.edgeDescription}
+								</span>
+								<span class="font-bold text-rose-400">
+									{(outcomePrediction.redWinProb * 100).toFixed(1)}% {redTeam?.shortCode ?? 'RED'}
+								</span>
+							</div>
+
+							<!-- Split Bar -->
+							<div class="flex h-3 w-full overflow-hidden rounded-full border border-line/60 bg-surface-2">
+								<div
+									class="bg-sky-500 transition-all duration-500"
+									style="width: {outcomePrediction.blueWinProb * 100}%"
+									title="Blue Side Win Probability: {(outcomePrediction.blueWinProb * 100).toFixed(1)}%"
+								></div>
+								<div
+									class="bg-rose-500 transition-all duration-500"
+									style="width: {outcomePrediction.redWinProb * 100}%"
+									title="Red Side Win Probability: {(outcomePrediction.redWinProb * 100).toFixed(1)}%"
+								></div>
+							</div>
+						</div>
+
+						<!-- Strategic Advantages -->
+						<div class="space-y-2">
+							<p class="font-display text-[10px] tracking-wide text-muted uppercase">Key Strategic Advantages</p>
+							<div class="space-y-1.5 font-mono text-[11px]">
+								<div class="rounded-lg border border-sky-900/50 bg-sky-950/20 p-2 text-sky-300">
+									<span class="font-bold text-sky-400">🟦 Blue Edge:</span> {outcomePrediction.blueKeyAdvantage}
+								</div>
+								<div class="rounded-lg border border-rose-900/50 bg-rose-950/20 p-2 text-rose-300">
+									<span class="font-bold text-rose-400">🟥 Red Edge:</span> {outcomePrediction.redKeyAdvantage}
+								</div>
+							</div>
+						</div>
+
+						<!-- 5-Lane Matchup Breakdown -->
+						<div class="space-y-1.5">
+							<p class="font-display text-[10px] tracking-wide text-muted uppercase">5-Lane Head-to-Head Edges</p>
+							<div class="space-y-1 rounded-xl border border-line bg-surface p-2">
+								{#each outcomePrediction.laneMatchups as lane}
+									<div class="flex items-center justify-between rounded-lg bg-surface-2/60 px-2.5 py-1 font-mono text-[11px]">
+										<div class="flex items-center gap-2">
+											<span class="font-bold text-primary">{lane.roleName}:</span>
+											<span class="text-ink">{lane.blueHero}</span>
+											<span class="text-muted/60 text-[9px]">vs</span>
+											<span class="text-ink">{lane.redHero}</span>
+										</div>
+										<div>
+											{#if lane.edge === 'blue'}
+												<span class="rounded bg-sky-950/60 border border-sky-600/40 px-1.5 py-0.2 text-[9px] font-bold text-sky-400">
+													BLU Edge
+												</span>
+											{:else if lane.edge === 'red'}
+												<span class="rounded bg-rose-950/60 border border-rose-600/40 px-1.5 py-0.2 text-[9px] font-bold text-rose-400">
+													RED Edge
+												</span>
+											{:else}
+												<span class="rounded bg-surface-2 border border-line px-1.5 py-0.2 text-[9px] font-bold text-muted">
+													Even
+												</span>
+											{/if}
+										</div>
+									</div>
+								{/each}
+							</div>
+						</div>
+					</div>
+				{/if}
 
 				<!-- AI Recommendations Box -->
 				{#if !isComplete && currentStep}

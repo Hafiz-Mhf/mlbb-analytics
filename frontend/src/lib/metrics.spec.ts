@@ -15,6 +15,7 @@ import {
 	pickRate,
 	pickRateByRole,
 	pickWinRateDelta,
+	predictDraftOutcome,
 	presence,
 	presenceDelta,
 	ROLE_NAMES,
@@ -558,6 +559,26 @@ describe('evaluateSideDraft', () => {
 		expect(freyaPick?.role).toBe(5);
 	});
 });
+
+describe('predictDraftOutcome', () => {
+	it('calculates win probabilities, side factor, and lane matchups between two teams', () => {
+		const data = fixture();
+		const prediction = predictDraftOutcome(
+			data,
+			1,
+			2,
+			['sora', 'guinevere', 'zhuxin', 'granger', 'chou'],
+			['fanny', 'nolan', 'novaria', 'harith', 'angela']
+		);
+
+		expect(prediction.blueWinProb).toBeGreaterThan(0);
+		expect(prediction.redWinProb).toBeGreaterThan(0);
+		expect(prediction.blueWinProb + prediction.redWinProb).toBeCloseTo(1.0, 2);
+		expect(prediction.laneMatchups.length).toBe(5);
+		expect(prediction.edgeDescription).toBeTruthy();
+	});
+});
+
 
 
 

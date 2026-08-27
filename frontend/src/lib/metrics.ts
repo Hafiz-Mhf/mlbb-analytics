@@ -1211,6 +1211,234 @@ export function evaluateSideDraft(
 	};
 }
 
+export interface LaneMatchup {
+	role: Role;
+	roleName: string;
+	blueHero: string;
+	redHero: string;
+	blueHeroWinRate: number;
+	redHeroWinRate: number;
+	edge: 'blue' | 'red' | 'even';
+	edgeMargin: number;
+	reason: string;
+}
+
+export interface DraftOutcomePrediction {
+	blueWinProb: number;
+	redWinProb: number;
+	favoredSide: 'blue' | 'red' | 'even';
+	edgeDescription: string;
+	blueSideWinRate: number;
+	redSideWinRate: number;
+	blueComfortScore: number;
+	redComfortScore: number;
+	blueMetaStrength: number;
+	redMetaStrength: number;
+	laneMatchups: LaneMatchup[];
+	blueKeyAdvantage: string;
+	redKeyAdvantage: string;
+}
+
+export function predictDraftOutcome(
+	data: Dataset,
+	blueTeamId: number,
+	redTeamId: number,
+	bluePicks: string[],
+	redPicks: string[],
+	blueRoleOverrides: (Role | null)[] = [null, null, null, null, null],
+	redRoleOverrides: (Role | null)[] = [null, null, null, null, null],
+	opts: ScopeOptions = {}
+): DraftOutcomePrediction {
+	const blueEval = evaluateSideDraft(data, blueTeamId, bluePicks, [], opts, blueRoleOverrides);
+	const redEval = evaluateSideDraft(data, redTeamId, redPicks, [], opts, redRoleOverrides);
+
+	const matchMap = new Map(data.matches.map((m) => [m.id, m]));
+
+	// Calculate hero league win rates & team comfort
+	const heroWins = new Map<string, { wins: number; games: number }>();
+	const teamHeroWins = new Map<string, { wins: number; games: number }>();
+
+	for (const d of data.drafts) {
+		if (d.isBan) continue;
+		const m = matchMap.get(d.matchId);
+		if (!m) continue;
+		if (opts.season && m.season !== opts.season) continue;
+
+		const h = data.heroes.find((x) => x.id === d.heroId);
+		if (!h) continue;
+
+		const name = h.canonicalName;
+		const won = d.teamId === m.winnerId;
+
+		const cur = heroWins.get(name) ?? { wins: 0, games: 0 };
+		cur.games++;
+		if (won) cur.wins++;
+		heroWins.set(name, cur);
+
+		const tKey = `${d.teamId}:${name}`;
+		const tCur = teamHeroWins.get(tKey) ?? { wins: 0, games: 0 };
+		tCur.games++;
+		if (won) tCur.wins++;
+		teamHeroWins.set(tKey, tCur);
+	}
+
+	function getHeroWR(heroName: string): number {
+		const stat = heroWins.get(heroName);
+		if (!stat || stat.games === 0) return 0.5;
+		return stat.wins / stat.games;
+	}
+
+	function getTeamHeroComfort(teamId: number, heroName: string): number {
+		const tStat = teamHeroWins.get(`${teamId}:${heroName}`);
+		const hStat = heroWins.get(heroName);
+		if (tStat && tStat.games >= 2) {
+			return (tStat.wins / tStat.games) * 0.7 + (hStat ? hStat.wins / hStat.games : 0.5) * 0.3;
+		}
+		return hStat && hStat.games > 0 ? hStat.wins / hStat.games : 0.5;
+	}
+
+	// 1. Meta Strength
+	const blueMetaWRs = bluePicks.map(getHeroWR);
+	const redMetaWRs = redPicks.map(getHeroWR);
+	const blueMetaStrength =
+		blueMetaWRs.length > 0 ? blueMetaWRs.reduce((a, b) => a + b, 0) / blueMetaWRs.length : 0.5;
+	const redMetaStrength =
+		redMetaWRs.length > 0 ? redMetaWRs.reduce((a, b) => a + b, 0) / redMetaWRs.length : 0.5;
+
+	// 2. Team Comfort Scores
+	const blueComforts = bluePicks.map((h) => getTeamHeroComfort(blueTeamId, h));
+	const redComforts = redPicks.map((h) => getTeamHeroComfort(redTeamId, h));
+	const blueComfortScore =
+		blueComforts.length > 0 ? blueComforts.reduce((a, b) => a + b, 0) / blueComforts.length : 0.5;
+	const redComfortScore =
+		redComforts.length > 0 ? redComforts.reduce((a, b) => a + b, 0) / redComforts.length : 0.5;
+
+	// 3. Side Baseline Performance
+	let blueSideGames = 0;
+	let blueSideWins = 0;
+	let redSideGames = 0;
+	let redSideWins = 0;
+
+	for (const m of data.matches) {
+		if (opts.season && m.season !== opts.season) continue;
+		const mBlueId = m.team1Side === 'blue' ? m.team1Id : m.team2Id;
+		const mRedId = m.team1Side === 'red' ? m.team1Id : m.team2Id;
+
+		if (mBlueId === blueTeamId) {
+			blueSideGames++;
+			if (m.winnerId === blueTeamId) blueSideWins++;
+		}
+		if (mRedId === redTeamId) {
+			redSideGames++;
+			if (m.winnerId === redTeamId) redSideWins++;
+		}
+	}
+
+	const blueSideWR = blueSideGames >= 3 ? blueSideWins / blueSideGames : 0.53;
+	const redSideWR = redSideGames >= 3 ? redSideWins / redSideGames : 0.47;
+
+	// 4. Lane Matchups
+	const blueHeroByRole = new Map<Role, string>();
+	for (const p of blueEval.picks) {
+		blueHeroByRole.set(p.role, p.hero);
+	}
+	const redHeroByRole = new Map<Role, string>();
+	for (const p of redEval.picks) {
+		redHeroByRole.set(p.role, p.hero);
+	}
+
+	const laneMatchups: LaneMatchup[] = [];
+	let blueLaneWins = 0;
+	let redLaneWins = 0;
+
+	for (const r of [1, 2, 3, 4, 5] as Role[]) {
+		const bHero = blueHeroByRole.get(r) ?? '—';
+		const rHero = redHeroByRole.get(r) ?? '—';
+		const bWR = bHero !== '—' ? getTeamHeroComfort(blueTeamId, bHero) : 0.5;
+		const rWR = rHero !== '—' ? getTeamHeroComfort(redTeamId, rHero) : 0.5;
+		const diff = bWR - rWR;
+
+		let edge: 'blue' | 'red' | 'even' = 'even';
+		let reason = 'Balanced lane matchup';
+
+		if (diff > 0.04) {
+			edge = 'blue';
+			blueLaneWins++;
+			reason = `${bHero} holds comfort/win rate edge (+${(diff * 100).toFixed(1)}%)`;
+		} else if (diff < -0.04) {
+			edge = 'red';
+			redLaneWins++;
+			reason = `${rHero} holds comfort/win rate edge (+${(Math.abs(diff) * 100).toFixed(1)}%)`;
+		}
+
+		laneMatchups.push({
+			role: r,
+			roleName: ROLE_NAMES[r],
+			blueHero: bHero,
+			redHero: rHero,
+			blueHeroWinRate: bWR,
+			redHeroWinRate: rWR,
+			edge,
+			edgeMargin: Math.abs(diff),
+			reason
+		});
+	}
+
+	// 5. Probability Synthesis
+	const deltaMeta = blueMetaStrength - redMetaStrength;
+	const deltaComfort = blueComfortScore - redComfortScore;
+	const deltaSide = blueSideWR - redSideWR;
+
+	const logitDelta = deltaMeta * 2.2 + deltaComfort * 1.8 + deltaSide * 0.8;
+	const prob = 1 / (1 + Math.exp(-logitDelta * 2.5));
+	// Grounded realistic probability
+	const blueWinProb = Math.min(0.68, Math.max(0.32, Math.round(prob * 1000) / 1000));
+	const redWinProb = Math.round((1 - blueWinProb) * 1000) / 1000;
+
+	let favoredSide: 'blue' | 'red' | 'even' = 'even';
+	let edgeDescription = 'Even Draft Matchup';
+	if (blueWinProb >= 0.52) {
+		favoredSide = 'blue';
+		const diff = (blueWinProb - 0.5) * 100;
+		edgeDescription = `Blue Side Favored (+${diff.toFixed(1)}% edge)`;
+	} else if (redWinProb >= 0.52) {
+		favoredSide = 'red';
+		const diff = (redWinProb - 0.5) * 100;
+		edgeDescription = `Red Side Favored (+${diff.toFixed(1)}% edge)`;
+	}
+
+	let blueKeyAdvantage = 'First-Pick Priority & Early Lane Control';
+	if (blueLaneWins > redLaneWins) {
+		blueKeyAdvantage = `Controls ${blueLaneWins} of 5 lane matchups with higher comfort`;
+	} else if (blueComfortScore > redComfortScore) {
+		blueKeyAdvantage = 'Higher overall team hero comfort & signatures';
+	}
+
+	let redKeyAdvantage = 'Counter-Pick Flexibility & Late Composition Depth';
+	if (redLaneWins > blueLaneWins) {
+		redKeyAdvantage = `Controls ${redLaneWins} of 5 lane matchups with counter-picks`;
+	} else if (redComfortScore > blueComfortScore) {
+		redKeyAdvantage = 'Higher overall team hero comfort & signature depth';
+	}
+
+	return {
+		blueWinProb,
+		redWinProb,
+		favoredSide,
+		edgeDescription,
+		blueSideWinRate: blueSideWR,
+		redSideWinRate: redSideWR,
+		blueComfortScore,
+		redComfortScore,
+		blueMetaStrength,
+		redMetaStrength,
+		laneMatchups,
+		blueKeyAdvantage,
+		redKeyAdvantage
+	};
+}
+
+
 
 
 

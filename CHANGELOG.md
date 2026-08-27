@@ -13,6 +13,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [2026-08-27]
 
 ### Added
+- **Draft Sandbox Post-Draft Win Predictability & Composition Analysis (`/sandbox`)**:
+  - Live post-draft executive analysis card rendered upon completion in the center HUD.
+  - Visual Blue vs Red simulated win probability meter driven by side priority baselines, team hero comfort deltas, and tournament hero meta strength.
+  - Strategic advantage callouts and lane-by-lane head-to-head matchup breakdown across all 5 lanes (`EXP`, `JGL`, `MID`, `GOLD`, `ROAM`).
+  - Integrated outcome predictions into one-click clipboard summary export.
 - **Draft Sandbox Season 18 Recency Prioritization & Scope Switcher (`/sandbox`)**:
   - Season 18 matches now weighted $3\times$ higher in draft AI recommendations and lane slot detection so current meta trends (e.g. S18 priority picks & lane shifts) dominate over historical volume.
   - Added dedicated Season Scope filter switcher in the header (`🔥 Season 18 (Latest)`, `⚖️ All Time`, `📜 Season 17`).

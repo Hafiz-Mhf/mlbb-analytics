@@ -2,7 +2,7 @@
 
 **Draft-prep scouting for MPL Malaysia — every number next to the league baseline that gives it meaning.**
 
-[![tests](https://img.shields.io/badge/tests-146%20passing-4CAF50)](#-testing)
+[![tests](https://img.shields.io/badge/tests-150%20passing-4CAF50)](#-testing)
 [![pipeline](https://img.shields.io/badge/pipeline-Python%203.12-3776AB?logo=python&logoColor=white)](pipeline)
 [![frontend](https://img.shields.io/badge/frontend-SvelteKit%20%2B%20Svelte%205-FF3E00?logo=svelte&logoColor=white)](frontend)
 [![data source](https://img.shields.io/badge/data-Liquipedia-orange)](docs/data-source.md)
@@ -113,14 +113,14 @@ uv run mlbb-gen-types        # regenerate frontend/src/lib/types.ts
 cd frontend
 npm install
 npm run dev                  # local dev server
-npm run test                 # 57 Vitest tests
+npm run test                 # 61 Vitest tests
 npm run check                # svelte-check
 npm run build                # static build for deploy
 ```
 
 ## 🧪 Testing
 
-146 tests passing — 89 pipeline (`pytest`) + 57 frontend (`vitest`). A build never ships without both green and the pipeline's regression guard passing.
+150 tests passing — 89 pipeline (`pytest`) + 61 frontend (`vitest`). A build never ships without both green and the pipeline's regression guard passing.
 
 ## 🗺️ Status & roadmap
 
