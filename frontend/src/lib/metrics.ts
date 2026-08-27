@@ -618,4 +618,254 @@ export function matchupRoleComparison(
 	return result;
 }
 
+export interface LeagueSideStats {
+	totalMatches: number;
+	blueWins: number;
+	blueWinRate: number;
+	redWins: number;
+	redWinRate: number;
+	avgBlueGameDurationSeconds: number;
+	avgRedGameDurationSeconds: number;
+}
+
+export function leagueSidePerformance(
+	data: Dataset,
+	opts: ScopeOptions = {}
+): LeagueSideStats {
+	const matches = scopedMatches(data, opts);
+	if (matches.length === 0) {
+		return {
+			totalMatches: 0,
+			blueWins: 0,
+			blueWinRate: 0,
+			redWins: 0,
+			redWinRate: 0,
+			avgBlueGameDurationSeconds: 0,
+			avgRedGameDurationSeconds: 0
+		};
+	}
+
+	let blueWins = 0;
+	let redWins = 0;
+	let blueSecs = 0;
+	let blueSecsCount = 0;
+	let redSecs = 0;
+	let redSecsCount = 0;
+
+	for (const m of matches) {
+		const winningSide = m.winnerId === m.team1Id ? m.team1Side : m.team1Side === 'blue' ? 'red' : 'blue';
+		let dur = 0;
+		if (m.gameLength) {
+			const parts = m.gameLength.split(':').map((p) => parseInt(p, 10));
+			if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+				dur = parts[0] * 60 + parts[1];
+			}
+		}
+
+		if (winningSide === 'blue') {
+			blueWins++;
+			if (dur > 0) {
+				blueSecs += dur;
+				blueSecsCount++;
+			}
+		} else {
+			redWins++;
+			if (dur > 0) {
+				redSecs += dur;
+				redSecsCount++;
+			}
+		}
+	}
+
+	return {
+		totalMatches: matches.length,
+		blueWins,
+		blueWinRate: matches.length > 0 ? blueWins / matches.length : 0,
+		redWins,
+		redWinRate: matches.length > 0 ? redWins / matches.length : 0,
+		avgBlueGameDurationSeconds: blueSecsCount > 0 ? Math.round(blueSecs / blueSecsCount) : 0,
+		avgRedGameDurationSeconds: redSecsCount > 0 ? Math.round(redSecs / redSecsCount) : 0
+	};
+}
+
+export type SideReliance = 'blue_reliant' | 'balanced' | 'red_reliant';
+
+export interface TeamSideRow {
+	teamId: number;
+	teamName: string;
+	shortCode: string | null;
+	blueGames: number;
+	blueWins: number;
+	blueWinRate: number;
+	redGames: number;
+	redWins: number;
+	redWinRate: number;
+	sideDelta: number;
+	reliance: SideReliance;
+}
+
+export function teamSideMatrix(
+	data: Dataset,
+	opts: ScopeOptions = {}
+): TeamSideRow[] {
+	return data.teams.map((t) => {
+		const side = sidePerformance(data, t.id, opts);
+		const sideDelta = side.blueWinRate - side.redWinRate;
+		let reliance: SideReliance = 'balanced';
+		if (side.blueGames >= 2 && side.redGames >= 2) {
+			if (sideDelta >= 0.15) reliance = 'blue_reliant';
+			else if (sideDelta <= -0.15) reliance = 'red_reliant';
+		}
+		return {
+			teamId: t.id,
+			teamName: t.canonicalName,
+			shortCode: t.shortCode,
+			blueGames: side.blueGames,
+			blueWins: side.blueWins,
+			blueWinRate: side.blueWinRate,
+			redGames: side.redGames,
+			redWins: side.redWins,
+			redWinRate: side.redWinRate,
+			sideDelta,
+			reliance
+		};
+	});
+}
+
+export interface HeroSideStat {
+	hero: string;
+	bluePresence: number;
+	bluePickRate: number;
+	blueBanRate: number;
+	blueWins: number;
+	blueGames: number;
+	blueWinRate: number;
+	redPresence: number;
+	redPickRate: number;
+	redBanRate: number;
+	redWins: number;
+	redGames: number;
+	redWinRate: number;
+	presenceDelta: number;
+	winRateDelta: number;
+}
+
+export interface HeroSidePrioritiesResult {
+	bluePriority: HeroSideStat[];
+	redPriority: HeroSideStat[];
+	winRateSwings: HeroSideStat[];
+}
+
+export function heroSidePriorities(
+	data: Dataset,
+	opts: ScopeOptions = {}
+): HeroSidePrioritiesResult {
+	const matches = scopedMatches(data, opts);
+	const matchIds = new Set(matches.map((m) => m.id));
+	const matchSideMap = new Map<number, { blueTeamId: number; redTeamId: number; winnerId: number }>();
+
+	for (const m of matches) {
+		const blueTeamId = m.team1Side === 'blue' ? m.team1Id : m.team2Id;
+		const redTeamId = m.team1Side === 'blue' ? m.team2Id : m.team1Id;
+		matchSideMap.set(m.id, { blueTeamId, redTeamId, winnerId: m.winnerId });
+	}
+
+	const heroName = new Map(data.heroes.map((h) => [h.id, h.canonicalName]));
+	const totalGames = matches.length;
+
+	interface SideAccumulator {
+		bluePicks: number;
+		blueBans: number;
+		blueWins: number;
+		redPicks: number;
+		redBans: number;
+		redWins: number;
+	}
+
+	const statsMap = new Map<string, SideAccumulator>();
+
+	for (const h of data.heroes) {
+		statsMap.set(h.canonicalName, {
+			bluePicks: 0,
+			blueBans: 0,
+			blueWins: 0,
+			redPicks: 0,
+			redBans: 0,
+			redWins: 0
+		});
+	}
+
+	for (const d of data.drafts) {
+		if (!matchIds.has(d.matchId)) continue;
+		const mInfo = matchSideMap.get(d.matchId);
+		if (!mInfo) continue;
+
+		const name = heroName.get(d.heroId)!;
+		const acc = statsMap.get(name)!;
+		const isBlue = d.teamId === mInfo.blueTeamId;
+		const won = d.teamId === mInfo.winnerId;
+
+		if (isBlue) {
+			if (d.isBan) acc.blueBans++;
+			else {
+				acc.bluePicks++;
+				if (won) acc.blueWins++;
+			}
+		} else {
+			if (d.isBan) acc.redBans++;
+			else {
+				acc.redPicks++;
+				if (won) acc.redWins++;
+			}
+		}
+	}
+
+	const allStats: HeroSideStat[] = [];
+
+	for (const [hero, acc] of statsMap.entries()) {
+		const bluePres = totalGames > 0 ? (acc.bluePicks + acc.blueBans) / totalGames : 0;
+		const redPres = totalGames > 0 ? (acc.redPicks + acc.redBans) / totalGames : 0;
+		const bluePick = totalGames > 0 ? acc.bluePicks / totalGames : 0;
+		const blueBan = totalGames > 0 ? acc.blueBans / totalGames : 0;
+		const redPick = totalGames > 0 ? acc.redPicks / totalGames : 0;
+		const redBan = totalGames > 0 ? acc.redBans / totalGames : 0;
+
+		const blueWR = acc.bluePicks > 0 ? acc.blueWins / acc.bluePicks : 0;
+		const redWR = acc.redPicks > 0 ? acc.redWins / acc.redPicks : 0;
+
+		if (bluePres > 0 || redPres > 0) {
+			allStats.push({
+				hero,
+				bluePresence: bluePres,
+				bluePickRate: bluePick,
+				blueBanRate: blueBan,
+				blueWins: acc.blueWins,
+				blueGames: acc.bluePicks,
+				blueWinRate: blueWR,
+				redPresence: redPres,
+				redPickRate: redPick,
+				redBanRate: redBan,
+				redWins: acc.redWins,
+				redGames: acc.redPicks,
+				redWinRate: redWR,
+				presenceDelta: bluePres - redPres,
+				winRateDelta: blueWR - redWR
+			});
+		}
+	}
+
+	return {
+		bluePriority: allStats
+			.slice()
+			.sort((a, b) => b.bluePresence - a.bluePresence || b.presenceDelta - a.presenceDelta),
+		redPriority: allStats
+			.slice()
+			.sort((a, b) => b.redPresence - a.redPresence || a.presenceDelta - b.presenceDelta),
+		winRateSwings: allStats
+			.filter((s) => s.blueGames + s.redGames >= 5 && s.blueGames >= 1 && s.redGames >= 1)
+			.sort((a, b) => Math.abs(b.winRateDelta) - Math.abs(a.winRateDelta))
+	};
+}
+
+
 

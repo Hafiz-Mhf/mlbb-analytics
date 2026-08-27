@@ -4,8 +4,10 @@ import {
 	flexHeroes,
 	headToHeadSummary,
 	heroClash,
+	heroSidePriorities,
 	hhi,
 	hhiByRole,
+	leagueSidePerformance,
 	matchupRoleComparison,
 	pickRate,
 	pickRateByRole,
@@ -15,7 +17,8 @@ import {
 	ROLE_NAMES,
 	rolePredictabilityMatrix,
 	rollingHhi,
-	sidePerformance
+	sidePerformance,
+	teamSideMatrix
 } from './metrics';
 import type { Dataset } from './types';
 
@@ -462,5 +465,40 @@ describe('matchupRoleComparison', () => {
 		expect(roles[0].team1TopPicks.length).toBeGreaterThanOrEqual(1);
 	});
 });
+
+describe('leagueSidePerformance', () => {
+	it('calculates total matches, Blue vs Red wins and win rates correctly', () => {
+		const data = fixture(); // 2 games: Game 1 Blue (T1) wins, Game 2 Blue (T2) wins
+		const stats = leagueSidePerformance(data);
+		expect(stats.totalMatches).toBe(2);
+		expect(stats.blueWins).toBe(2);
+		expect(stats.blueWinRate).toBe(1.0);
+		expect(stats.redWins).toBe(0);
+		expect(stats.redWinRate).toBe(0.0);
+	});
+});
+
+describe('teamSideMatrix', () => {
+	it('computes 8-team side performance rows with side delta and reliance', () => {
+		const data = fixture();
+		const matrix = teamSideMatrix(data);
+		expect(matrix.length).toBe(2);
+		expect(matrix[0].teamName).toBe('Selangor Red Giants');
+		expect(matrix[0].blueGames).toBe(1);
+		expect(matrix[0].redGames).toBe(1);
+		expect(matrix[0].reliance).toBeDefined();
+	});
+});
+
+describe('heroSidePriorities', () => {
+	it('computes hero side presence, first-pick priority, and side win deltas', () => {
+		const data = fixture();
+		const priorities = heroSidePriorities(data);
+		expect(priorities.bluePriority).toBeDefined();
+		expect(priorities.redPriority).toBeDefined();
+		expect(priorities.winRateSwings).toBeDefined();
+	});
+});
+
 
 
