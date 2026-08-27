@@ -1,9 +1,21 @@
 <script lang="ts">
 	import { mockDataset, generatedAt } from '$lib/data';
-	import { hhi, pickWinRateDelta, presence, presenceDelta, rollingHhi } from '$lib/metrics';
+	import {
+		flexHeroes,
+		hhi,
+		hhiByRole,
+		pickRateByRole,
+		pickWinRateDelta,
+		presence,
+		presenceDelta,
+		ROLE_NAMES,
+		rollingHhi
+	} from '$lib/metrics';
 	import BaselineAnnotation from '$lib/components/BaselineAnnotation.svelte';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
 	import HeroTag from '$lib/components/HeroTag.svelte';
+	import RoleDistributionBar from '$lib/components/RoleDistributionBar.svelte';
+	import RoleFilter from '$lib/components/RoleFilter.svelte';
 	import StatBlock from '$lib/components/StatBlock.svelte';
 	import TeamTag from '$lib/components/TeamTag.svelte';
 	import TrendChart from '$lib/components/TrendChart.svelte';
@@ -12,6 +24,7 @@
 
 	let { data } = $props();
 	const team = $derived(data.team);
+	let selectedRole = $state<number | null>(null);
 
 	$effect(() => {
 		selectedTeam.set(page.params.slug!);
@@ -40,11 +53,29 @@
 		presenceDelta(mockDataset, '17', '18', { teamId: team.id }).slice(0, 15)
 	);
 
+	const teamFlexHeroes = $derived(flexHeroes(mockDataset, { teamId: team.id }));
+
+	const roleHhiTeam = $derived(
+		selectedRole !== null ? hhiByRole(mockDataset, selectedRole, { teamId: team.id }) : null
+	);
+	const roleHhiLeague = $derived(
+		selectedRole !== null ? hhiByRole(mockDataset, selectedRole) : null
+	);
+
 	const rows = $derived(
-		Object.entries(teamPresence)
-			.sort(([, a], [, b]) => b - a)
-			.slice(0, 15)
-			.map(([hero, rate]) => ({ hero, value: rate, baseline: leaguePresence[hero] ?? 0 }))
+		selectedRole === null
+			? Object.entries(teamPresence)
+					.sort(([, a], [, b]) => b - a)
+					.slice(0, 15)
+					.map(([hero, rate]) => ({ hero, value: rate, baseline: leaguePresence[hero] ?? 0 }))
+			: Object.entries(pickRateByRole(mockDataset, selectedRole, { teamId: team.id }))
+					.sort(([, a], [, b]) => b - a)
+					.slice(0, 15)
+					.map(([hero, rate]) => ({
+						hero,
+						value: rate,
+						baseline: pickRateByRole(mockDataset, selectedRole!)[hero] ?? 0
+					}))
 	);
 </script>
 
@@ -150,26 +181,79 @@
 	</div>
 
 	<div class="card p-5">
-		<h2 class="mb-3 font-display text-lg tracking-wide text-ink">Pick/ban rate, top 15</h2>
+		<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+			<div>
+				<h2 class="font-display text-lg tracking-wide text-ink">
+					{selectedRole === null
+						? 'Pick/ban rate, top 15'
+						: `${ROLE_NAMES[selectedRole]} picks, top 15`}
+				</h2>
+				{#if selectedRole !== null && roleHhiTeam !== null && roleHhiLeague !== null}
+					<p class="mt-1 font-mono text-xs text-muted">
+						{ROLE_NAMES[selectedRole]} lane predictability:
+						<span class="text-ink font-semibold">{roleHhiTeam.toFixed(3)}</span>
+						(League avg: {roleHhiLeague.toFixed(3)})
+					</p>
+				{/if}
+			</div>
+			<RoleFilter selected={selectedRole} onchange={(r) => (selectedRole = r)} />
+		</div>
 		<div class="overflow-x-auto">
 			<table class="w-full border-collapse font-mono text-sm">
 				<thead>
 					<tr class="border-b border-line text-left text-muted">
 						<th class="px-3 py-2 font-normal">Hero</th>
-						<th class="px-3 py-2 font-normal">Pick/ban rate (vs. league average)</th>
+						<th class="px-3 py-2 font-normal">
+							{selectedRole === null ? 'Pick/ban rate' : `${ROLE_NAMES[selectedRole]} pick rate`} (vs. league average)
+						</th>
 					</tr>
 				</thead>
 				<tbody>
-					{#each rows as row (row.hero)}
-						<tr class="border-b border-line/60 hover:bg-surface-2">
-							<td class="px-3 py-2"><HeroTag name={row.hero} /></td>
-							<td class="px-3 py-2">
-								<BaselineAnnotation value={row.value} baseline={row.baseline} />
+					{#if rows.length === 0}
+						<tr>
+							<td colspan="2" class="px-3 py-4 text-center font-mono text-xs text-muted">
+								No picks recorded for this role.
 							</td>
 						</tr>
-					{/each}
+					{:else}
+						{#each rows as row (row.hero)}
+							<tr class="border-b border-line/60 hover:bg-surface-2">
+								<td class="px-3 py-2"><HeroTag name={row.hero} /></td>
+								<td class="px-3 py-2">
+									<BaselineAnnotation value={row.value} baseline={row.baseline} />
+								</td>
+							</tr>
+						{/each}
+					{/if}
 				</tbody>
 			</table>
 		</div>
+	</div>
+
+	<div class="card p-5">
+		<div class="mb-3 flex items-center justify-between gap-2">
+			<h2 class="font-display text-lg tracking-wide text-ink">Flex Picks</h2>
+			<span class="font-mono text-xs text-muted">{teamFlexHeroes.length} multi-role heroes</span>
+		</div>
+		<p class="mb-4 font-mono text-xs text-muted">
+			Heroes drafted across multiple lane assignments by {team.canonicalName}.
+		</p>
+		{#if teamFlexHeroes.length === 0}
+			<p class="font-mono text-xs text-muted">No multi-role flex picks recorded for this team.</p>
+		{:else}
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+				{#each teamFlexHeroes as flex (flex.hero)}
+					<div class="rounded-lg border border-line bg-surface-2 p-3.5 space-y-2.5">
+						<div class="flex items-center justify-between">
+							<HeroTag name={flex.hero} />
+							<span class="font-mono text-xs text-muted">
+								{flex.totalPicks} {flex.totalPicks === 1 ? 'pick' : 'picks'}
+							</span>
+						</div>
+						<RoleDistributionBar roles={flex.roles} />
+					</div>
+				{/each}
+			</div>
+		{/if}
 	</div>
 </div>
