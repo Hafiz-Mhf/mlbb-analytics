@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
 	banRate,
+	flexHeroes,
 	hhi,
 	hhiByRole,
 	pickRate,
@@ -8,6 +9,8 @@ import {
 	pickWinRateDelta,
 	presence,
 	presenceDelta,
+	ROLE_NAMES,
+	rolePredictabilityMatrix,
 	rollingHhi
 } from './metrics';
 import type { Dataset } from './types';
@@ -316,3 +319,75 @@ describe('presenceDelta', () => {
 		expect(leagueFreya.before).toBeCloseTo(0.5, 10); // 4 of 8 league team-instances (denominator doubles)
 	});
 });
+
+function roleFixtureData(): Dataset {
+	const teams = [
+		{ id: 1, canonicalName: 'Selangor Red Giants', shortCode: 'SRG' },
+		{ id: 2, canonicalName: 'Team Vamos', shortCode: 'VMS' }
+	];
+	const heroes = [
+		{ id: 1, canonicalName: 'gloo' },
+		{ id: 2, canonicalName: 'fanny' },
+		{ id: 3, canonicalName: 'chou' }
+	];
+	const matches: Dataset['matches'] = [
+		{ id: 1, seriesId: 'S18M1', season: '18', stage: 'regular_season', team1Id: 1, team2Id: 2, team1Side: 'blue', winnerId: 1, gameLength: '12:00', gameNumberInSeries: 1, playedAt: null },
+		{ id: 2, seriesId: 'S18M2', season: '18', stage: 'regular_season', team1Id: 1, team2Id: 2, team1Side: 'blue', winnerId: 1, gameLength: '14:00', gameNumberInSeries: 1, playedAt: null },
+		{ id: 3, seriesId: 'S18M3', season: '18', stage: 'regular_season', team1Id: 1, team2Id: 2, team1Side: 'blue', winnerId: 1, gameLength: '15:00', gameNumberInSeries: 1, playedAt: null },
+		{ id: 4, seriesId: 'S18M4', season: '18', stage: 'regular_season', team1Id: 1, team2Id: 2, team1Side: 'blue', winnerId: 1, gameLength: '16:00', gameNumberInSeries: 1, playedAt: null }
+	];
+	const drafts: Dataset['drafts'] = [
+		// Match 1: Team 1 picks Gloo slot 1 (EXP), Team 2 picks Fanny slot 2 (JGL)
+		{ id: 1, matchId: 1, teamId: 1, slot: 1, heroId: 1, isBan: false },
+		{ id: 2, matchId: 1, teamId: 2, slot: 2, heroId: 2, isBan: false },
+		// Match 2: Team 1 picks Gloo slot 1 (EXP), Team 2 picks Gloo slot 5 (ROAM)
+		{ id: 3, matchId: 2, teamId: 1, slot: 1, heroId: 1, isBan: false },
+		{ id: 4, matchId: 2, teamId: 2, slot: 5, heroId: 1, isBan: false },
+		// Match 3: Team 1 picks Gloo slot 5 (ROAM), Team 2 picks Chou slot 5 (ROAM)
+		{ id: 5, matchId: 3, teamId: 1, slot: 5, heroId: 1, isBan: false },
+		{ id: 6, matchId: 3, teamId: 2, slot: 5, heroId: 3, isBan: false },
+		// Match 4: Team 1 picks Fanny slot 2 (JGL), Team 2 picks Chou slot 1 (EXP)
+		{ id: 7, matchId: 4, teamId: 1, slot: 2, heroId: 2, isBan: false },
+		{ id: 8, matchId: 4, teamId: 2, slot: 1, heroId: 3, isBan: false }
+	];
+	return { teams, heroes, matches, drafts, generatedAt: '2026-08-27T00:00:00+00:00' };
+}
+
+describe('flexHeroes', () => {
+	it('identifies heroes picked in 2 or more distinct roles and computes correct distribution', () => {
+		const data = roleFixtureData();
+		const flex = flexHeroes(data);
+		expect(flex.map((f) => f.hero)).toEqual(['gloo', 'chou']);
+
+		const gloo = flex.find((f) => f.hero === 'gloo')!;
+		expect(gloo.totalPicks).toBe(4);
+		expect(gloo.roles.length).toBe(2);
+		expect(gloo.primaryRole.picks).toBe(2);
+		expect(gloo.primaryRole.share).toBe(0.5);
+		expect(gloo.flexRate).toBe(0.5);
+	});
+
+	it('scopes flex heroes to a specific team when teamId is passed', () => {
+		const data = roleFixtureData();
+		const team1Flex = flexHeroes(data, { teamId: 1 });
+		expect(team1Flex.map((f) => f.hero)).toEqual(['gloo']);
+		expect(team1Flex[0].totalPicks).toBe(3);
+		expect(team1Flex[0].primaryRole.roleName).toBe('EXP');
+		expect(team1Flex[0].primaryRole.picks).toBe(2);
+		expect(team1Flex[0].secondaryRoles[0].roleName).toBe('ROAM');
+		expect(team1Flex[0].secondaryRoles[0].picks).toBe(1);
+	});
+});
+
+describe('rolePredictabilityMatrix', () => {
+	it('computes HHI for each team and league baseline across all 5 roles', () => {
+		const data = roleFixtureData();
+		const matrix = rolePredictabilityMatrix(data);
+		expect(matrix.teams.length).toBe(2);
+		expect(matrix.teams[0].teamName).toBe('Selangor Red Giants');
+		expect(matrix.teams[0].roleHhi[1]).toBeGreaterThanOrEqual(0);
+		expect(matrix.teams[0].roleHhi[2]).toBeGreaterThanOrEqual(0);
+		expect(matrix.league[1]).toBeGreaterThanOrEqual(0);
+	});
+});
+

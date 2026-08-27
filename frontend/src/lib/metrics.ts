@@ -214,3 +214,105 @@ export function presenceDelta(
 		})
 		.sort((x, y) => Math.abs(y.delta) - Math.abs(x.delta));
 }
+
+export const ROLE_NAMES: Record<number, string> = {
+	1: 'EXP',
+	2: 'JGL',
+	3: 'MID',
+	4: 'GOLD',
+	5: 'ROAM'
+};
+
+export interface RoleDistribution {
+	role: number;
+	roleName: string;
+	picks: number;
+	share: number;
+}
+
+export interface FlexHero {
+	hero: string;
+	totalPicks: number;
+	primaryRole: RoleDistribution;
+	secondaryRoles: RoleDistribution[];
+	roles: RoleDistribution[];
+	flexRate: number;
+}
+
+export interface TeamRoleMatrixRow {
+	teamId: number;
+	teamName: string;
+	overallHhi: number;
+	roleHhi: Record<number, number>;
+}
+
+export function flexHeroes(data: Dataset, opts: ScopeOptions = {}): FlexHero[] {
+	const drafts = scopedDrafts(data, { ...opts, picksOnly: true });
+	const heroName = new Map(data.heroes.map((h) => [h.id, h.canonicalName]));
+	const roleCountsByHero = new Map<string, Map<number, number>>();
+
+	for (const d of drafts) {
+		const name = heroName.get(d.heroId)!;
+		if (!roleCountsByHero.has(name)) {
+			roleCountsByHero.set(name, new Map());
+		}
+		const roleMap = roleCountsByHero.get(name)!;
+		roleMap.set(d.slot, (roleMap.get(d.slot) ?? 0) + 1);
+	}
+
+	const result: FlexHero[] = [];
+	for (const [hero, roleMap] of roleCountsByHero.entries()) {
+		if (roleMap.size < 2) continue; // Not flexed
+		const totalPicks = Array.from(roleMap.values()).reduce((a, b) => a + b, 0);
+		const roles: RoleDistribution[] = Array.from(roleMap.entries())
+			.map(([role, picks]) => ({
+				role,
+				roleName: ROLE_NAMES[role] ?? `Role ${role}`,
+				picks,
+				share: picks / totalPicks
+			}))
+			.sort((a, b) => b.picks - a.picks);
+
+		const primaryRole = roles[0];
+		const secondaryRoles = roles.slice(1);
+		const flexRate = (totalPicks - primaryRole.picks) / totalPicks;
+
+		result.push({
+			hero,
+			totalPicks,
+			primaryRole,
+			secondaryRoles,
+			roles,
+			flexRate
+		});
+	}
+
+	return result.sort((a, b) => b.totalPicks - a.totalPicks || b.flexRate - a.flexRate);
+}
+
+export function rolePredictabilityMatrix(
+	data: Dataset,
+	opts: ScopeOptions = {}
+): { teams: TeamRoleMatrixRow[]; league: Record<number, number> } {
+	const teams = data.teams.map((team) => {
+		const teamOpts = { ...opts, teamId: team.id };
+		const roleHhi: Record<number, number> = {};
+		for (let role = 1; role <= 5; role++) {
+			roleHhi[role] = hhiByRole(data, role, teamOpts);
+		}
+		return {
+			teamId: team.id,
+			teamName: team.canonicalName,
+			overallHhi: hhi(data, teamOpts),
+			roleHhi
+		};
+	});
+
+	const league: Record<number, number> = {};
+	for (let role = 1; role <= 5; role++) {
+		league[role] = hhiByRole(data, role, opts);
+	}
+
+	return { teams, league };
+}
+
