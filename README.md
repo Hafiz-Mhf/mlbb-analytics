@@ -2,7 +2,7 @@
 
 **Draft-prep scouting for MPL Malaysia — every number next to the league baseline that gives it meaning.**
 
-[![tests](https://img.shields.io/badge/tests-136%20passing-4CAF50)](#-testing)
+[![tests](https://img.shields.io/badge/tests-141%20passing-4CAF50)](#-testing)
 [![pipeline](https://img.shields.io/badge/pipeline-Python%203.12-3776AB?logo=python&logoColor=white)](pipeline)
 [![frontend](https://img.shields.io/badge/frontend-SvelteKit%20%2B%20Svelte%205-FF3E00?logo=svelte&logoColor=white)](frontend)
 [![data source](https://img.shields.io/badge/data-Liquipedia-orange)](docs/data-source.md)
@@ -30,6 +30,7 @@ This is a **draft** tool, permanently. Liquipedia's public data covers picks, ba
 |---|---|---|
 | 🏠 **Team Scouting** | `/team/[slug]` | A team's pick/ban rates vs. league baseline, lane filter, rolling predictability sparkline, Flex Picks card, Season 17→18 swings, and win-rate deltas |
 | ⚔️ **Matchup Tool** | `/matchup` | Head-to-head comparison between any two teams: direct series/game records, Blue vs Red side performance, 3-way draft clash (Contested battlegrounds vs Signatures), and lane comfort picks |
+| ⚖️ **Side Priority** | `/sides` | League-wide Blue vs Red win rate split banner, 8-team side asymmetry matrix with reliance classifications, and First-Pick vs Counter-Pick hero priorities |
 | 📊 **League Overview** | `/league` | League-wide presence and HHI (draft concentration) rankings, role-filtered top picks, and season-over-season swings |
 | 🛡️ **Roles & Flex** | `/roles` | 8-team Role Predictability Matrix (EXP/JGL/MID/GOLD/ROAM) and Tournament Flex Picks table |
 | 📜 **Match Log** | `/log` | Every series grouped by season, with win scores, best-of format, and links to full draft breakdowns |
@@ -111,22 +112,22 @@ uv run mlbb-gen-types        # regenerate frontend/src/lib/types.ts
 cd frontend
 npm install
 npm run dev                  # local dev server
-npm run test                 # 47 Vitest tests
+npm run test                 # 52 Vitest tests
 npm run check                # svelte-check
 npm run build                # static build for deploy
 ```
 
 ## 🧪 Testing
 
-136 tests passing — 89 pipeline (`pytest`) + 47 frontend (`vitest`). A build never ships without both green and the pipeline's regression guard passing.
+141 tests passing — 89 pipeline (`pytest`) + 52 frontend (`vitest`). A build never ships without both green and the pipeline's regression guard passing.
 
 ## 🗺️ Status & roadmap
 
 **v1 is live**, wired end to end on real data — see [`docs/current-context.md`](docs/current-context.md) for the full, dated history. Weekly refresh runs automatically via GitHub Actions.
 
 - ✅ **Now** — draft-prep dashboard, presence + HHI baselines, weekly refresh, Season 17 historical baseline
-- ✅ **Next** — post-game draft review, Season 17→18 trend views, generated TypeScript types, per-role & flex scouting, head-to-head matchup tool
-- ⏳ **Open** — side priority analysis (Blue vs Red), interactive draft sandbox, standings-based validation invariant
+- ✅ **Next** — post-game draft review, Season 17→18 trend views, generated TypeScript types, per-role & flex scouting, head-to-head matchup tool, side priority analysis
+- ⏳ **Open** — interactive draft sandbox, standings-based validation invariant
 - 🔭 **Later** (gated on real usage) — live in-draft assistant, accounts/private team notes
 
 The current gap isn't code — every planned feature for this stage is shipped. It's **distribution**: nobody in the MPL MY scene has used it yet. See [`docs/planning.md`](docs/planning.md) for the full reasoning.
