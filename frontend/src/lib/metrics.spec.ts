@@ -10,6 +10,7 @@ import {
 	hhi,
 	hhiByRole,
 	leagueSidePerformance,
+	leagueStandings,
 	matchupRoleComparison,
 	OFFICIAL_DRAFT_SEQUENCE,
 	pickRate,
@@ -578,6 +579,39 @@ describe('predictDraftOutcome', () => {
 		expect(prediction.edgeDescription).toBeTruthy();
 	});
 });
+
+describe('leagueStandings', () => {
+	it('calculates series and game records, game diff, win rates, and ranking accurately', () => {
+		const data = fixture();
+		// Add another series M2 where Team 1 beats Team 2 (2-0)
+		data.matches.push(
+			{ id: 3, seriesId: 'M2', season: '17', stage: 'regular_season' as const, team1Id: 1, team2Id: 2, team1Side: 'blue' as const, winnerId: 1, gameLength: '10:00', gameNumberInSeries: 1, playedAt: null },
+			{ id: 4, seriesId: 'M2', season: '17', stage: 'regular_season' as const, team1Id: 1, team2Id: 2, team1Side: 'red' as const, winnerId: 1, gameLength: '12:00', gameNumberInSeries: 2, playedAt: null }
+		);
+
+		const standings = leagueStandings(data, { season: '17' });
+		expect(standings.length).toBe(2);
+		
+		// Team 1 won M2 (2-0), drew M1 (1-1) -> 1 series win, 0 series loss (or 3 games won, 1 lost, diff +2)
+		const srg = standings.find((s) => s.team.canonicalName === 'Selangor Red Giants')!;
+		expect(srg.seriesWins).toBe(1);
+		expect(srg.seriesLosses).toBe(0);
+		expect(srg.gameWins).toBe(3);
+		expect(srg.gameLosses).toBe(1);
+		expect(srg.gameDiff).toBe(2);
+		expect(srg.rank).toBe(1);
+
+		// Team 2 lost M2 (0-2), drew M1 (1-1) -> 0 series win, 1 series loss (1 game won, 3 lost, diff -2)
+		const vms = standings.find((s) => s.team.canonicalName === 'Team Vamos')!;
+		expect(vms.seriesWins).toBe(0);
+		expect(vms.seriesLosses).toBe(1);
+		expect(vms.gameWins).toBe(1);
+		expect(vms.gameLosses).toBe(3);
+		expect(vms.gameDiff).toBe(-2);
+		expect(vms.rank).toBe(2);
+	});
+});
+
 
 
 

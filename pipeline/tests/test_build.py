@@ -275,3 +275,67 @@ def test_main_also_emits_json(tmp_path: Path, capsys):
     dataset = json.loads(json_path.read_text(encoding="utf-8"))
     assert len(dataset["matches"]) == 1
     assert len(dataset["drafts"]) == 20
+
+
+from mlbb_pipeline.standings import StandingsMismatchError
+
+
+def test_build_database_validates_standings_when_snapshot_present(tmp_path: Path):
+    root = tmp_path / "raw"
+    s17 = root / "mpl" / "malaysia" / "season-17"
+    s17.mkdir(parents=True)
+    (s17 / "regular-season.wiki").write_text(
+        "{{Matchlist|id=MPLMYS17W1|title=Week 1|M1=" + RAW_MATCH + "}}",
+        encoding="utf-8",
+    )
+    # RAW_MATCH has SRG 1 - 0 VMS (1 game played, SRG won)
+    valid_standings_html = """
+    <table class="wikitable wikitable-bordered">
+      <tr data-toggle-area-content="1">
+        <th>1.</th>
+        <td class="grouptableslot"><span data-highlighting-class="Selangor Red Giants"></span></td>
+        <td><b>1-0</b></td><td>1-0</td><td>+1</td><td>1p</td>
+      </tr>
+      <tr data-toggle-area-content="1">
+        <th>2.</th>
+        <td class="grouptableslot"><span data-highlighting-class="Team Vamos"></span></td>
+        <td><b>0-1</b></td><td>0-1</td><td>-1</td><td>0p</td>
+      </tr>
+    </table>
+    """
+    (s17 / "standings.html").write_text(valid_standings_html, encoding="utf-8")
+    db_path = tmp_path / "mlbb.db"
+
+    counts = build_database(root, db_path)
+    assert counts == {"games": 1, "series": 1}
+
+
+def test_build_database_halts_on_standings_mismatch(tmp_path: Path):
+    root = tmp_path / "raw"
+    s17 = root / "mpl" / "malaysia" / "season-17"
+    s17.mkdir(parents=True)
+    (s17 / "regular-season.wiki").write_text(
+        "{{Matchlist|id=MPLMYS17W1|title=Week 1|M1=" + RAW_MATCH + "}}",
+        encoding="utf-8",
+    )
+    # Tampered standings claiming SRG was 0-1 and VMS was 1-0
+    mismatched_standings_html = """
+    <table class="wikitable wikitable-bordered">
+      <tr data-toggle-area-content="1">
+        <th>1.</th>
+        <td class="grouptableslot"><span data-highlighting-class="Selangor Red Giants"></span></td>
+        <td><b>0-1</b></td><td>0-1</td><td>-1</td><td>0p</td>
+      </tr>
+      <tr data-toggle-area-content="1">
+        <th>2.</th>
+        <td class="grouptableslot"><span data-highlighting-class="Team Vamos"></span></td>
+        <td><b>1-0</b></td><td>1-0</td><td>+1</td><td>1p</td>
+      </tr>
+    </table>
+    """
+    (s17 / "standings.html").write_text(mismatched_standings_html, encoding="utf-8")
+    db_path = tmp_path / "mlbb.db"
+
+    with pytest.raises(StandingsMismatchError):
+        build_database(root, db_path)
+

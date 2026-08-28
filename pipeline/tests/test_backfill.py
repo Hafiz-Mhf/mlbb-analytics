@@ -25,6 +25,15 @@ REVISION_RESPONSE = {
 }
 
 
+PARSE_HTML_RESPONSE = {
+    "parse": {
+        "title": "MPL/Malaysia/Season 17/Regular Season",
+        "pageid": 12345,
+        "text": {"*": "<table class=\"wikitable wikitable-bordered\">...</table>"},
+    }
+}
+
+
 def test_backfill_season_builds_title_from_season_number(tmp_path: Path):
     captured: list[httpx.Request] = []
 
@@ -32,13 +41,15 @@ def test_backfill_season_builds_title_from_season_number(tmp_path: Path):
         captured.append(request)
         if request.url.params.get("list") == "allpages":
             return httpx.Response(200, json=ALLPAGES_RESPONSE)
+        if request.url.params.get("action") == "parse":
+            return httpx.Response(200, json=PARSE_HTML_RESPONSE)
         return httpx.Response(200, json=REVISION_RESPONSE)
 
     client = MediaWikiClient(transport=httpx.MockTransport(handler), sleep_fn=lambda s: None)
     paths = backfill_season(client, "17", tmp_path)
 
-    assert len(paths) == 1
-    assert paths[0].read_text(encoding="utf-8") == "{{Matchlist|id=X}}"
+    assert len(paths) >= 1
+    assert (tmp_path / "mpl" / "malaysia" / "season-17" / "regular-season.wiki").read_text(encoding="utf-8") == "{{Matchlist|id=X}}"
     discover_request = captured[0]
     assert discover_request.url.params["apprefix"] == "MPL/Malaysia/Season 17/"
 
@@ -66,6 +77,8 @@ def test_main_defaults_to_seasons_17_and_18(tmp_path: Path, capsys):
                 200,
                 json={"query": {"allpages": [{"pageid": 1, "ns": 0, "title": page_title}]}},
             )
+        if request.url.params.get("action") == "parse":
+            return httpx.Response(200, json=PARSE_HTML_RESPONSE)
         return httpx.Response(
             200,
             json={

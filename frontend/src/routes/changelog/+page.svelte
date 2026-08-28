@@ -1,6 +1,13 @@
 <script lang="ts">
 	const entries = [
 		{
+			date: '2026-08-28',
+			items: [
+				'Tournament Standings Dashboard Card (/league): live regular-season standings table with season filtering (Season 18, Season 17, All Time), team logos, series/game W-L records, win rates, and game differentials',
+				'Standings-Based Parser & Validation Guard: Liquipedia regular-season group table HTML parser (GroupTableLeague) and build-halting invariant asserting computed series and game records match published standings (165 total tests)'
+			]
+		},
+		{
 			date: '2026-08-27',
 			items: [
 				'Draft Sandbox (/sandbox) Hero Selection Pool Role Filtering: filter hero pool by lane (EXP, JGL, MID, GOLD, ROAM, and Flex Picks) plus role badges on hero cards',

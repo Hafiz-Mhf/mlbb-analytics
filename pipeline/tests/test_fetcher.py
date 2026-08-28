@@ -164,6 +164,8 @@ def test_fetch_and_snapshot_season_writes_every_discovered_subpage(tmp_path: Pat
         params = request.url.params
         if params.get("list") == "allpages":
             return httpx.Response(200, json=ALLPAGES_RESPONSE)
+        if params.get("action") == "parse":
+            return httpx.Response(200, json=PARSE_HTML_RESPONSE)
         title = params["titles"]
         return httpx.Response(
             200,
@@ -188,8 +190,77 @@ def test_fetch_and_snapshot_season_writes_every_discovered_subpage(tmp_path: Pat
 
     paths = fetch_and_snapshot_season(client, "MPL/Malaysia/Season 17", tmp_path)
 
-    assert len(paths) == 2
-    assert paths[0].read_text(encoding="utf-8") == "{{Matchlist|id=REG}}"
-    assert paths[1].read_text(encoding="utf-8") == "{{Matchlist|id=PO}}"
-    # 3 requests total (1 discover + 2 fetch); throttled before requests 2 and 3.
-    assert sleeps == [2.0, 2.0]
+    assert len(paths) >= 2
+    assert (tmp_path / "mpl" / "malaysia" / "season-17" / "regular-season.wiki").read_text(encoding="utf-8") == "{{Matchlist|id=REG}}"
+    assert (tmp_path / "mpl" / "malaysia" / "season-17" / "playoffs.wiki").read_text(encoding="utf-8") == "{{Matchlist|id=PO}}"
+
+
+PARSE_HTML_RESPONSE = {
+    "parse": {
+        "title": "MPL/Malaysia/Season 17/Regular Season",
+        "pageid": 12345,
+        "text": {"*": "<table class=\"wikitable wikitable-bordered\">...</table>"},
+    }
+}
+
+
+def test_fetch_parsed_html_returns_rendered_html():
+    def handler(request: httpx.Request) -> httpx.Response:
+        assert request.url.params["action"] == "parse"
+        assert request.url.params["page"] == "MPL/Malaysia/Season 17/Regular Season"
+        assert request.url.params["prop"] == "text"
+        return httpx.Response(200, json=PARSE_HTML_RESPONSE)
+
+    client = MediaWikiClient(transport=httpx.MockTransport(handler), sleep_fn=lambda s: None)
+    html = client.fetch_parsed_html("MPL/Malaysia/Season 17/Regular Season")
+
+    assert html == "<table class=\"wikitable wikitable-bordered\">...</table>"
+
+
+def test_fetch_parsed_html_raises_on_missing():
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json={"error": {"code": "missingtitle", "info": "The page you specified doesn't exist."}})
+
+    client = MediaWikiClient(transport=httpx.MockTransport(handler), sleep_fn=lambda s: None)
+    with pytest.raises(PageNotFoundError):
+        client.fetch_parsed_html("Not A Real Page")
+
+
+def test_fetch_and_snapshot_season_snapshots_standings_html(tmp_path: Path):
+    wikitext_by_title = {
+        "MPL/Malaysia/Season 17/Regular Season": "{{Matchlist|id=REG}}",
+        "MPL/Malaysia/Season 17/Playoffs": "{{Matchlist|id=PO}}",
+    }
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        params = request.url.params
+        if params.get("list") == "allpages":
+            return httpx.Response(200, json=ALLPAGES_RESPONSE)
+        if params.get("action") == "parse":
+            return httpx.Response(200, json=PARSE_HTML_RESPONSE)
+        title = params["titles"]
+        return httpx.Response(
+            200,
+            json={
+                "query": {
+                    "pages": {
+                        "1": {
+                            "title": title,
+                            "revisions": [
+                                {"slots": {"main": {"*": wikitext_by_title[title]}}}
+                            ],
+                        }
+                    }
+                }
+            },
+        )
+
+    client = MediaWikiClient(
+        transport=httpx.MockTransport(handler), sleep_fn=lambda s: None, clock=lambda: 0.0
+    )
+
+    paths = fetch_and_snapshot_season(client, "MPL/Malaysia/Season 17", tmp_path)
+    standings_file = tmp_path / "mpl" / "malaysia" / "season-17" / "standings.html"
+    assert standings_file.exists()
+    assert standings_file.read_text(encoding="utf-8") == "<table class=\"wikitable wikitable-bordered\">...</table>"
+

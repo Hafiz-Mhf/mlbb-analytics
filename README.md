@@ -2,7 +2,7 @@
 
 **Draft-prep scouting for MPL Malaysia — every number next to the league baseline that gives it meaning.**
 
-[![tests](https://img.shields.io/badge/tests-150%20passing-4CAF50)](#-testing)
+[![tests](https://img.shields.io/badge/tests-165%20passing-4CAF50)](#-testing)
 [![pipeline](https://img.shields.io/badge/pipeline-Python%203.12-3776AB?logo=python&logoColor=white)](pipeline)
 [![frontend](https://img.shields.io/badge/frontend-SvelteKit%20%2B%20Svelte%205-FF3E00?logo=svelte&logoColor=white)](frontend)
 [![data source](https://img.shields.io/badge/data-Liquipedia-orange)](docs/data-source.md)
@@ -32,7 +32,7 @@ This is a **draft** tool, permanently. Liquipedia's public data covers picks, ba
 | ⚔️ **Matchup Tool** | `/matchup` | Head-to-head comparison between any two teams: direct series/game records, Blue vs Red side performance, 3-way draft clash (Contested battlegrounds vs Signatures), and lane comfort picks |
 | ⚖️ **Side Priority** | `/sides` | League-wide Blue vs Red win rate split banner, 8-team side asymmetry matrix with reliance classifications, and First-Pick vs Counter-Pick hero priorities |
 | 🎮 **Draft Sandbox** | `/sandbox` | 20-step official tournament mock draft simulator with Dual Coach and Solo vs AI modes, live AI recommendations, 5-lane coverage checklist, and draft HHI scoring |
-| 📊 **League Overview** | `/league` | League-wide presence and HHI (draft concentration) rankings, role-filtered top picks, and season-over-season swings |
+| 📊 **League Overview** | `/league` | League-wide Tournament Standings table with season toggles, presence and HHI (draft concentration) rankings, role-filtered top picks, and season-over-season swings |
 | 🛡️ **Roles & Flex** | `/roles` | 8-team Role Predictability Matrix (EXP/JGL/MID/GOLD/ROAM) and Tournament Flex Picks table |
 | 📜 **Match Log** | `/log` | Every series grouped by season, with win scores, best-of format, and links to full draft breakdowns |
 | 🔍 **Series Detail** | `/series/[seriesId]` | One series as a collapsible accordion — every game's picks/bans labeled against team history and league baseline, notable divergences highlighted |
@@ -43,7 +43,7 @@ Plus five static info pages linked from the footer only — `/about`, `/contact`
 
 - **Presence** — `(picks + bans) / games played` — how much the league or a team touches a hero. Meta breadth.
 - **HHI** — sum of squared pick shares — how concentrated a team's drafting is. Predictability.
-- Both are computed **overall and per role** (EXP / Jungle / Mid / Gold / Roam — pick slots are role-ordered 95.7% of the time, verified against all of Season 17).
+- **Both are computed overall and per role** (EXP / Jungle / Mid / Gold / Roam — pick slots are role-ordered 95.7% of the time, verified against all of Season 17).
 - Every metric is exposed at two scopes — team vs. league, and season vs. season — so a raw number never stands alone.
 
 ## 🏆 Coverage
@@ -61,10 +61,10 @@ Liquipedia wikitext  →  Python pipeline  →  SQLite (committed)  →  dataset
 
 There is **no backend server**. The Python pipeline runs at build time (weekly, via GitHub Actions), not as a live service — Vercel's filesystem is ephemeral, so the pipeline fetches, validates, and commits a fresh dataset instead of querying anything at request time.
 
-1. **Fetch** — a throttled MediaWiki client pulls wikitext from Liquipedia (no API key exists; rate-limited to 1 request/2s with a custom User-Agent)
+1. **Fetch** — a throttled MediaWiki client pulls wikitext and parsed HTML standings from Liquipedia (no API key exists; rate-limited to 1 request/2s with a custom User-Agent)
 2. **Parse** — `{{Matchlist}}` / `{{Bracket}}` / `{{Match}}` / `{{Map}}` templates become typed Pydantic rows; unplayed games (`finished=skip` or blank future matches) are filtered
 3. **Normalize** — hero and team name aliases are resolved against a committed alias table; an *unknown* string halts the build rather than silently inventing a phantom hero
-4. **Validate** — a regression guard blocks the swap if a rebuild ever produces *fewer* games or series than what's already committed
+4. **Validate** — regular-season series ($W-L$) and game ($W-L$) records are validated against published Liquipedia standings snapshots (`standings.html`), and a regression guard blocks the swap if a rebuild ever produces *fewer* games or series than what's already committed
 5. **Emit** — SQLite rows are mapped to `dataset.json`, validated against a Pydantic wire-format schema before it's written
 6. **Publish** — a diff-gated commit pushes the new dataset; Vercel rebuilds the static site
 
@@ -76,8 +76,9 @@ A failed validation at any step **never publishes**. Stale-but-correct beats fre
 mlbb-analytics/
 ├── pipeline/           Python 3.12 build-time pipeline (uv-managed)
 │   ├── src/mlbb_pipeline/
-│   │   ├── fetcher.py       throttled Liquipedia client
+│   │   ├── fetcher.py       throttled Liquipedia client + standings fetcher
 │   │   ├── parser.py        wikitext → structured rows
+│   │   ├── standings.py     Liquipedia standings parser + build validation guard
 │   │   ├── aliases.py       hero/team alias normalization (halt-on-unknown)
 │   │   ├── schema.py/build.py   SQLite build + regression guard
 │   │   ├── metrics.py       presence, HHI (overall + per-role)
@@ -88,6 +89,7 @@ mlbb-analytics/
 │   └── src/lib/data/dataset.json   the committed dataset the site reads
 ├── data/
 │   ├── raw/*.wiki       committed wikitext snapshots (the raw archive, not a build artifact)
+│   ├── raw/mpl/malaysia/season-*/standings.html  committed regular-season standings HTML snapshots
 │   ├── aliases/         hero_aliases.json, team_aliases.json
 │   └── mlbb.db          committed SQLite build
 ├── docs/                planning.md, data-source.md, stack.md, current-context.md, and more
@@ -101,7 +103,7 @@ mlbb-analytics/
 ```bash
 cd pipeline
 uv sync
-uv run pytest                # run the test suite
+uv run pytest                # run the test suite (100 tests)
 uv run mlbb-backfill --season 18   # fetch + snapshot the live season
 uv run mlbb-build            # rebuild data/mlbb.db and dataset.json
 uv run mlbb-gen-types        # regenerate frontend/src/lib/types.ts
@@ -113,22 +115,21 @@ uv run mlbb-gen-types        # regenerate frontend/src/lib/types.ts
 cd frontend
 npm install
 npm run dev                  # local dev server
-npm run test                 # 61 Vitest tests
+npm test                     # 65 Vitest tests
 npm run check                # svelte-check
 npm run build                # static build for deploy
 ```
 
 ## 🧪 Testing
 
-150 tests passing — 89 pipeline (`pytest`) + 61 frontend (`vitest`). A build never ships without both green and the pipeline's regression guard passing.
+165 tests passing — 100 pipeline (`pytest`) + 65 frontend (`vitest`). A build never ships without both green, standings validation matching published tables, and the pipeline's regression guard passing.
 
 ## 🗺️ Status & roadmap
 
 **v1 is live**, wired end to end on real data — see [`docs/current-context.md`](docs/current-context.md) for the full, dated history. Weekly refresh runs automatically via GitHub Actions.
 
-- ✅ **Now** — draft-prep dashboard, presence + HHI baselines, weekly refresh, Season 17 historical baseline
-- ✅ **Next** — post-game draft review, Season 17→18 trend views, generated TypeScript types, per-role & flex scouting, head-to-head matchup tool, side priority analysis, interactive draft sandbox
-- ⏳ **Open** — standings-based validation invariant
+- ✅ **Now** — draft-prep dashboard, presence + HHI baselines, weekly refresh, Season 17 historical baseline, standings validation guard
+- ✅ **Next** — post-game draft review, Season 17→18 trend views, generated TypeScript types, per-role & flex scouting, head-to-head matchup tool, side priority analysis, interactive draft sandbox, tournament standings dashboard
 - 🔭 **Later** (gated on real usage) — live in-draft assistant, accounts/private team notes
 
 The current gap isn't code — every planned feature for this stage is shipped. It's **distribution**: nobody in the MPL MY scene has used it yet. See [`docs/planning.md`](docs/planning.md) for the full reasoning.

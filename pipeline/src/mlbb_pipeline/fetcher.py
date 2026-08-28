@@ -91,6 +91,22 @@ class MediaWikiClient:
             raise PageNotFoundError(f"page not found: {title!r}")
         return page["revisions"][0]["slots"]["main"]["*"]
 
+    def fetch_parsed_html(self, title: str) -> str:
+        """Fetch the rendered HTML of `title` using action=parse."""
+        data = self._get(
+            {
+                "action": "parse",
+                "page": title,
+                "prop": "text",
+                "format": "json",
+            }
+        )
+        if "error" in data:
+            raise PageNotFoundError(f"page not found: {title!r}")
+        if "parse" not in data or "text" not in data["parse"]:
+            raise PageNotFoundError(f"page parse failed: {title!r}")
+        return data["parse"]["text"]["*"]
+
     def discover_season_subpages(self, season_title: str) -> list[str]:
         """List subpages of `season_title` (e.g. 'MPL/Malaysia/Season 17')
         by prefix — e.g. '.../Regular Season', '.../Playoffs'. Discovered
@@ -113,11 +129,19 @@ def fetch_and_snapshot_season(
     client: MediaWikiClient, season_title: str, root: Path
 ) -> list[Path]:
     """Discover `season_title`'s subpages, fetch each one's wikitext, and
-    write it to a snapshot under `root`. Returns the written paths, in
-    discovery order — the whole fetch+snapshot chain end-to-end."""
+    write it to a snapshot under `root`. When Regular Season is discovered,
+    also fetch and snapshot its parsed HTML to standings.html for build-halting
+    standings validation. Returns the written paths, in discovery order."""
     subpage_titles = client.discover_season_subpages(season_title)
     paths: list[Path] = []
     for title in subpage_titles:
         wikitext = client.fetch_wikitext(title)
-        paths.append(write_snapshot(root, title, wikitext))
+        snapshot = write_snapshot(root, title, wikitext)
+        paths.append(snapshot)
+        if title.lower().endswith("regular season"):
+            html = client.fetch_parsed_html(title)
+            standings_path = snapshot.parent / "standings.html"
+            standings_path.write_text(html, encoding="utf-8")
+            paths.append(standings_path)
     return paths
+

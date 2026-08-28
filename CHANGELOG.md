@@ -10,6 +10,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2026-08-28]
+
+### Added
+- **Tournament Standings Dashboard Card (`/league`)**:
+  - Live Tournament Standings table rendered directly on the League Overview screen with season filtering (`Season 18 (Active)`, `Season 17 (Baseline)`, `All Time`).
+  - Displays team rank, logos, series record ($W-L$), series win rate, game record ($W-L$), color-coded game diff ($+/-$), and game win rate.
+  - One-click navigation to team scouting pages (`/team/[slug]`).
+  - Added pure `leagueStandings()` computation in `$lib/metrics.ts` and component tests in `league-page.svelte.spec.ts`.
+- **Standings-Based Parser & Build-Halting Validation Guard**:
+  - Implemented Liquipedia `GroupTableLeague` HTML parser (`mlbb_pipeline.standings.parse_standings_html`) converting rendered standings tables to `TeamStanding` structures with alias normalization.
+  - Implemented `validate_standings` asserting computed Regular Season series ($W-L$) and game ($W-L$) records in SQLite match published tables, halting the build loudly on any discrepancy via `StandingsMismatchError`.
+  - Added `fetch_parsed_html` to `MediaWikiClient` and updated `fetch_and_snapshot_season` to snapshot `standings.html` alongside wikitext.
+  - Wired automated standings validation into `mlbb-build` / `build_database`.
+  - Committed verified `standings.html` snapshots for Season 17 and Season 18.
+  - Test suite expanded to 165 automated tests (100 pipeline + 65 frontend).
+
+---
+
 ## [2026-08-27]
 
 ### Added

@@ -1,6 +1,15 @@
 <script lang="ts">
 	import { mockDataset, generatedAt } from '$lib/data';
-	import { banRate, hhi, pickRate, pickRateByRole, presenceDelta, ROLE_NAMES } from '$lib/metrics';
+	import {
+		banRate,
+		hhi,
+		leagueStandings,
+		pickRate,
+		pickRateByRole,
+		presenceDelta,
+		ROLE_NAMES
+	} from '$lib/metrics';
+	import { teamSlug } from '$lib/teams';
 	import FreshnessIndicator from '$lib/components/FreshnessIndicator.svelte';
 	import HeroTag from '$lib/components/HeroTag.svelte';
 	import RoleFilter from '$lib/components/RoleFilter.svelte';
@@ -8,6 +17,13 @@
 	import TeamTag from '$lib/components/TeamTag.svelte';
 
 	let selectedRole = $state<number | null>(null);
+	let standingsSeason = $state<'18' | '17' | 'all'>('18');
+
+	const standings = $derived(
+		leagueStandings(mockDataset, {
+			season: standingsSeason === 'all' ? undefined : standingsSeason
+		})
+	);
 
 	const leagueHhiValue = $derived(hhi(mockDataset));
 
@@ -48,6 +64,110 @@
 	<div class="flex flex-wrap items-center justify-between gap-3">
 		<h1 class="font-display text-2xl tracking-wide text-ink">League Overview</h1>
 		<FreshnessIndicator {generatedAt} />
+	</div>
+
+	<!-- Tournament Standings Card -->
+	<div class="card p-5 space-y-4">
+		<div class="flex flex-wrap items-center justify-between gap-3">
+			<div>
+				<h2 class="font-display text-lg tracking-wide text-ink">Tournament Standings</h2>
+				<p class="font-mono text-xs text-muted">
+					Official regular-season match records, game differentials, and win rates
+				</p>
+			</div>
+			<div class="inline-flex rounded-lg border border-line bg-surface p-0.5 font-mono text-xs">
+				<button
+					type="button"
+					class="rounded-md px-3 py-1.5 transition-colors {standingsSeason === '18'
+						? 'bg-primary text-surface font-bold shadow-sm'
+						: 'text-muted hover:text-ink'}"
+					onclick={() => (standingsSeason = '18')}
+				>
+					Season 18 (Active)
+				</button>
+				<button
+					type="button"
+					class="rounded-md px-3 py-1.5 transition-colors {standingsSeason === '17'
+						? 'bg-primary text-surface font-bold shadow-sm'
+						: 'text-muted hover:text-ink'}"
+					onclick={() => (standingsSeason = '17')}
+				>
+					Season 17 (Baseline)
+				</button>
+				<button
+					type="button"
+					class="rounded-md px-3 py-1.5 transition-colors {standingsSeason === 'all'
+						? 'bg-primary text-surface font-bold shadow-sm'
+						: 'text-muted hover:text-ink'}"
+					onclick={() => (standingsSeason = 'all')}
+				>
+					All Time
+				</button>
+			</div>
+		</div>
+
+		<div class="overflow-x-auto">
+			<table class="w-full border-collapse font-mono text-sm">
+				<thead>
+					<tr class="border-b border-line text-left text-muted">
+						<th class="px-3 py-2.5 font-normal w-12">#</th>
+						<th class="px-3 py-2.5 font-normal">Team</th>
+						<th class="px-3 py-2.5 font-normal text-center">Series (W-L)</th>
+						<th class="px-3 py-2.5 font-normal text-center">Series Win %</th>
+						<th class="px-3 py-2.5 font-normal text-center">Games (W-L)</th>
+						<th class="px-3 py-2.5 font-normal text-center">Diff</th>
+						<th class="px-3 py-2.5 font-normal text-center">Game Win %</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each standings as row (row.team.id)}
+						<tr class="border-b border-line/60 hover:bg-surface-2 transition-colors">
+							<td class="px-3 py-2.5 text-muted font-bold">
+								<span
+									class="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs {row.rank <=
+									4
+										? 'bg-primary/10 text-primary border border-primary/20'
+										: 'text-muted'}"
+								>
+									{row.rank}
+								</span>
+							</td>
+							<td class="px-3 py-2.5">
+								<a
+									href="/team/{teamSlug(row.team.canonicalName)}"
+									class="inline-flex items-center gap-2 hover:underline text-ink"
+									aria-label={row.team.canonicalName}
+								>
+									<TeamTag name={row.team.canonicalName} size={22} />
+									<span class="hidden md:inline text-xs text-muted font-sans">({row.team.canonicalName})</span>
+								</a>
+							</td>
+							<td class="px-3 py-2.5 text-center font-bold text-ink">
+								{row.seriesWins} - {row.seriesLosses}
+							</td>
+							<td class="px-3 py-2.5 text-center text-muted">
+								{(row.seriesWinRate * 100).toFixed(0)}%
+							</td>
+							<td class="px-3 py-2.5 text-center text-ink">
+								{row.gameWins} - {row.gameLosses}
+							</td>
+							<td
+								class="px-3 py-2.5 text-center font-bold {row.gameDiff > 0
+									? 'text-positive'
+									: row.gameDiff < 0
+										? 'text-negative'
+										: 'text-muted'}"
+							>
+								{row.gameDiff > 0 ? `+${row.gameDiff}` : row.gameDiff}
+							</td>
+							<td class="px-3 py-2.5 text-center text-muted">
+								{(row.gameWinRate * 100).toFixed(1)}%
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
 
 	<StatBlock

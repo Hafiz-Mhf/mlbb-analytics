@@ -1,6 +1,4 @@
-// Mirrors pipeline/src/mlbb_pipeline/metrics.py exactly. Same formulas,
-// same league-scope doubling — see that file's docstrings for why.
-import type { DraftRow, MatchRow, Dataset } from './types';
+import type { DraftRow, MatchRow, Dataset, Team, Stage } from './types';
 
 export interface ScopeOptions {
 	teamId?: number;
@@ -1437,6 +1435,104 @@ export function predictDraftOutcome(
 		redKeyAdvantage
 	};
 }
+
+export interface TeamStandingsRow {
+	rank: number;
+	team: Team;
+	seriesWins: number;
+	seriesLosses: number;
+	seriesPlayed: number;
+	seriesWinRate: number;
+	gameWins: number;
+	gameLosses: number;
+	gameDiff: number;
+	gameWinRate: number;
+}
+
+export function leagueStandings(
+	data: Dataset,
+	opts: { season?: string; stage?: Stage } = {}
+): TeamStandingsRow[] {
+	const stage = opts.stage ?? 'regular_season';
+	const matches = data.matches.filter((m) => {
+		if (opts.season !== undefined && m.season !== opts.season) return false;
+		if (stage !== undefined && m.stage !== stage) return false;
+		return true;
+	});
+
+	const seriesMap = new Map<
+		string,
+		{ team1Id: number; team2Id: number; team1Wins: number; team2Wins: number }
+	>();
+
+	for (const m of matches) {
+		let s = seriesMap.get(m.seriesId);
+		if (!s) {
+			s = { team1Id: m.team1Id, team2Id: m.team2Id, team1Wins: 0, team2Wins: 0 };
+			seriesMap.set(m.seriesId, s);
+		}
+		if (m.winnerId === m.team1Id) {
+			s.team1Wins++;
+		} else if (m.winnerId === m.team2Id) {
+			s.team2Wins++;
+		}
+	}
+
+	const teamRows: TeamStandingsRow[] = data.teams.map((team) => {
+		let seriesWins = 0;
+		let seriesLosses = 0;
+		let gameWins = 0;
+		let gameLosses = 0;
+
+		for (const s of seriesMap.values()) {
+			if (s.team1Id === team.id) {
+				gameWins += s.team1Wins;
+				gameLosses += s.team2Wins;
+				if (s.team1Wins > s.team2Wins) seriesWins++;
+				else if (s.team1Wins < s.team2Wins) seriesLosses++;
+			} else if (s.team2Id === team.id) {
+				gameWins += s.team2Wins;
+				gameLosses += s.team1Wins;
+				if (s.team2Wins > s.team1Wins) seriesWins++;
+				else if (s.team2Wins < s.team1Wins) seriesLosses++;
+			}
+		}
+
+		const seriesPlayed = seriesWins + seriesLosses;
+		const seriesWinRate = seriesPlayed > 0 ? seriesWins / seriesPlayed : 0;
+		const gamePlayed = gameWins + gameLosses;
+		const gameWinRate = gamePlayed > 0 ? gameWins / gamePlayed : 0;
+		const gameDiff = gameWins - gameLosses;
+
+		return {
+			rank: 1,
+			team,
+			seriesWins,
+			seriesLosses,
+			seriesPlayed,
+			seriesWinRate,
+			gameWins,
+			gameLosses,
+			gameDiff,
+			gameWinRate
+		};
+	});
+
+	teamRows.sort((a, b) => {
+		if (b.seriesWins !== a.seriesWins) return b.seriesWins - a.seriesWins;
+		if (b.seriesWinRate !== a.seriesWinRate) return b.seriesWinRate - a.seriesWinRate;
+		if (b.gameDiff !== a.gameDiff) return b.gameDiff - a.gameDiff;
+		if (b.gameWins !== a.gameWins) return b.gameWins - a.gameWins;
+		return a.team.canonicalName.localeCompare(b.team.canonicalName);
+	});
+
+	teamRows.forEach((row, idx) => {
+		row.rank = idx + 1;
+	});
+
+	return teamRows;
+}
+
 
 
 

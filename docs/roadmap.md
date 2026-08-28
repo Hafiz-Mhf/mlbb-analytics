@@ -18,7 +18,7 @@ Format: Now / Next / Later, anchored to MPL MY Season 18 (14 Aug – Oct 2026).
 - [x] Snapshot raw wikitext to `data/raw/`, committed — writer exists; no snapshots written yet, that's the backfill run
 - [x] Parser: `{{Matchlist}}` / `{{Match}}` / `{{Map}}`, brace-matching for nested `TeamOpponent`, filter `finished=skip`
 - [x] Hero alias normalization table + the rule that an unknown hero string **halts** the run (team alias table done too, same rule)
-- [x] Validation invariants (stack.md): 10 picks / 10 bans per game — enforced in `ParsedGame`. Counts moving plausibly between runs — `check_no_regression` in `build.py`, halts a rebuild that loses games/series. Still open: team records vs. published standings — needs a standings-page parser that doesn't exist yet.
+- [x] Validation invariants (stack.md): 10 picks / 10 bans per game — enforced in `ParsedGame`. Counts moving plausibly between runs — `check_no_regression` in `build.py`, halts a rebuild that loses games/series. Team records vs. published standings — done 28 Aug 2026: `standings.py` parses Liquipedia regular-season group tables from `standings.html` snapshots and halts the build on any series/game W-L discrepancy (`StandingsMismatchError`).
 - [x] Golden-file tests against a committed fixture. Unit tests on every metric function — `test_metrics.py`, including a sanity check against the real committed archive.
 - [x] SQLite build from snapshots (database.md) — schema, seed, insert, regression guard, `mlbb-build` CLI. `data/mlbb.db` committed.
 - [x] Metrics: presence, HHI (overall + per-role) — league baseline is `team_id=None` reused, not a separate code path.

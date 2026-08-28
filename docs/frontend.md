@@ -4,14 +4,18 @@
 
 SvelteKit — not Next.js. Less boilerplate, lighter runtime, no SSR/SEO need for a tool analysts open directly rather than find via search. See design.md.
 
-## Routes (v1)
+## Routes
 
-- `/` — Team Scouting (default landing, team selector drives everything below it)
+- `/` — Landing page with project value proposition and interactive team grid
 - `/team/[slug]` — deep-linkable Team Scouting for one team (e.g. `/team/srg`), so a view is shareable between analysts, not just usable in-session
-- `/league` — League Overview (cross-team HHI and presence comparison)
-- `/log` — Match Log (series list — score, Bo count, team logos — filterable by team and stage, grouped into per-season sections so S17/S18 never mix, ready for a future international-event section the same way)
-- `/series/[seriesId]` — one series' games as a collapsible accordion, each game's picks/bans against the league baseline (replaced `/match/[id]`'s one-route-per-game shape, 20 Aug 2026)
-- `/about`, `/contact`, `/privacy`, `/terms`, `/changelog` — static info/legal pages, linked from the footer only (20 Aug 2026). No pipeline data, no dynamic params — plain prose components that inherit the root layout's `prerender = true`.
+- `/league` — League Overview (Tournament Standings table with season toggles, cross-team HHI and presence comparison, role-filtered top picks)
+- `/matchup` — Head-to-head comparison between any two teams (direct series/game records, Blue vs Red side performance, 3-way draft clash)
+- `/sides` — Side Priority analysis (tournament Blue vs Red win rate split, 8-team side asymmetry matrix, First-Pick vs Counter-Pick hero priorities)
+- `/sandbox` — Interactive Draft Sandbox (20-step tournament pick/ban simulator, Dual Coach & AI modes, real-time lane coverage & HHI scoring)
+- `/roles` — Per-Role & Flex Scouting (8-team lane predictability matrix and tournament flex picks)
+- `/log` — Match Log (series list — score, Bo count, team logos — filterable by team and stage, grouped into per-season sections so S17/S18 never mix)
+- `/series/[seriesId]` — one series' games as a collapsible accordion, each game's picks/bans against the league baseline
+- `/about`, `/contact`, `/privacy`, `/terms`, `/changelog` — static info/legal pages, linked from the footer only. No pipeline data, no dynamic params — plain prose components that inherit the root layout's `prerender = true`.
 
 Filtering by patch was previously listed here and has been removed — Liquipedia records no patch field (data-source.md).
 
