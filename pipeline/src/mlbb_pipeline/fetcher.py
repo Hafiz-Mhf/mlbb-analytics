@@ -18,6 +18,9 @@ USER_AGENT = (
     "hafizfaruqi27@gmail.com)"
 )
 MIN_REQUEST_INTERVAL = 2.0  # seconds; data-source.md terms compliance
+DEFAULT_TIMEOUT_SECONDS = 20.0
+DEFAULT_MAX_RETRIES = 2
+DEFAULT_RETRY_BACKOFF_SECONDS = 1.0
 
 
 class PageNotFoundError(ValueError):
@@ -37,13 +40,21 @@ class MediaWikiClient:
         base_url: str = DEFAULT_BASE_URL,
         transport: httpx.BaseTransport | None = None,
         min_interval: float = MIN_REQUEST_INTERVAL,
+        timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
+        max_retries: int = DEFAULT_MAX_RETRIES,
+        retry_backoff_seconds: float = DEFAULT_RETRY_BACKOFF_SECONDS,
         sleep_fn: Callable[[float], None] = time.sleep,
         clock: Callable[[], float] = time.monotonic,
     ) -> None:
         self._client = httpx.Client(
-            base_url=base_url, headers={"User-Agent": USER_AGENT}, transport=transport
+            base_url=base_url,
+            headers={"User-Agent": USER_AGENT},
+            transport=transport,
+            timeout=timeout_seconds,
         )
         self._min_interval = min_interval
+        self._max_retries = max_retries
+        self._retry_backoff_seconds = retry_backoff_seconds
         self._sleep_fn = sleep_fn
         self._clock = clock
         self._last_request_at: float | None = None
@@ -66,10 +77,17 @@ class MediaWikiClient:
         self._last_request_at = self._clock()
 
     def _get(self, params: dict[str, str]) -> dict:
-        self._throttle()
-        response = self._client.get(API_PATH, params=params)
-        response.raise_for_status()
-        return response.json()
+        for attempt in range(self._max_retries + 1):
+            self._throttle()
+            try:
+                response = self._client.get(API_PATH, params=params)
+                response.raise_for_status()
+                return response.json()
+            except httpx.TimeoutException:
+                if attempt == self._max_retries:
+                    raise
+                self._sleep_fn(self._retry_backoff_seconds * (2**attempt))
+        raise RuntimeError("unreachable")
 
     def fetch_wikitext(self, title: str) -> str:
         """Fetch the raw wikitext of the current revision of `title`.
@@ -144,4 +162,3 @@ def fetch_and_snapshot_season(
             standings_path.write_text(html, encoding="utf-8")
             paths.append(standings_path)
     return paths
-
