@@ -108,6 +108,56 @@ def test_client_raises_timeout_after_retry_limit():
     assert sleeps == [0.25, 0.5]
 
 
+def test_client_retries_rate_limited_then_succeeds():
+    attempts = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            return httpx.Response(429, headers={"Retry-After": "3"})
+        return httpx.Response(200, json={"query": {"pages": {}}})
+
+    sleeps: list[float] = []
+    client = MediaWikiClient(
+        transport=httpx.MockTransport(handler),
+        min_interval=0.0,
+        max_retries=2,
+        retry_backoff_seconds=0.5,
+        sleep_fn=sleeps.append,
+    )
+
+    data = client._get({"action": "query"})
+
+    assert data == {"query": {"pages": {}}}
+    assert attempts == 2
+    assert sleeps == [3.0]
+
+
+def test_client_raises_429_after_retry_limit():
+    attempts = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal attempts
+        attempts += 1
+        return httpx.Response(429)
+
+    sleeps: list[float] = []
+    client = MediaWikiClient(
+        transport=httpx.MockTransport(handler),
+        min_interval=0.0,
+        max_retries=2,
+        retry_backoff_seconds=0.25,
+        sleep_fn=sleeps.append,
+    )
+
+    with pytest.raises(httpx.HTTPStatusError):
+        client._get({"action": "query"})
+
+    assert attempts == 3
+    assert sleeps == [0.25, 0.5]
+
+
 REVISION_RESPONSE = {
     "query": {
         "pages": {
