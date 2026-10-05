@@ -21,6 +21,7 @@ MIN_REQUEST_INTERVAL = 2.0  # seconds; data-source.md terms compliance
 DEFAULT_TIMEOUT_SECONDS = 20.0
 DEFAULT_MAX_RETRIES = 2
 DEFAULT_RETRY_BACKOFF_SECONDS = 1.0
+RETRYABLE_HTTP_STATUS_CODES = {429, 500, 502, 503, 504}
 
 
 class PageNotFoundError(ValueError):
@@ -81,6 +82,15 @@ class MediaWikiClient:
             self._throttle()
             try:
                 response = self._client.get(API_PATH, params=params)
+                if response.status_code in RETRYABLE_HTTP_STATUS_CODES:
+                    if attempt == self._max_retries:
+                        response.raise_for_status()
+                    retry_after = response.headers.get("Retry-After")
+                    if retry_after and retry_after.isdigit():
+                        self._sleep_fn(float(retry_after))
+                    else:
+                        self._sleep_fn(self._retry_backoff_seconds * (2**attempt))
+                    continue
                 response.raise_for_status()
                 return response.json()
             except httpx.TimeoutException:
