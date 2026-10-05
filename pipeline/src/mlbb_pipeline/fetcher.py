@@ -87,6 +87,17 @@ class MediaWikiClient:
                 if attempt == self._max_retries:
                     raise
                 self._sleep_fn(self._retry_backoff_seconds * (2**attempt))
+            except httpx.HTTPStatusError as exc:
+                if exc.response.status_code != 429 or attempt == self._max_retries:
+                    raise
+                delay = self._retry_backoff_seconds * (2**attempt)
+                retry_after = exc.response.headers.get("Retry-After")
+                if retry_after is not None:
+                    try:
+                        delay = max(delay, float(retry_after))
+                    except ValueError:
+                        pass
+                self._sleep_fn(delay)
         raise RuntimeError("unreachable")
 
     def fetch_wikitext(self, title: str) -> str:
