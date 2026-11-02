@@ -1,4 +1,6 @@
 from pathlib import Path
+from datetime import datetime, timedelta, timezone
+from email.utils import format_datetime
 
 import httpx
 import pytest
@@ -132,6 +134,35 @@ def test_client_retries_rate_limited_then_succeeds():
     assert data == {"query": {"pages": {}}}
     assert attempts == 2
     assert sleeps == [3.0]
+
+
+def test_client_retries_rate_limited_with_http_date_retry_after():
+    attempts = 0
+    retry_after = format_datetime(
+        datetime.now(timezone.utc) + timedelta(seconds=6), usegmt=True
+    )
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            return httpx.Response(429, headers={"Retry-After": retry_after})
+        return httpx.Response(200, json={"query": {"pages": {}}})
+
+    sleeps: list[float] = []
+    client = MediaWikiClient(
+        transport=httpx.MockTransport(handler),
+        min_interval=0.0,
+        max_retries=2,
+        retry_backoff_seconds=0.5,
+        sleep_fn=sleeps.append,
+    )
+
+    data = client._get({"action": "query"})
+
+    assert data == {"query": {"pages": {}}}
+    assert attempts == 2
+    assert sleeps[0] >= 5.0
 
 
 def test_client_raises_429_after_retry_limit():
