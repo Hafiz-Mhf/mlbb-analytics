@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import time
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Callable
 
@@ -93,13 +95,11 @@ class MediaWikiClient:
                 delay = self._retry_backoff_seconds * (2**attempt)
                 retry_after = exc.response.headers.get("Retry-After")
                 if retry_after is not None:
-                    try:
-                        delay = max(delay, float(retry_after))
-                    except ValueError:
-                        pass
+                    parsed_retry_after = _parse_retry_after_seconds(retry_after)
+                    if parsed_retry_after is not None:
+                        delay = max(delay, parsed_retry_after)
                 self._sleep_fn(delay)
         raise RuntimeError("unreachable")
-
     def fetch_wikitext(self, title: str) -> str:
         """Fetch the raw wikitext of the current revision of `title`.
         Uses action=query&prop=revisions (2s limit), never action=parse
@@ -152,6 +152,24 @@ class MediaWikiClient:
             }
         )
         return [page["title"] for page in data["query"]["allpages"]]
+
+
+def _parse_retry_after_seconds(retry_after: str) -> float | None:
+    """Parse Retry-After delta-seconds or HTTP-date into seconds."""
+    try:
+        return max(0.0, float(retry_after))
+    except ValueError:
+        pass
+
+    try:
+        retry_at = parsedate_to_datetime(retry_after)
+    except (TypeError, ValueError):
+        return None
+
+    if retry_at.tzinfo is None:
+        retry_at = retry_at.replace(tzinfo=timezone.utc)
+
+    return max(0.0, (retry_at - datetime.now(timezone.utc)).total_seconds())
 
 
 def fetch_and_snapshot_season(
