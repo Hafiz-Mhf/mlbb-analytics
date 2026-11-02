@@ -195,7 +195,7 @@ def test_client_default_retries_handle_transient_429_burst():
     def handler(request: httpx.Request) -> httpx.Response:
         nonlocal attempts
         attempts += 1
-        if attempts <= 3:
+        if attempts <= 6:
             return httpx.Response(429)
         return httpx.Response(200, json={"query": {"pages": {}}})
 
@@ -209,8 +209,8 @@ def test_client_default_retries_handle_transient_429_burst():
     data = client._get({"action": "query"})
 
     assert data == {"query": {"pages": {}}}
-    assert attempts == 4
-    assert sleeps == [1.0, 2.0, 4.0]
+    assert attempts == 7
+    assert sleeps == [1.0, 2.0, 4.0, 8.0, 16.0, 32.0]
 
 
 REVISION_RESPONSE = {
