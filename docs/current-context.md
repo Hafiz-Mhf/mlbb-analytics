@@ -1,8 +1,34 @@
 # Current Context
 
-_Last updated: 20 Aug 2026 (back-to-top button fix, footer/content spacing — see below)_
+_Last updated: 3 Nov 2026 (system snapshot and weekly-ingestion status)_
 
 ## Where things stand
+
+### Current system snapshot — 3 Nov 2026
+
+MLBB Analytics is a static, public draft-analysis application for MPL Malaysia. The deployed product has no runtime backend: a Python 3.12 pipeline fetches and validates Liquipedia snapshots, builds the committed SQLite database, emits one validated JSON dataset, and a prerendered SvelteKit 2/Svelte 5 frontend reads that dataset at build time.
+
+```text
+Liquipedia MediaWiki
+  -> throttled fetch + committed raw snapshots
+  -> parser + alias normalization + standings/regression validation
+  -> data/mlbb.db
+  -> Pydantic-validated dataset.json + generated TypeScript types
+  -> prerendered SvelteKit frontend
+  -> Vercel
+```
+
+**Active product surface:** Team Scouting (`/team/[slug]`), Matchup (`/matchup`), Side Priority (`/sides`), Draft Sandbox (`/sandbox`), League Overview (`/league`), Roles & Flex (`/roles`), Match Log (`/log`), and Series Detail (`/series/[seriesId]`), plus the static information/legal pages. The analytical scope remains draft data only: picks, bans, side, winner, game length, role-order inference, presence, HHI/predictability, standings, matchup, flex, side-priority, and season comparisons. The system does not claim gameplay analysis, live draft integration, accounts, or private team notes.
+
+**Data state:** the last committed `frontend/src/lib/data/dataset.json` was generated on 28 Aug 2026 with 198 games. The 3 Nov 2026 workflow repair fetched the current Season 18 snapshots and successfully rebuilt the working tree to 8 teams, 104 heroes, 334 games, and 6,680 draft actions: 164 Season 17 games and 170 Season 18 games. This refreshed state remains local until the repair and generated artifacts are committed and pushed.
+
+**Automation state:** `.github/workflows/weekly-build.yml` still runs every Monday at 00:00 UTC and can be manually dispatched. Its gated path is pipeline tests -> Season 18 backfill -> validated rebuild/emit -> diff-only commit and push. On 2 Nov 2026, repeated Liquipedia rate-limit failures were addressed by teaching `MediaWikiClient` to retry HTTP `429` responses, honor both numeric and HTTP-date `Retry-After` values, apply exponential fallback backoff, and allow a larger default retry budget. The Lesley alias missing from the normalization table was also added after it halted a build as designed. These changes harden the refresh path; they do not by themselves prove that a newer dataset has been published, so freshness must be read from `dataset.generatedAt`.
+
+**Correctness boundary:** unknown hero/team aliases, parser errors, standings mismatches, schema mismatches, test failures, or a game/series regression stop the build before publication. The intended failure mode remains stale-but-validated data rather than a fresh but silently corrupted dataset.
+
+**Current priority:** publish the verified workflow repair and refreshed artifacts, confirm the next weekly/manual GitHub Actions run completes, then distribute the tool to real MPL MY analysts or scene followers. All planned “Now” and “Next” product capabilities are already implemented; further “Later” work remains gated on real usage rather than another speculative feature pass.
+
+The dated entries below preserve the implementation history that led to this state. Where an older count or “current” statement conflicts with this snapshot, use this snapshot and the committed dataset as the source of truth.
 
 **v1 is wired end to end on real data.** `data/raw/*.wiki` → `data/mlbb.db` → `frontend/src/lib/data/dataset.json` → all three screens, no mock left anywhere in the tree. Concretely:
 

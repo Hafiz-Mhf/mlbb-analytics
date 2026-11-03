@@ -40,6 +40,12 @@ def test_parse_map_builds_match_record():
     assert game.match.game_length == "21:59"
 
 
+def test_parse_map_normalizes_title_case_side():
+    game = parse_map(RAW_MAP.replace("team1side=blue", "team1side=Blue"), **_kwargs())
+    assert game is not None
+    assert game.match.team1_side == "blue"
+
+
 def test_parse_map_normalizes_hero_short_forms():
     game = parse_map(RAW_MAP, **_kwargs())
     picks = {(d.team_slot, d.slot): d.hero for d in game.drafts if not d.is_ban}

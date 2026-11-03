@@ -129,7 +129,7 @@ def parse_map(
         stage=stage,
         team1=resolve_team(team1_raw),
         team2=resolve_team(team2_raw),
-        team1_side=params["team1side"],
+        team1_side=params["team1side"].strip().lower(),
         winner=int(params["winner"]),
         game_length=params["length"],
         game_number_in_series=game_number_in_series,
